@@ -1,0 +1,340 @@
+.auth-page * {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+.auth-page {
+    min-height: 100dvh;
+    display: grid;
+    place-items: center;
+    background: #fff;
+    color: #111;
+    font-family: "Montserrat", sans-serif;
+    padding: 16px;
+}
+
+.auth-page .container {
+    display: flex;
+    width: 900px;
+    height: 520px;
+    background: #fff;
+    border-radius: 15px;
+    overflow: hidden;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, .1);
+}
+
+.auth-page .body-container {
+    flex: 1;
+    background: #E6E6E6;
+    padding: 40px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.auth-page .body-container h1 {
+    text-align: center;
+    margin-bottom: 6px;
+    font-weight: 700;
+}
+
+.auth-page .subtitle {
+    text-align: center;
+    font-size: 14px;
+    color: #777;
+    margin-bottom: 22px;
+}
+
+.auth-page form {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.auth-page input[type="email"],
+.auth-page input[type="text"],
+.auth-page input[type="password"] {
+    width: 80%;
+    margin: 0 auto;
+    padding: 12px 15px;
+    border: 1px solid #C9C9C9;
+    border-radius: 8px;
+    background: #F9F9F9;
+    font-size: 14px;
+}
+
+.auth-page input::placeholder {
+    color: #9F9F9F;
+}
+
+.auth-page input:focus {
+    outline: none;
+    border-color: #FF6B00;
+}
+
+.auth-page .forgot-password {
+    width: 80%;
+    margin: -4px auto 0;
+    display: block;
+    text-align: right;
+    font-size: 12px;
+    color: #666;
+    text-decoration: none;
+}
+
+.auth-page .btn-login {
+    width: 80%;
+    margin: 8px auto 0;
+    padding: 12px 0;
+    border: 0;
+    border-radius: 8px;
+    background: #FF6B00;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background .2s ease;
+    color: #fff;
+}
+
+.auth-page .btn-login:hover {
+    background: #e25d00;
+}
+
+.auth-page .divider {
+    text-align: center;
+    color: #777;
+    font-size: 13px;
+    margin: 12px 0;
+}
+
+.auth-page .btn-google {
+    width: 80%;
+    margin: 0 auto;
+    padding: 12px 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    background: #F5F5F5;
+    border: 1px solid #dcdcdc;
+    color: #555;
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+.auth-page .signup-text {
+    text-align: center;
+    font-size: 14px;
+    margin-top: 12px;
+    color: #555;
+}
+
+.auth-page .signup-text a {
+    color: #0066cc;
+    font-weight: 600;
+    text-decoration: none;
+}
+
+.auth-page .signup-text a:hover {
+    text-decoration: underline;
+}
+
+.auth-page .text-lupa {
+    max-width: 460px;
+    margin: 0 auto 18px;
+    text-align: center;
+    font-size: 14px;
+    color: #555;
+    line-height: 1.6;
+}
+
+.auth-page .agree-box {
+    width: 80%;
+    margin: 5px auto 0;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 13px;
+    color: #333;
+    line-height: 1.4;
+}
+
+.auth-page .agree-box input[type="checkbox"] {
+    cursor: pointer;
+}
+
+.auth-page .agree-box label {
+    cursor: pointer;
+}
+
+.auth-page .agree-box a {
+    color: #0056c7;
+    text-decoration: none;
+    font-weight: 500;
+}
+
+.auth-page .agree-box a:hover {
+    text-decoration: underline;
+}
+
+.auth-page .slider {
+    flex: 1;
+    position: relative;
+    overflow: hidden;
+    border-top-right-radius: 30px;
+    border-bottom-right-radius: 30px;
+}
+
+.auth-page .slides {
+    display: flex;
+    height: 100%;
+    transition: transform .6s ease;
+    will-change: transform;
+}
+
+.auth-page .slide {
+    flex: 0 0 100%;
+    height: 100%;
+    background-size: cover;
+    background-position: center;
+    position: relative;
+}
+
+.auth-page .text {
+    position: absolute;
+    left: 30px;
+    right: 30px;
+    bottom: 50px;
+    color: #fff;
+    text-shadow: 1px 1px 6px rgba(0, 0, 0, .7);
+}
+
+.auth-page .text h2 {
+    font-size: 26px;
+    font-weight: 700;
+    margin-bottom: 6px;
+}
+
+.auth-page .text p {
+    font-size: 14px;
+}
+
+.auth-page .dots {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 15px;
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+}
+
+.auth-page .dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: #fff;
+    opacity: .5;
+    cursor: pointer;
+}
+
+.auth-page .dot.active {
+    opacity: 1;
+}
+
+.auth-page .modal {
+    position: fixed;
+    inset: 0;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 999;
+}
+
+.auth-page .modal.is-open {
+    display: flex;
+}
+
+.auth-page .modal__backdrop {
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, .35);
+}
+
+.auth-page .modal__card {
+    position: relative;
+    width: min(420px, 92vw);
+    background: #fff;
+    border-radius: 16px;
+    padding: 28px 22px 22px;
+    box-shadow: 0 12px 40px rgba(0, 0, 0, .18);
+    text-align: center;
+    animation: modalPop .18s ease-out;
+}
+
+@keyframes modalPop {
+    from {
+        transform: translateY(6px) scale(.98);
+        opacity: 0;
+    }
+
+    to {
+        transform: translateY(0) scale(1);
+        opacity: 1;
+    }
+}
+
+.auth-page .modal__icon {
+    width: 50px;
+    height: 50px;
+    margin: 0 auto 10px;
+    display: grid;
+    place-items: center;
+    border-radius: 12px;
+    background: #FF6B00;
+    color: #fff;
+}
+
+.auth-page .modal__title {
+    font-size: 28px;
+    font-weight: 700;
+    margin: 6px 0;
+    color: #333;
+}
+
+.auth-page .modal__desc {
+    color: #666;
+    font-size: 16px;
+    line-height: 1.5;
+    margin-bottom: 16px;
+}
+
+.auth-page .modal__btn {
+    background: #FF6B00;
+    color: #fff;
+    border: 0;
+    border-radius: 10px;
+    padding: 10px 16px;
+    font-weight: 600;
+    cursor: pointer;
+    width: 140px;
+    margin: 0 auto;
+    transition: background .2s ease;
+}
+
+.auth-page .modal__btn:hover {
+    background: #e25d00;
+}
+
+@media (max-width: 900px) {
+    .auth-page .container {
+        width: min(94vw, 900px);
+        height: auto;
+        flex-direction: column;
+    }
+
+    .auth-page .slider {
+        height: 320px;
+        border-radius: 0 0 16px 16px;
+    }
+}

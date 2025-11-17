@@ -1,0 +1,64 @@
+.imap {
+    max-width: 1200px;
+    margin: 36px auto 48px;
+    padding: 0 16px;
+}
+
+.imap__title {
+    text-align: center;
+    font-family: "Montserrat", system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+    font-weight: 800;
+    font-size: 32px;
+    line-height: 1.2;
+    color: #111;
+    margin-bottom: 18px;
+}
+
+.imap__frame {
+    position: relative;
+    border: 3px solid #1e90ff; 
+    border-radius: 4px;
+    padding: 8px;              
+    background: #fff;
+}
+
+.imap__svg {
+    width: 100%;
+    height: auto;
+    display: block;
+}
+
+.imap__pin {
+    cursor: pointer;
+    transform-origin: center;
+    transition: transform .15s ease;
+}
+.imap__pin:hover {
+    transform: translate(var(--x, 0), var(--y, 0)) scale(1.07);
+}
+.imap__pin-body {
+    fill: #f97316;  
+}
+.imap__pin-hole {
+    fill: #fff;
+    opacity: 0.9;
+}
+
+.imap__tooltip {
+    position: absolute;
+    transform: translate(-50%, -140%);
+    background: rgba(17,17,17,0.9);
+    color: #fff;
+    font-size: 13px;
+    padding: 6px 10px;
+    border-radius: 8px;
+    pointer-events: none;
+    white-space: nowrap;
+    box-shadow: 0 6px 18px rgba(0,0,0,.18);
+}
+
+@media (max-width: 768px) {
+    .imap__title {
+        font-size: 26px;
+    }
+}
