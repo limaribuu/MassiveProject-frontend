@@ -1,4 +1,3 @@
-// Navbar.jsx
 import React, { useState, useRef, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { useAuth } from "../../hooks/useAuth";
@@ -160,9 +159,7 @@ export default function Navbar() {
                                             </div>
                                         </div>
 
-                                        {/* Dropdown items */}
                                         <div className="border-t">
-                                            {/* Destinasi Favorite */}
                                             <Link
                                                 to="/profil?tab=favorites"
                                                 className="flex items-center gap-3 px-4 py-3 hover:bg-gray-50"
@@ -174,7 +171,6 @@ export default function Navbar() {
                                                 <span className="text-gray-700 font-medium">Destinasi Favorite</span>
                                             </Link>
 
-                                            {/* Profile */}
                                             <Link
                                                 to="/profil?tab=profile"
                                                 className="flex items-center gap-3 px-4 py-3 hover:bg-gray-50"

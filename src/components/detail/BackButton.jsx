@@ -1,4 +1,3 @@
-// src/components/detail/BackButton.jsx
 import { useNavigate } from "react-router-dom";
 
 const BackButton = () => {

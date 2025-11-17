@@ -1,5 +1,3 @@
-// src/components/detail/SectionDetail.jsx
-
 const SectionDetail = ({ title, children }) => {
   return (
     <section className="mt-8">

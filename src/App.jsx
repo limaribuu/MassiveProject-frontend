@@ -5,7 +5,7 @@ import Home from "./pages/Home.jsx";
 import Detail from "./pages/Detail.jsx";
 import Destinasi from "./pages/Destinasi.jsx";
 import Ulasan from "./pages/Ulasan.jsx";
-import TambahRating from "./pages/TambahRating.jsx"; // <-- tambah
+import TambahRating from "./pages/TambahRating.jsx";
 import Itinerary from "./pages/Itinerary.jsx";
 import HiddenGem from "./pages/HiddenGem.jsx";
 import Populer from "./pages/Populer.jsx";

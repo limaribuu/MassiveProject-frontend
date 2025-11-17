@@ -1,5 +1,3 @@
-// src/data/places.js
-
 export const places = [
     {
         id: "museum-balaputra",
@@ -102,7 +100,6 @@ export const places = [
     }
 ];
 
-// helper
 export function getPlaceBySlug(slug) {
     return places.find((p) => p.slug === slug);
 }

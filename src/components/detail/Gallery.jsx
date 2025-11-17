@@ -1,5 +1,3 @@
-// src/components/detail/Gallery.jsx
-
 const Gallery = ({ mainImage, images = [] }) => {
   const main = mainImage || "/img/dalammuseum.png";
   const thumbs =
@@ -9,7 +7,6 @@ const Gallery = ({ mainImage, images = [] }) => {
 
   return (
     <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 mt-4">
-      {/* Gambar besar kiri */}
       <div className="lg:col-span-2">
         <div className="w-full rounded-2xl overflow-hidden shadow">
           <img
@@ -20,7 +17,6 @@ const Gallery = ({ mainImage, images = [] }) => {
         </div>
       </div>
 
-      {/* 3 gambar kecil kanan */}
       <div className="flex lg:flex-col gap-4">
         {thumbs.map((src, i) => (
           <div

@@ -1,5 +1,3 @@
-// src/components/detail/InfoSidebar.jsx
-
 const Row = ({ icon, title, children }) => (
   <div className="flex items-start gap-3">
     <img src={icon} alt={title} className="w-5 h-5 mt-1" />

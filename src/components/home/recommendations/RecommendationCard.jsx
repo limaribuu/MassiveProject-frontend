@@ -1,13 +1,10 @@
-// src/components/home/recommendations/RecommendationCard.jsx
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { useFavorites } from "../../../context/FavoritesProvider";
 import SavedToast from "../../common/SavedToast";
 
 export default function RecommendationCard({
-    // kalau dipanggil pakai objek from places.js
     place,
-    // fallback: cara lama (title, desc, img, rating, to)
     id,
     slug,
     title,
@@ -16,7 +13,6 @@ export default function RecommendationCard({
     rating = 4.0,
     to = "#",
 }) {
-    // ====== NORMALISASI DATA ======
     const data = place || {
         id:
             id ||
@@ -35,7 +31,6 @@ export default function RecommendationCard({
 
     const detailHref = `/detail/${data.slug}`;
 
-    // ====== LOGIKA FAVORIT ======
     const { has, toggle } = useFavorites();
     const liked = has(data.id);
 
@@ -45,7 +40,6 @@ export default function RecommendationCard({
         const wasLiked = liked;
         toggle(data.id);
 
-        // kalau sebelumnya belum like → tampilkan popup "tersimpan"
         if (!wasLiked) {
             setShowSaved(true);
         }
@@ -57,7 +51,6 @@ export default function RecommendationCard({
         return () => clearTimeout(t);
     }, [showSaved]);
 
-    // ====== LAYOUT CARD ======
     return (
         <>
             <article className="relative flex flex-col overflow-hidden rounded-[28px] bg-white shadow-md">
@@ -135,7 +128,6 @@ export default function RecommendationCard({
                 </div>
             </article>
 
-            {/* popup "Destinasi Tersimpan" */}
             <SavedToast open={showSaved} onClose={() => setShowSaved(false)} />
         </>
     );

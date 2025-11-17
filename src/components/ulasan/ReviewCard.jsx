@@ -5,7 +5,6 @@ const ReviewCard = ({ image, title, rating = 0, reviews = 0 }) => {
 
   return (
     <div className="w-[210px] min-w-[210px] rounded-2xl overflow-hidden shadow-md bg-white cursor-pointer">
-      {/* gambar */}
       <div className="h-[150px] w-full overflow-hidden">
         <img
           src={image}
@@ -14,14 +13,12 @@ const ReviewCard = ({ image, title, rating = 0, reviews = 0 }) => {
         />
       </div>
 
-      {/* overlay judul */}
-      <div className="-mt-10 px-3 pb-2 pt-6 bg-gradient-to-t from-black/70 via-black/20 to-transparent">
+      <div className="-mt-10 px-3 pb-2 pt-6 bg-linear-to-t from-black/70 via-black/20 to-transparent">
         <div className="text-white font-semibold text-sm leading-tight drop-shadow">
           {title}
         </div>
       </div>
 
-      {/* rating bar */}
       <div className="flex items-center justify-between px-3 py-2 bg-black/80">
         <div className="flex items-center gap-1">
           {stars.map((s) => (

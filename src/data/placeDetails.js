@@ -1,9 +1,4 @@
-// src/data/placeDetails.js
-
 export const placeDetails = {
-    // =======================
-    // Museum Balaputra Dewa
-    // =======================
     "museum-balaputra": {
         title: "Museum Balaputra Dewa",
         mainImage: "/img/balaputra-main.png",
@@ -39,9 +34,6 @@ Selain benda-benda bersejarah, pengunjung juga dapat melihat replika rumah adat 
         mapTitle: "Peta Lokasi Museum Balaputra Dewa"
     },
 
-    // =======================
-    // Museum SMB II (tidak terhubung ke card, tapi boleh dibiarkan)
-    // =======================
     "museum-smb-ii": {
         title: "Museum Sultan Mahmud Badaruddin II",
         mainImage: "/img/dalammuseum.png",
@@ -77,9 +69,6 @@ Pengunjung juga dapat melihat ruang pamer tematik yang ditata berdasarkan period
         mapTitle: "Peta Lokasi Museum Sultan Mahmud Badaruddin II"
     },
 
-    // =======================
-    // Benteng Kuto Besak
-    // =======================
     "bkb": {
         title: "Benteng Kuto Besak",
         mainImage: "/img/bkb-main.png",
@@ -115,9 +104,6 @@ Kini, area sekitar Benteng Kuto Besak menjadi ruang publik yang ramai dikunjungi
         mapTitle: "Peta Lokasi Benteng Kuto Besak"
     },
 
-    // =======================
-    // Kampung Kapitan
-    // =======================
     "kampung-kapitan": {
         title: "Kampung Kapitan",
         mainImage: "/img/kapitan-main.png",
@@ -153,9 +139,6 @@ Suasana kampung yang tenang dengan gang-gang sempit dan rumah tradisional menjad
         mapTitle: "Peta Lokasi Kampung Kapitan"
     },
 
-    // =======================
-    // Jembatan Ampera
-    // =======================
     "ampera": {
         title: "Jembatan Ampera",
         mainImage: "/img/ampera-main.png",
@@ -191,9 +174,6 @@ Pada siang hari, jembatan ini tampak megah dengan latar Sungai Musi dan aktivita
         mapTitle: "Peta Lokasi Jembatan Ampera"
     },
 
-    // =======================
-    // Bukit Siguntang
-    // =======================
     "bukit-siguntang": {
         title: "Bukit Siguntang",
         mainImage: "/img/bukit-main.png",
@@ -229,9 +209,6 @@ Selain nilai sejarahnya, Bukit Siguntang juga menawarkan suasana tenang jauh dar
         mapTitle: "Peta Lokasi Bukit Siguntang"
     },
 
-    // =======================
-    // Pulau Kemaro
-    // =======================
     "pulau-kemaro": {
         title: "Pulau Kemaro",
         mainImage: "/img/kemaro-main.png",
@@ -267,9 +244,6 @@ Selain unsur religi dan budaya Tionghoa yang kuat, Pulau Kemaro juga menawarkan 
         mapTitle: "Peta Lokasi Pulau Kemaro"
     },
 
-    // =======================
-    // Taman Purbakala
-    // =======================
     "taman-purbakala": {
         title: "Taman Purbakala",
         mainImage: "/img/purbakala-main.png",
@@ -303,9 +277,6 @@ Taman Purbakala merupakan kawasan yang menyimpan berbagai peninggalan arkeologi 
         mapTitle: "Peta Lokasi Taman Purbakala"
     },
 
-    // =======================
-    // Lorong Basah Night Culinary
-    // =======================
     "lorong-basah": {
         title: "Lorong Basah Night Culinary",
         mainImage: "/img/lorong-basah-main.png",
@@ -339,9 +310,6 @@ Lorong Basah Night Culinary adalah destinasi kuliner malam yang populer di Palem
         mapTitle: "Peta Lokasi Lorong Basah Night Culinary"
     },
 
-    // =======================
-    // Jakabaring Sport City
-    // =======================
     "jakabaring": {
         title: "Jakabaring Sport City",
         mainImage: "/img/jakabaring-main.png",
@@ -375,9 +343,6 @@ Jakabaring Sport City adalah kompleks olahraga terbesar di Palembang yang menjad
         mapTitle: "Peta Lokasi Jakabaring Sport City"
     },
 
-    // =======================
-    // Bayt Al-Quran Al-Akbar
-    // =======================
     "bayt-quran": {
         title: "Bayt Al-Quran Al-Akbar",
         mainImage: "/img/bayt-quran-main.png",
@@ -411,9 +376,6 @@ Bayt Al-Quran Al-Akbar dikenal sebagai tempat yang menyimpan Al-Quran raksasa ya
         mapTitle: "Peta Lokasi Bayt Al-Quran Al-Akbar"
     },
 
-    // =======================
-    // Monpera
-    // =======================
     "monpera": {
         title: "Monpera",
         mainImage: "/img/monpera-main.png",
@@ -448,7 +410,6 @@ Monumen Perjuangan Rakyat (Monpera) adalah monumen yang dibangun untuk mengenang
     }
 };
 
-// helper: ambil detail berdasarkan slug
 export function getPlaceDetailBySlug(slug) {
     return placeDetails[slug];
 }

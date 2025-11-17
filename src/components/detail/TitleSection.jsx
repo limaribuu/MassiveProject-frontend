@@ -1,4 +1,3 @@
-// src/components/detail/TitleSection.jsx
 const TitleSection = ({ title, onAdd }) => {
   return (
     <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mt-1 mb-4">

@@ -1,4 +1,3 @@
-// src/components/DestinationCard.jsx
 import React from 'react';
 
 const DestinationCard = ({ image, name, ticketPrice, operationalHours, location }) => {

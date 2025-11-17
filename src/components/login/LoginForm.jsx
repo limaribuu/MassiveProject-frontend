@@ -36,16 +36,12 @@ export default function LoginForm() {
 
       const data = await res.json();
 
-      // kalau status bukan 2xx atau success false → lempar error
       if (!res.ok || !data.success) {
         throw new Error(data.message || "Email atau password salah");
       }
 
-      // ⬇️ PENTING: pakai user dari BACKEND
-      // backend kamu mengirim: { success: true, user: { id, name, email, avatar, ... } }
       login(data.user);
 
-      // arahkan ke halaman profil
       navigate("/profil", { replace: true });
     } catch (err) {
       console.error(err);
@@ -60,7 +56,6 @@ export default function LoginForm() {
       <h1>Login Akun</h1>
       <p className="subtitle">Sign in your account</p>
 
-      {/* noValidate biar nggak muncul alert HTML5 kalau mau handle sendiri */}
       <form noValidate onSubmit={handleSubmit}>
         <input
           type="email"

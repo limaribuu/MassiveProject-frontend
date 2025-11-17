@@ -66,10 +66,8 @@ export default function Profile() {
 
   return (
     <>
-      {/* Navbar di paling atas */}
       <Navbar />
 
-      {/* Pakai main biar semantik, tambahin mt kalau Navbar kamu fixed */}
       <main className="mx-auto max-w-[1200px] px-4 sm:px-6 py-6">
         <div className="grid grid-cols-1 md:grid-cols-[260px_1fr] gap-8">
           <ProfileSidebar user={user} activeTab={tab} onChangeTab={setTab} />
@@ -81,7 +79,6 @@ export default function Profile() {
         </div>
       </main>
 
-      {/* Footer di paling bawah */}
       <Footer />
     </>
   );

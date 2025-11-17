@@ -1,11 +1,9 @@
-// src/pages/Destinasi.jsx
 import React, { useState } from "react";
 import Navbar from "../components/common/Navbar.jsx";
 import Footer from "../components/common/Footer.jsx";
 import RecommendationCard from "../components/home/recommendations/RecommendationCard.jsx";
 import { places } from "../data/places.js";
 
-// eslint-disable-next-line no-unused-vars
 const categories = 
 ["all", "sejarah", "religi", "ikonik", "kuliner", "alam"];
 
@@ -29,7 +27,7 @@ const Destinasi = () => {
 
     const handleCategoryChange = (value) => {
         setCategory(value);
-        setPage(1); // reset ke halaman 1 saat ganti kategori
+        setPage(1); 
     };
 
     return (
@@ -43,7 +41,6 @@ const Destinasi = () => {
                         destinasi favorit Palembang
                     </h1>
 
-                    {/* Filter kategori (dropdown saja, tanpa tombol cari) */}
                     <div className="flex justify-center mb-10">
                         <select
                             value={category}
@@ -59,14 +56,12 @@ const Destinasi = () => {
                         </select>
                     </div>
 
-                    {/* Grid card */}
                     <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
                         {pageItems.map((place) => (
                             <RecommendationCard key={place.id} place={place} />
                         ))}
                     </div>
 
-                    {/* Pagination */}
                     {totalPages > 1 && (
                         <div className="flex justify-center mt-8 gap-2">
                             {Array.from({ length: totalPages }).map((_, idx) => {

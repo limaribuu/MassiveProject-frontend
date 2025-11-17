@@ -54,7 +54,7 @@ export default function SignupForm() {
         throw new Error(data.message || "Gagal mendaftar");
       }
 
-      // Sukses → tampilkan modal "Berhasil!"
+      
       setOpen(true);
     } catch (err) {
       console.error(err);

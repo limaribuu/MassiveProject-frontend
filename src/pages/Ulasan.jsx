@@ -4,7 +4,6 @@ import Navbar from "../components/common/Navbar";
 import Footer from "../components/common/Footer.jsx";
 import ReviewCard from "../components/ulasan/ReviewCard.jsx";
 
-// 12 destinasi (nanti ganti dengan data dari DB)
 const reviewItems = [
   {
     id: 1,
@@ -98,14 +97,12 @@ const Ulasan = () => {
       <Navbar />
 
       <main className="min-h-screen bg-white">
-        {/* judul */}
         <section className="mx-auto max-w-6xl px-6 pt-10">
           <h1 className="text-center text-[28px] md:text-[32px] font-extrabold text-orange-500">
             Ulasan Wisata
           </h1>
         </section>
 
-        {/* slider card */}
         <section className="mx-auto max-w-6xl px-6 pt-6">
           <div className="overflow-x-auto pb-3">
             <div className="flex gap-4 min-w-max snap-x snap-mandatory">
@@ -118,11 +115,10 @@ const Ulasan = () => {
           </div>
         </section>
 
-        {/* tombol tambah rating */}
         <section className="mx-auto max-w-6xl px-6 pt-10 pb-16 flex justify-center">
           <Link
             to="/ulasan/tambah-rating"
-            className="rounded-[16px] bg-orange-400 px-10 py-3 text-white text-[16px] font-semibold shadow-md hover:bg-orange-500"
+            className="rounded-2xl bg-orange-400 px-10 py-3 text-white text-[16px] font-semibold shadow-md hover:bg-orange-500"
           >
             Tambahkan Rating
           </Link>

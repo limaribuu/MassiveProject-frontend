@@ -1,4 +1,3 @@
-// src/components/AddDestinationButton.jsx
 import React, { useState } from 'react';
 
 const AddDestinationButton = ({ onAdd }) => {
