@@ -4,7 +4,6 @@ import Navbar from "../components/common/Navbar";
 import Footer from "../components/common/Footer.jsx";
 import BackButton from "../components/detail/BackButton";
 
-// DAFTAR DESTINASI UNTUK DROPDOWN
 const destinations = [
   "AMPERA",
   "MUSEUM SULTAN MAHMUD BD II",
@@ -34,7 +33,6 @@ const TambahRating = () => {
     e.preventDefault();
     if (!selectedDest || rating === 0 || !comment.trim()) return;
 
-    // nanti di sini kirim ke backend
     setShowSaved(true);
   };
 
@@ -44,7 +42,6 @@ const TambahRating = () => {
 
       <main className="min-h-screen bg-white">
         <div className="mx-auto max-w-4xl px-6 pt-6">
-          {/* Header */}
           <div className="flex items-center justify-between">
             <BackButton onClick={() => navigate(-1)} />
             <h1 className="text-[24px] md:text-[26px] font-extrabold text-orange-500">
@@ -54,7 +51,6 @@ const TambahRating = () => {
           </div>
           <div className="mt-3 border-b-2 border-orange-300" />
 
-          {/* Stars + dropdown */}
           <div className="mt-8 flex flex-col items-center gap-6 md:flex-row md:items-center md:justify-between">
             <div className="flex items-center gap-2">
               {stars.map((s) => (
@@ -86,7 +82,7 @@ const TambahRating = () => {
               <select
                 value={selectedDest}
                 onChange={(e) => setSelectedDest(e.target.value)}
-                className="w-[220px] rounded-[12px] border border-orange-300 px-3 py-2 text-sm text-orange-500 font-medium focus:outline-none focus:ring-2 focus:ring-orange-300"
+                className="w-[220px] rounded-xl border border-orange-300 px-3 py-2 text-sm text-orange-500 font-medium focus:outline-none focus:ring-2 focus:ring-orange-300"
               >
                 <option value="">Pilih Destinasi</option>
                 {destinations.map((d) => (
@@ -98,7 +94,6 @@ const TambahRating = () => {
             </div>
           </div>
 
-          {/* Form ulasan */}
           <form onSubmit={handleSubmit} className="mt-10">
             <label className="block text-sm font-semibold text-orange-500 mb-2">
               Berikan Ulasan :
@@ -113,14 +108,13 @@ const TambahRating = () => {
 
             <button
               type="submit"
-              className="mt-6 rounded-[16px] bg-orange-400 px-8 py-2.5 text-white text-[16px] font-semibold shadow-md hover:bg-orange-500"
+              className="mt-6 rounded-2xl bg-orange-400 px-8 py-2.5 text-white text-[16px] font-semibold shadow-md hover:bg-orange-500"
             >
               Simpan
             </button>
           </form>
         </div>
 
-        {/* Popup Ulasan Tersimpan */}
         {showSaved && (
           <div
             className="fixed inset-0 z-40 flex items-center justify-center bg-black/40"
