@@ -2,6 +2,14 @@ import React, { useState, useRef, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { useAuth } from "../../hooks/useAuth";
 
+const BACKEND_BASE_URL = "http://localhost:5000";
+
+function resolveAvatar(path) {
+    if (!path) return "/avatar-default.png";
+    if (path.startsWith("http")) return path;
+    return `${BACKEND_BASE_URL}${path}`;
+}
+
 const navItems = [
     { to: "/home", label: "Home" },
     { to: "/destinasi", label: "Destinasi" },
@@ -29,6 +37,7 @@ export default function Navbar() {
         <div className="w-full border-b border-gray-200">
             <div className="mx-auto max-w-[1200px] px-4 sm:px-6">
                 <nav className="grid grid-cols-[auto_1fr_auto] items-center gap-3 py-3">
+                    {/* Logo */}
                     <Link to="/home" className="flex items-center gap-3">
                         <img
                             src="/logopelesir.png"
@@ -40,6 +49,7 @@ export default function Navbar() {
                         </span>
                     </Link>
 
+                    {/* Menu */}
                     <div className="hidden md:flex items-center justify-center gap-8 min-w-0">
                         {navItems.map(({ to, label }) => {
                             const active = pathname === to;
@@ -58,7 +68,9 @@ export default function Navbar() {
                         })}
                     </div>
 
+                    {/* Kanan */}
                     <div className="flex items-center justify-end gap-2 sm:gap-4">
+                        {/* Tombol search */}
                         <button
                             aria-label="Cari"
                             className="inline-flex h-10 w-10 items-center justify-center rounded-full bg-gray-200"
@@ -69,14 +81,13 @@ export default function Navbar() {
                                 fill="none"
                                 stroke="currentColor"
                                 strokeWidth="2"
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
                             >
                                 <circle cx="11" cy="11" r="8"></circle>
                                 <path d="m21 21-4.35-4.35"></path>
                             </svg>
                         </button>
 
+                        {/* Jika belum login */}
                         {!user && (
                             <>
                                 <Link
@@ -94,31 +105,26 @@ export default function Navbar() {
                             </>
                         )}
 
+                        {/* Jika sudah login */}
                         {user && (
                             <div className="relative" ref={menuRef}>
                                 <button
                                     onClick={() => setOpenMenu((s) => !s)}
                                     className="flex items-center gap-2 rounded-xl border border-gray-200 px-3 py-2 hover:bg-gray-50"
                                 >
+                                    {/* AVATAR KECIL */}
                                     <span className="inline-flex h-7 w-7 items-center justify-center overflow-hidden rounded-full bg-gray-200">
-                                        {user?.avatar ? (
-                                            <img
-                                                src={user.avatar}
-                                                alt={user.name}
-                                                className="h-full w-full object-cover"
-                                            />
-                                        ) : (
-                                            <svg viewBox="0 0 24 24" className="h-5 w-5 text-gray-600">
-                                                <path
-                                                    fill="currentColor"
-                                                    d="M12 12a5 5 0 1 0-5-5 5 5 0 0 0 5 5Zm0 2c-4.42 0-8 2.24-8 5v1h16v-1c0-2.76-3.58-5-8-5Z"
-                                                />
-                                            </svg>
-                                        )}
+                                        <img
+                                            src={resolveAvatar(user.avatar)}
+                                            alt={user.name}
+                                            className="h-full w-full object-cover"
+                                        />
                                     </span>
+
                                     <span className="hidden sm:block text-[16px] font-medium text-gray-700 max-w-[140px] truncate">
                                         {user.name}
                                     </span>
+
                                     <svg
                                         className="h-4 w-4 text-gray-500"
                                         viewBox="0 0 24 24"
@@ -130,24 +136,16 @@ export default function Navbar() {
                                     </svg>
                                 </button>
 
+                                {/* Dropdown */}
                                 {openMenu && (
                                     <div className="absolute right-0 mt-2 w-72 rounded-2xl border border-gray-200 bg-white shadow-xl z-50">
                                         <div className="flex items-center gap-3 p-4">
                                             <span className="inline-flex h-10 w-10 items-center justify-center overflow-hidden rounded-full bg-gray-200">
-                                                {user?.avatar ? (
-                                                    <img
-                                                        src={user.avatar}
-                                                        alt={user.name}
-                                                        className="h-full w-full object-cover"
-                                                    />
-                                                ) : (
-                                                    <svg viewBox="0 0 24 24" className="h-6 w-6 text-gray-600">
-                                                        <path
-                                                            fill="currentColor"
-                                                            d="M12 12a5 5 0 1 0-5-5 5 5 0 0 0 5 5Zm0 2c-4.42 0-8 2.24-8 5v1h16v-1c0-2.76-3.58-5-8-5Z"
-                                                        />
-                                                    </svg>
-                                                )}
+                                                <img
+                                                    src={resolveAvatar(user.avatar)}
+                                                    alt={user.name}
+                                                    className="h-full w-full object-cover"
+                                                />
                                             </span>
                                             <div className="min-w-0">
                                                 <div className="font-semibold text-gray-800 truncate">
@@ -168,7 +166,9 @@ export default function Navbar() {
                                                 <svg className="h-5 w-5 text-[#F1721D]" viewBox="0 0 24 24" fill="currentColor">
                                                     <path d="M12 21.35 10.55 20.03C5.4 15.36 2 12.28 2 8.5A4.5 4.5 0 0 1 6.5 4c1.74 0 3.41.81 4.5 2.09A6 6 0 0 1 21 8.5c0 3.78-3.4 6.86-8.55 11.53Z" />
                                                 </svg>
-                                                <span className="text-gray-700 font-medium">Destinasi Favorite</span>
+                                                <span className="text-gray-700 font-medium">
+                                                    Destinasi Favorite
+                                                </span>
                                             </Link>
 
                                             <Link
@@ -183,13 +183,15 @@ export default function Navbar() {
                                             </Link>
 
                                             <button
-                                                onClick={() => { logout(); setOpenMenu(false); }}
+                                                onClick={() => {
+                                                    logout();
+                                                    setOpenMenu(false);
+                                                }}
                                                 className="w-full text-left px-4 py-3 hover:bg-gray-50 text-red-600 font-medium"
                                             >
                                                 Logout
                                             </button>
                                         </div>
-
                                     </div>
                                 )}
                             </div>

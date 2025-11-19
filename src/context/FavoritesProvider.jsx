@@ -5,33 +5,88 @@ import React, {
     useEffect,
     useMemo,
 } from "react";
+import axios from "axios";
+import { useAuth } from "../hooks/useAuth";
 
 const FavoritesContext = createContext(null);
 
+const API_BASE_URL = "http://localhost:5000/api";
+const LS_KEY = "favorites_ids";
+
 function FavoritesProvider({ children }) {
-    const [ids, setIds] = useState(() => {
-        try {
-            const raw = localStorage.getItem("favorites_ids");
-            return raw ? JSON.parse(raw) : [];
-        } catch {
-            return [];
+    const { user } = useAuth();
+    const [ids, setIds] = useState([]);
+
+    useEffect(() => {
+        async function fetchFavorites() {
+            if (!user) {
+                setIds([]);
+                return;
+            }
+
+            try {
+                const res = await axios.get(
+                    `${API_BASE_URL}/favorites/${user.id}`
+                );
+                if (res.data.success && Array.isArray(res.data.ids)) {
+                    setIds(res.data.ids);
+                    localStorage.setItem(LS_KEY, JSON.stringify(res.data.ids));
+                } else {
+                    setIds([]);
+                }
+            } catch (err) {
+                console.error("Gagal mengambil favorites dari server:", err);
+                try {
+                    const raw = localStorage.getItem(LS_KEY);
+                    setIds(raw ? JSON.parse(raw) : []);
+                } catch {
+                    setIds([]);
+                }
+            }
         }
-    });
+
+        fetchFavorites();
+    }, [user]);
 
     useEffect(() => {
         try {
-            localStorage.setItem("favorites_ids", JSON.stringify(ids));
+            localStorage.setItem(LS_KEY, JSON.stringify(ids));
         } catch {
 
         }
     }, [ids]);
 
-    const toggle = (id) => {
+    const toggle = async (placeId) => {
+        if (!user) {
+
+            setIds((prev) =>
+                prev.includes(placeId)
+                    ? prev.filter((x) => x !== placeId)
+                    : [...prev, placeId]
+            );
+            return;
+        }
+
+        const isFav = ids.includes(placeId);
+
         setIds((prev) =>
-            prev.includes(id)
-                ? prev.filter((x) => x !== id)
-                : [...prev, id]
+            isFav ? prev.filter((x) => x !== placeId) : [...prev, placeId]
         );
+
+        try {
+            if (isFav) {
+                await axios.delete(
+                    `${API_BASE_URL}/favorites/${user.id}/${placeId}`
+                );
+            } else {
+                await axios.post(`${API_BASE_URL}/favorites`, {
+                    userId: user.id,
+                    placeId,
+                });
+            }
+        } catch (err) {
+            console.error("Gagal sync favorites ke server:", err);
+        }
     };
 
     const value = useMemo(

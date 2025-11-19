@@ -1,11 +1,11 @@
 export const placeDetails = {
     "museum-balaputra": {
         title: "Museum Balaputra Dewa",
-        mainImage: "/img/balaputra-main.png",
+        mainImage: "/img/destinasi/balaputra-main.jpg",
         galleryImages: [
-            "/img/balaputra-1.png",
-            "/img/balaputra-2.png",
-            "/img/balaputra-3.png"
+            "/img/destinasi/balaputra-1.jpg",
+            "/img/destinasi/balaputra-2.jpg",
+            "/img/destinasi/balaputra-3.jpg"
         ],
         description: `
 Museum Balaputra Dewa merupakan museum arkeologi dan budaya yang menampilkan berbagai koleksi sejarah Sumatera Selatan. Di dalamnya terdapat koleksi arca batu, prasasti, keramik, tekstil, hingga miniatur rumah adat Limas yang menjadi ikon Palembang. Museum ini menjadi tempat yang tepat untuk mengenal lebih jauh sejarah dan kebudayaan di wilayah Sumatera Selatan.
@@ -71,11 +71,11 @@ Pengunjung juga dapat melihat ruang pamer tematik yang ditata berdasarkan period
 
     "bkb": {
         title: "Benteng Kuto Besak",
-        mainImage: "/img/bkb-main.png",
+        mainImage: "/img/destinasi/bkb-main.jpg",
         galleryImages: [
-            "/img/bkb-1.png",
-            "/img/bkb-2.png",
-            "/img/bkb-3.png"
+            "/img/destinasi/bkb-1.png",
+            "/img/destinasi/bkb-2.png",
+            "/img/destinasi/bkb-3.png"
         ],
         description: `
 Benteng Kuto Besak adalah benteng bersejarah yang terletak di tepi Sungai Musi dan menjadi salah satu ikon kota Palembang. Benteng ini dibangun pada masa Kesultanan Palembang Darussalam dan menjadi pusat pemerintahan pada masanya. Arsitektur benteng yang kokoh dengan dinding tinggi menjadikannya saksi bisu perjalanan sejarah Palembang.

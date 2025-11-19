@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
-import { Home, X, Menu } from "lucide-react";
+import { RotateCcw, X, Menu } from "lucide-react";
 
 const Maps = () => {
   const [leafletLoaded, setLeafletLoaded] = useState(false);
@@ -43,7 +43,7 @@ const Maps = () => {
       name: "Bukit Siguntang",
       address: "Bukit Lama, Ilir Barat I, Kota Palembang",
       image:
-        "https://images.unsplash.com/photo-1548013146-72479768bada?w=400&h=300&fit=crop",
+        "/reco/bukit-siguntang.png",
       description: "Kompleks sejarah dan makam kerajaan Sriwijaya",
     },
     {
@@ -592,7 +592,7 @@ const Maps = () => {
             onClick={() => window.location.reload()}
             className="w-8 h-8 bg-[#fd6b1c] text-white rounded-full flex items-center justify-center hover:bg-[#e35a00] shadow-md"
           >
-            <Home size={16} />
+            <RotateCcw size={16} />
           </button>
           <button
             onClick={() => setSidebarOpen(false)}

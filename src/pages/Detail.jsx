@@ -8,7 +8,7 @@ import Gallery from "../components/detail/Gallery.jsx";
 import InfoSidebar from "../components/detail/InfoSidebar.jsx";
 import SectionDetail from "../components/detail/SectionDetail.jsx";
 import RecommendationSection from "../components/home/recommendations/RecommendationSection.jsx";
-import RecommendationCard from "../components/home/recommendations/RecommendationCard.jsx"; // Import di sini
+import RecommendationCard from "../components/home/recommendations/RecommendationCard.jsx";
 import Footer from "../components/common/Footer.jsx";
 
 import { getPlaceBySlug, places } from "../data/places.js";

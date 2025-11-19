@@ -2,9 +2,9 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useAuth } from "../../hooks/useAuth";
 import { places } from "../../data/places";
+import ProfileHeroCard from "./ProfileHeroCard";
 
 const API_BASE_URL = "http://localhost:5000/api";
-
 const BACKEND_BASE_URL = "http://localhost:5000";
 
 function resolveAvatar(path) {
@@ -190,7 +190,11 @@ export default function ProfileDetails({ user }) {
             setAvatarPreview(null);
         } catch (err) {
             console.error(err);
-            setError(err.message || "Terjadi kesalahan saat upload foto");
+            setError(
+                err.response?.data?.message ||
+                    err.message ||
+                    "Terjadi kesalahan saat upload foto"
+            );
         } finally {
             setSaving(false);
         }
@@ -207,24 +211,10 @@ export default function ProfileDetails({ user }) {
             )}
 
             <div className="grid grid-cols-1 lg:grid-cols-[280px_1fr] gap-8">
-                <div className="flex flex-col items-center">
-                    <div className="h-44 w-44 rounded-2xl overflow-hidden bg-gray-100 mb-4">
-                        <img
-                            src={user?.avatar || "/avatar-default.png"}
-                            alt={user?.name || "avatar"}
-                            className="h-full w-full object-cover"
-                        />
-                    </div>
-                    <button
-                        className="rounded-lg border border-[#F1721D]/40 text-[#F1721D] px-4 py-2 hover:bg-orange-50"
-                        onClick={() => setShowAvatarModal(true)}
-                    >
-                        Ubah Foto Profil
-                    </button>
-                    <p className="text-xs text-gray-500 mt-2 text-center">
-                        Format foto harus jpg, jpeg, png dan ukuran file max 2MB
-                    </p>
-                </div>
+                <ProfileHeroCard
+                    user={user}
+                    onChangePhoto={() => setShowAvatarModal(true)}
+                />
 
                 <div>
                     <h3 className="font-semibold text-gray-800 mb-4">
@@ -277,6 +267,7 @@ export default function ProfileDetails({ user }) {
                 </div>
             </div>
 
+            {/* Modal Jenis Kelamin */}
             <BaseModal
                 open={showGenderModal}
                 title="Jenis Kelamin"
@@ -298,6 +289,7 @@ export default function ProfileDetails({ user }) {
                 </select>
             </BaseModal>
 
+            {/* Modal Tanggal Lahir */}
             <BaseModal
                 open={showDobModal}
                 title="Tanggal Lahir"
@@ -313,6 +305,7 @@ export default function ProfileDetails({ user }) {
                 />
             </BaseModal>
 
+            {/* Modal No Telepon */}
             <BaseModal
                 open={showPhoneModal}
                 title="No. Telepon"
@@ -329,6 +322,7 @@ export default function ProfileDetails({ user }) {
                 />
             </BaseModal>
 
+            {/* Modal Ubah Foto Profil */}
             <BaseModal
                 open={showAvatarModal}
                 title="Ubah Foto Profil"
@@ -345,7 +339,9 @@ export default function ProfileDetails({ user }) {
                         <div className="h-24 w-24 rounded-full overflow-hidden bg-gray-100">
                             <img
                                 src={
-                                    avatarPreview || user?.avatar || "/avatar-default.png"
+                                    avatarPreview
+                                        ? avatarPreview
+                                        : resolveAvatar(user?.avatar)
                                 }
                                 alt="Preview avatar"
                                 className="h-full w-full object-cover"

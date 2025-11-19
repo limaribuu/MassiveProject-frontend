@@ -1,6 +1,9 @@
 import React, { useMemo } from "react";
 import { useSearchParams } from "react-router-dom";
 import { useAuth } from "../hooks/useAuth";
+import { useFavorites } from "../context/FavoritesProvider";
+import { places } from "../data/places";
+
 import ProfileSidebar from "../components/profile/ProfileSidebar";
 import ProfileDetails from "../components/profile/ProfileDetails";
 import ProfileFavorites from "../components/profile/ProfileFavorites";
@@ -9,6 +12,7 @@ import Footer from "../components/common/Footer";
 
 export default function Profile() {
     const { user } = useAuth();
+    const { ids: favoriteIds } = useFavorites();
     const [search, setSearch] = useSearchParams();
 
     const tab = (search.get("tab") || "profile").toLowerCase();
@@ -18,51 +22,22 @@ export default function Profile() {
         setSearch(params, { replace: true });
     };
 
-    const defaultFavorites = useMemo(
-        () => [
-            {
-                id: "m1",
-                title: "Museum Sultan Mahmud Badaruddin II",
-                rating: 4.2,
-                desc:
-                    "Menampilkan koleksi sejarah Kesultanan Palembang dan peninggalan budaya Melayu.",
-                image: "/images/fav-museum-smb2.jpg"
-            },
-            {
-                id: "m2",
-                title: "Museum Balaputra Dewa",
-                rating: 4.0,
-                desc: "Arkeologi, etnografi, dan rumah Limas yang ikonik.",
-                image: "/images/fav-balaputra-dewa.jpg"
-            },
-            {
-                id: "j1",
-                title: "Jembatan Ampera",
-                rating: 4.5,
-                desc: "Ikon Palembang yang melintasi Sungai Musi.",
-                image: "/images/fav-ampera.jpg"
-            },
-            {
-                id: "b1",
-                title: "Benteng Kuto Besak",
-                rating: 4.2,
-                desc: "Benteng peninggalan Kesultanan Palembang Darussalam.",
-                image: "/images/fav-bkb.jpg"
-            }
-        ],
-        []
-    );
-
     const favorites = useMemo(() => {
-        const raw = localStorage.getItem("favorites");
-        if (!raw) return defaultFavorites;
-        try {
-            const arr = JSON.parse(raw);
-            return Array.isArray(arr) && arr.length ? arr : defaultFavorites;
-        } catch {
-            return defaultFavorites;
-        }
-    }, [defaultFavorites]);
+        if (!favoriteIds || favoriteIds.length === 0) return [];
+
+        return places
+            .filter((p) => favoriteIds.includes(p.id))
+            .map((p) => ({
+                id: p.id,
+                title: p.title,
+                desc: p.desc || p.description || "",
+                image: p.image || p.img,
+                rating:
+                    typeof p.rating === "number"
+                        ? p.rating
+                        : Number(p.rating || 0) || 0,
+            }));
+    }, [favoriteIds]);
 
     return (
         <>
@@ -78,6 +53,7 @@ export default function Profile() {
 
                     <div>
                         {tab === "profile" && <ProfileDetails user={user} />}
+
                         {tab === "favorites" && (
                             <ProfileFavorites items={favorites} />
                         )}
