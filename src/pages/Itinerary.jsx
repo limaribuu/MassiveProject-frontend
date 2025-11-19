@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import DestinationCarousel from "../components/itinerary/DestinationCarousel";
 import DestinationDetail from "../components/itinerary/DestinationDetail";
 import { destinations } from "../data/itinerarydata";
@@ -6,12 +7,18 @@ import Navbar from "../components/common/Navbar";
 import Footer from "../components/common/Footer";
 
 const Itinerary = () => {
+    const navigate = useNavigate();
     const [selectedDestinationId, setSelectedDestinationId] = useState(
         destinations[0].id
     );
+
     const selectedDestination = destinations.find(
         (d) => d.id === selectedDestinationId
     );
+
+    const handleViewPlan = () => {
+        navigate("/rencana-pelesir");
+    };
 
     return (
         <div className="min-h-screen bg-white">
@@ -40,7 +47,10 @@ const Itinerary = () => {
             </div>
 
             <div className="max-w-7xl mx-auto px-8 pb-16">
-                <button className="w-full bg-orange-500 hover:bg-orange-600 text-white font-bold text-xl py-5 rounded-2xl shadow-lg transition-colors">
+                <button
+                    onClick={handleViewPlan}
+                    className="w-full bg-orange-500 hover:bg-orange-600 text-white font-bold text-xl py-5 rounded-2xl shadow-lg transition-colors"
+                >
                     Lihat Rencana Saya
                 </button>
             </div>

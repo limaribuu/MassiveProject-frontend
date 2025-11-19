@@ -54,7 +54,6 @@ export default function RecommendationCard({
     return (
         <>
             <article className="relative flex flex-col overflow-hidden rounded-[28px] bg-white shadow-md">
-                {/* gambar + overlay */}
                 <div className="relative h-[520px] w-full overflow-hidden">
                     <img
                         src={data.img}
@@ -62,10 +61,8 @@ export default function RecommendationCard({
                         className="h-full w-full object-cover"
                     />
 
-                    {/* overlay gradient di atas gambar */}
                     <div className="pointer-events-none absolute inset-0 bg-linear-to-t from-black/80 via-black/40 to-black/0" />
 
-                    {/* tombol bookmark */}
                     <button
                         type="button"
                         aria-label={
@@ -88,7 +85,6 @@ export default function RecommendationCard({
                         </svg>
                     </button>
 
-                    {/* konten bawah (judul, desc, tombol, rating) */}
                     <div className="absolute inset-x-0 bottom-0 z-10 p-6">
                         <h3 className="mb-2 text-2xl font-extrabold leading-tight text-white drop-shadow">
                             {data.title}

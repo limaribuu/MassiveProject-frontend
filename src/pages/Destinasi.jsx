@@ -34,6 +34,14 @@ const Destinasi = () => {
         <>
             <Navbar />
 
+            <div>
+                    <img
+                        src="/img/hero-destinasi.png"
+                        alt="Destinasi Palembang"
+                        className="w-full h-auto rounded-2xl object-cover p-20"
+                    />
+                </div>
+
             <main className="bg-white min-h-screen">
                 <section className="w-full px-4 md:px-10 lg:px-[55px] pt-10 pb-16 mx-auto">
                     <h1 className="text-center text-2xl md:text-3xl lg:text-4xl font-semibold mb-6">
