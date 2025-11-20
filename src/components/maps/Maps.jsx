@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
-import { RotateCcw, X, Menu } from "lucide-react";
+import { RotateCcw, X, Menu, ArrowLeft } from "lucide-react";
 
 const Maps = () => {
   const [leafletLoaded, setLeafletLoaded] = useState(false);
@@ -39,11 +39,11 @@ const Maps = () => {
     },
     {
       lat: -2.992861,
-      lng: 104.75225,
+      lng: 104.75225, 
       name: "Bukit Siguntang",
       address: "Bukit Lama, Ilir Barat I, Kota Palembang",
       image:
-        "/reco/bukit-siguntang.png",
+        "https://images.unsplash.com/photo-1548013146-72479768bada?w=400&h=300&fit=crop",
       description: "Kompleks sejarah dan makam kerajaan Sriwijaya",
     },
     {
@@ -330,7 +330,7 @@ const Maps = () => {
               {
                 radius: position.coords.accuracy,
                 color: "blue",
-                fillColor: "white",
+                fillColor: "#30c",
                 fillOpacity: 0.15,
               }
             ).addTo(map);
@@ -525,7 +525,7 @@ const Maps = () => {
         } else {
           clearInterval(animationIntervalRef.current);
         }
-      }, 25);
+      }, 100);
 
       const routeInfo = data.features[0].properties;
       const distanceInKm = routeInfo.summary.distance / 1000;
@@ -570,6 +570,15 @@ const Maps = () => {
         </div>
       )}
 
+      {/* Back Button */}
+      <button
+        onClick={() => window.history.back()}
+        className="fixed z-1100 top-2 left-13 w-10 h-10 bg-[#fd6b1c] text-white rounded-lg flex items-center justify-center hover:bg-[#e35a00] shadow-lg"
+        title="Kembali"
+      >
+        <ArrowLeft size={20} />
+      </button>
+
       {/* Show Sidebar Button */}
       <button
         onClick={() => setSidebarOpen(true)}
@@ -591,12 +600,14 @@ const Maps = () => {
           <button
             onClick={() => window.location.reload()}
             className="w-8 h-8 bg-[#fd6b1c] text-white rounded-full flex items-center justify-center hover:bg-[#e35a00] shadow-md"
+            title="Refresh"
           >
             <RotateCcw size={16} />
           </button>
           <button
             onClick={() => setSidebarOpen(false)}
             className="w-8 h-8 bg-[#fd6b1c] text-white rounded-full flex items-center justify-center hover:bg-[#e35a00] shadow-md"
+            title="Tutup"
           >
             <X size={18} />
           </button>

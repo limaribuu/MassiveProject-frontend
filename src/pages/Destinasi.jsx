@@ -74,7 +74,7 @@ const Destinasi = () => {
                                 </span>
 
                                 <svg
-                                    className={`w-5 h-5 ml-2 flex-shrink-0 transition-transform ${
+                                    className={`w-5 h-5 ml-2 shrink-0 transition-transform ${
                                         open ? "rotate-180" : ""
                                     }`}
                                     viewBox="0 0 24 24"

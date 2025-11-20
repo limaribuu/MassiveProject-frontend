@@ -10,7 +10,8 @@ const BACKEND_BASE_URL = "http://localhost:5000";
 function resolveAvatar(path) {
     if (!path) return "/avatar-default.png";
     if (path.startsWith("http")) return path;
-    return `${BACKEND_BASE_URL}${path}`;
+    if (path.startsWith("/uploads/")) return `${BACKEND_BASE_URL}${path}`;
+    return path;
 }
 
 const CATEGORY_LABELS = {
@@ -267,7 +268,6 @@ export default function ProfileDetails({ user }) {
                 </div>
             </div>
 
-            {/* Modal Jenis Kelamin */}
             <BaseModal
                 open={showGenderModal}
                 title="Jenis Kelamin"
@@ -289,7 +289,6 @@ export default function ProfileDetails({ user }) {
                 </select>
             </BaseModal>
 
-            {/* Modal Tanggal Lahir */}
             <BaseModal
                 open={showDobModal}
                 title="Tanggal Lahir"
@@ -305,7 +304,6 @@ export default function ProfileDetails({ user }) {
                 />
             </BaseModal>
 
-            {/* Modal No Telepon */}
             <BaseModal
                 open={showPhoneModal}
                 title="No. Telepon"
@@ -322,7 +320,6 @@ export default function ProfileDetails({ user }) {
                 />
             </BaseModal>
 
-            {/* Modal Ubah Foto Profil */}
             <BaseModal
                 open={showAvatarModal}
                 title="Ubah Foto Profil"

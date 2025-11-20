@@ -5,7 +5,8 @@ const BACKEND_BASE_URL = "http://localhost:5000";
 function resolveAvatar(path) {
     if (!path) return "/avatar-default.png";
     if (path.startsWith("http")) return path;
-    return `${BACKEND_BASE_URL}${path}`;
+    if (path.startsWith("/uploads/")) return `${BACKEND_BASE_URL}${path}`;
+    return path;
 }
 
 export default function ProfileHeroCard({ user, onChangePhoto }) {

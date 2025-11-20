@@ -7,7 +7,8 @@ const BACKEND_BASE_URL = "http://localhost:5000";
 function resolveAvatar(path) {
     if (!path) return "/avatar-default.png";
     if (path.startsWith("http")) return path;
-    return `${BACKEND_BASE_URL}${path}`;
+    if (path.startsWith("/uploads/")) return `${BACKEND_BASE_URL}${path}`;
+    return path;
 }
 
 const navItems = [
@@ -37,7 +38,6 @@ export default function Navbar() {
         <div className="w-full border-b border-gray-200">
             <div className="mx-auto max-w-[1200px] px-4 sm:px-6">
                 <nav className="grid grid-cols-[auto_1fr_auto] items-center gap-3 py-3">
-                    {/* Logo */}
                     <Link to="/home" className="flex items-center gap-3">
                         <img
                             src="/logopelesir.png"
@@ -49,7 +49,6 @@ export default function Navbar() {
                         </span>
                     </Link>
 
-                    {/* Menu */}
                     <div className="hidden md:flex items-center justify-center gap-8 min-w-0">
                         {navItems.map(({ to, label }) => {
                             const active = pathname === to;
@@ -68,9 +67,7 @@ export default function Navbar() {
                         })}
                     </div>
 
-                    {/* Kanan */}
                     <div className="flex items-center justify-end gap-2 sm:gap-4">
-                        {/* Tombol search */}
                         <button
                             aria-label="Cari"
                             className="inline-flex h-10 w-10 items-center justify-center rounded-full bg-gray-200"
@@ -87,7 +84,6 @@ export default function Navbar() {
                             </svg>
                         </button>
 
-                        {/* Jika belum login */}
                         {!user && (
                             <>
                                 <Link
@@ -105,14 +101,12 @@ export default function Navbar() {
                             </>
                         )}
 
-                        {/* Jika sudah login */}
                         {user && (
                             <div className="relative" ref={menuRef}>
                                 <button
                                     onClick={() => setOpenMenu((s) => !s)}
                                     className="flex items-center gap-2 rounded-xl border border-gray-200 px-3 py-2 hover:bg-gray-50"
                                 >
-                                    {/* AVATAR KECIL */}
                                     <span className="inline-flex h-7 w-7 items-center justify-center overflow-hidden rounded-full bg-gray-200">
                                         <img
                                             src={resolveAvatar(user.avatar)}
@@ -136,7 +130,6 @@ export default function Navbar() {
                                     </svg>
                                 </button>
 
-                                {/* Dropdown */}
                                 {openMenu && (
                                     <div className="absolute right-0 mt-2 w-72 rounded-2xl border border-gray-200 bg-white shadow-xl z-50">
                                         <div className="flex items-center gap-3 p-4">
