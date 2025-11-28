@@ -4,6 +4,7 @@ import Hero from "../components/home/hero/Hero.jsx";
 import RecommendationSection from "../components/home/recommendations/RecommendationSection.jsx";
 import Footer from "../components/common/Footer.jsx";
 import { Link } from "react-router-dom";
+import Maps from "../components/maps/Maps.jsx"
 
 export default function Home() {
     const hiddenGems = [
@@ -67,17 +68,21 @@ export default function Home() {
                 <Hero />
 
                 <div className="text-center my-10 px-4">
-                    <h2 className="text-3xl font-bold text-gray-900 leading-tight">
-                        Eksplorasi Destinasi Wisata
-                        <br /> Di Palembang
-                    </h2>
-                    <div className="flex justify-center mt-6">
-                        <img
-                            src="/img/peta.png"
-                            alt="Peta Lokasi Museum Sultan Mahmud Badaruddin II"
-                            className="w-full max-w-[1450px] h-auto rounded-xl shadow-md"
-                        />
+                <h2 className="text-3xl font-bold text-gray-900 leading-tight">
+                    Eksplorasi Destinasi Wisata
+                    <br />
+                    Di Palembang
+                </h2>
+                <div className="flex justify-center mt-6">
+                    <div className="w-full max-w-[1450px] h-[600px] rounded-xl shadow-md overflow-hidden">
+                    <Maps
+                        variant="section" 
+                        className="h-full" 
+                        showBack={false}
+                        showMenu={false}
+                    />
                     </div>
+                </div>
                 </div>
 
                 <div className="text-3xl font-bold text-gray-900 leading-tight text-center my-8 mt-20">

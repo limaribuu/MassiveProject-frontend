@@ -2,10 +2,14 @@ import { useNavigate } from "react-router-dom";
 
 const Row = ({ icon, title, children }) => (
   <div className="flex items-start gap-3">
-    <img src={icon} alt={title} className="w-5 h-5 mt-1" />
+    <div className="mt-1 flex items-center justify-center w-8 h-8 rounded-full bg-white shadow-sm">
+      <img src={icon} alt={title} className="w-4 h-4" />
+    </div>
     <div className="min-w-0">
-      <div className="text-[15px] font-semibold text-orange-500">{title}</div>
-      <div className="text-[15px] leading-6 text-zinc-700">{children}</div>
+      <div className="text-xs font-semibold text-orange-500 uppercase tracking-wide">
+        {title}
+      </div>
+      <div className="text-[13px] leading-5 text-zinc-800">{children}</div>
     </div>
   </div>
 );
@@ -25,8 +29,8 @@ const InfoSidebar = ({ data }) => {
   };
 
   return (
-    <aside className="bg-white rounded-xl border border-orange-200 shadow-md p-5 w-full max-w-[320px]">
-      <div className="space-y-6">
+    <aside className="bg-[#FFF7F1] border-2 border-orange-200 rounded-[22px] shadow-[0_10px_25px_rgba(0,0,0,0.06)] p-5 w-full">
+      <div className="space-y-5">
         <Row icon="/icon/clock.png" title="Jam Operasional">
           <p className="text-zinc-800 leading-relaxed whitespace-pre-line">
             {jamOperasional}
@@ -51,15 +55,14 @@ const InfoSidebar = ({ data }) => {
           </p>
         </Row>
 
-        {/* Tombol Lihat Rute */}
         <button
           onClick={handleLihatRute}
-          className="w-full bg-orange-500 hover:bg-orange-600 text-white font-medium py-3 px-4 rounded-lg flex items-center justify-center gap-2 transition-colors duration-200"
+          className="mt-1 w-full bg-orange-500 hover:bg-orange-600 text-white font-semibold text-[13px] py-2.5 px-4 rounded-full flex items-center justify-center gap-2 transition-colors duration-200"
         >
-          <span className="text-[15px]">Lihat Rute</span>
+          <span>Lihat Rute</span>
           <svg
             xmlns="http://www.w3.org/2000/svg"
-            className="h-5 w-5"
+            className="h-4 w-4"
             viewBox="0 0 20 20"
             fill="currentColor"
           >

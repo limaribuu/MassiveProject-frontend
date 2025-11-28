@@ -90,6 +90,15 @@ export const places = [
         category: ["sejarah", "ikonik"]
     },
     {
+        id: "museum-smb-ii",
+        slug: "museum-smb-ii",
+        title: "Museum Sultan Mahmud Badaruddin II",
+        desc: "Monumen perjuangan rakyat Palembang melawan penjajah.",
+        img: "/reco/museum-smb2.png",
+        rating: 4.0,
+        category: ["sejarah", "ikonik"]
+    },
+    {
         id: "kampung-kapitan",
         slug: "kampung-kapitan",
         title: "Kampung Kapitan",

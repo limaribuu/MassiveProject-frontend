@@ -106,11 +106,11 @@ Kini, area sekitar Benteng Kuto Besak menjadi ruang publik yang ramai dikunjungi
 
     "kampung-kapitan": {
         title: "Kampung Kapitan",
-        mainImage: "/img/kapitan-main.png",
+        mainImage: "/img/destinasi/kapitan-main.png",
         galleryImages: [
-            "/img/kapitan-1.png",
-            "/img/kapitan-2.png",
-            "/img/kapitan-3.png"
+            "/img/destinasi/kapitan-1.jpg",
+            "/img/destinasi/kapitan-2.jpg",
+            "/img/destinasi/kapitan-3.jpg"
         ],
         description: `
 Kampung Kapitan merupakan kawasan permukiman tua di tepi Sungai Musi yang dulunya dihuni oleh keturunan Tionghoa. Di sini masih berdiri rumah-rumah panggung kayu dengan arsitektur khas, yang menjadi saksi akulturasi budaya Tionghoa dan Palembang. Kampung ini menyimpan kisah panjang hubungan dagang dan budaya di masa lalu.
@@ -141,11 +141,11 @@ Suasana kampung yang tenang dengan gang-gang sempit dan rumah tradisional menjad
 
     "ampera": {
         title: "Jembatan Ampera",
-        mainImage: "/img/ampera-main.png",
+        mainImage: "/img/destinasi/ampera-main.jpg",
         galleryImages: [
-            "/img/ampera-1.png",
-            "/img/ampera-2.png",
-            "/img/ampera-3.png"
+            "/img/destinasi/ampera-1.jpg",
+            "/img/destinasi/ampera-2.jpg",
+            "/img/destinasi/ampera-3.jpg"
         ],
         description: `
 Jembatan Ampera adalah ikon utama kota Palembang yang membentang di atas Sungai Musi. Dibangun pada era Orde Lama, jembatan ini awalnya dapat diangkat bagian tengahnya untuk memberi ruang bagi kapal besar yang melintas. Meskipun kini mekanisme tersebut tidak lagi digunakan, bentuk dan skalanya tetap menjadi daya tarik utama.
@@ -176,11 +176,11 @@ Pada siang hari, jembatan ini tampak megah dengan latar Sungai Musi dan aktivita
 
     "bukit-siguntang": {
         title: "Bukit Siguntang",
-        mainImage: "/img/bukit-main.png",
+        mainImage: "/img/destinasi/bukit-main.jpg",
         galleryImages: [
-            "/img/bukit-1.png",
-            "/img/bukit-2.png",
-            "/img/bukit-3.png"
+            "/img/destinasi/bukit-1.jpg",
+            "/img/destinasi/bukit-2.jpg",
+            "/img/destinasi//bukit-3.jpg"
         ],
         description: `
 Bukit Siguntang adalah bukit bersejarah yang diyakini sebagai salah satu lokasi penting Kerajaan Sriwijaya. Di kawasan ini terdapat makam-makam tokoh yang dihormati, serta beberapa artefak yang berkaitan dengan masa kejayaan Sriwijaya. Suasana bukit yang rindang membuatnya cocok untuk refleksi dan wisata sejarah.
@@ -211,11 +211,11 @@ Selain nilai sejarahnya, Bukit Siguntang juga menawarkan suasana tenang jauh dar
 
     "pulau-kemaro": {
         title: "Pulau Kemaro",
-        mainImage: "/img/kemaro-main.png",
+        mainImage: "/img/destinasi/kemaro-main.png",
         galleryImages: [
-            "/img/kemaro-1.png",
-            "/img/kemaro-2.png",
-            "/img/kemaro-3.png"
+            "/img/destinasi/kemaro-1.png",
+            "/img/destinasi/kemaro-2.png",
+            "/img/destinasi/kemaro-3.png"
         ],
         description: `
 Pulau Kemaro adalah sebuah pulau kecil di Sungai Musi yang terkenal dengan pagoda sembilan lantai, vihara, dan legenda cinta Tan Bun An dan Siti Fatimah. Pulau ini menjadi salah satu tujuan wisata favorit, terutama saat perayaan Imlek dan Cap Go Meh ketika ribuan orang memadati kawasan ini.
@@ -246,11 +246,11 @@ Selain unsur religi dan budaya Tionghoa yang kuat, Pulau Kemaro juga menawarkan 
 
     "taman-purbakala": {
         title: "Taman Purbakala",
-        mainImage: "/img/purbakala-main.png",
+        mainImage: "/img/destinasi/purbakala-main.jpg",
         galleryImages: [
-            "/img/purbakala-1.png",
-            "/img/purbakala-2.png",
-            "/img/purbakala-3.png"
+            "/img/destinasi/purbakala-1.jpg",
+            "/img/destinasi/purbakala-2.jpg",
+            "/img/destinasi/purbakala-3.jpg"
         ],
         description: `
 Taman Purbakala merupakan kawasan yang menyimpan berbagai peninggalan arkeologi dari masa Sriwijaya. Di area ini terdapat sisa-sisa struktur bangunan, arca, dan temuan lain yang menunjukkan kejayaan Palembang di masa lampau. Suasananya hijau dan tenang sehingga cocok untuk wisata sejarah sekaligus rekreasi ringan.
@@ -279,11 +279,11 @@ Taman Purbakala merupakan kawasan yang menyimpan berbagai peninggalan arkeologi 
 
     "lorong-basah": {
         title: "Lorong Basah Night Culinary",
-        mainImage: "/img/lorong-basah-main.png",
+        mainImage: "/img/destinasi/lorong-basah-main.jpg",
         galleryImages: [
-            "/img/lorong-basah-1.png",
-            "/img/lorong-basah-2.png",
-            "/img/lorong-basah-3.png"
+            "/img/destinasi/lorong-basah-1.jpg",
+            "/img/destinasi/lorong-basah-2.jpg",
+            "/img/destinasi/lorong-basah-3.jpg"
         ],
         description: `
 Lorong Basah Night Culinary adalah destinasi kuliner malam yang populer di Palembang. Di sepanjang lorong ini berjajar kios dan gerobak yang menjual berbagai makanan, mulai dari kuliner khas Palembang hingga jajanan modern. Lampu-lampu dan dekorasi di malam hari membuat suasana semakin meriah.
@@ -312,11 +312,11 @@ Lorong Basah Night Culinary adalah destinasi kuliner malam yang populer di Palem
 
     "jakabaring": {
         title: "Jakabaring Sport City",
-        mainImage: "/img/jakabaring-main.png",
+        mainImage: "/img/destinasi/jakabaring-main.png",
         galleryImages: [
-            "/img/jakabaring-1.png",
-            "/img/jakabaring-2.png",
-            "/img/jakabaring-3.png"
+            "/img/destinasi/jakabaring-1.jpg",
+            "/img/destinasi/jakabaring-2.png",
+            "/img/destinasi/jakabaring-3.png"
         ],
         description: `
 Jakabaring Sport City adalah kompleks olahraga terbesar di Palembang yang menjadi lokasi berbagai event nasional dan internasional. Di dalamnya terdapat stadion sepak bola, arena renang, lintasan atletik, dan berbagai fasilitas olahraga lainnya.
@@ -345,11 +345,11 @@ Jakabaring Sport City adalah kompleks olahraga terbesar di Palembang yang menjad
 
     "bayt-quran": {
         title: "Bayt Al-Quran Al-Akbar",
-        mainImage: "/img/bayt-quran-main.png",
+        mainImage: "/img/destinasi/bayt-quran-main.jpg",
         galleryImages: [
-            "/img/bayt-quran-1.png",
-            "/img/bayt-quran-2.png",
-            "/img/bayt-quran-3.png"
+            "/img/destinasi/bayt-quran-1.jpg",
+            "/img/destinasi/bayt-quran-2.jpg",
+            "/img/destinasi/bayt-quran-3.jpg"
         ],
         description: `
 Bayt Al-Quran Al-Akbar dikenal sebagai tempat yang menyimpan Al-Quran raksasa yang diukir pada lembaran kayu. Ukiran ayat-ayat suci yang detail dan megah menjadikannya salah satu destinasi religi paling unik di Palembang.
@@ -378,11 +378,11 @@ Bayt Al-Quran Al-Akbar dikenal sebagai tempat yang menyimpan Al-Quran raksasa ya
 
     "monpera": {
         title: "Monpera",
-        mainImage: "/img/monpera-main.png",
+        mainImage: "/img/destinasi/monpera-main.jpg",
         galleryImages: [
-            "/img/monpera-1.png",
-            "/img/monpera-2.png",
-            "/img/monpera-3.png"
+            "/img/destinasi/monpera-1.jpg",
+            "/img/destinasi/monpera-2.jpg",
+            "/img/destinasi/monpera-3.jpg"
         ],
         description: `
 Monumen Perjuangan Rakyat (Monpera) adalah monumen yang dibangun untuk mengenang perjuangan rakyat Palembang melawan penjajahan. Bangunan dengan bentuk unik ini terletak di pusat kota dan menjadi salah satu landmark penting.

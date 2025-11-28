@@ -1,24 +1,82 @@
-import React, { useState } from "react";
+import React, { useState, useCallback, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
+
 import DestinationCarousel from "../components/itinerary/DestinationCarousel";
 import DestinationDetail from "../components/itinerary/DestinationDetail";
 import { destinations } from "../data/itinerarydata";
 import Navbar from "../components/common/Navbar";
 import Footer from "../components/common/Footer";
+import { useAuth } from "../hooks/useAuth";
+
+const API_BASE_URL = "http://localhost:5000/api";
 
 const Itinerary = () => {
     const navigate = useNavigate();
+    const { user } = useAuth();
+
     const [selectedDestinationId, setSelectedDestinationId] = useState(
-        destinations[0].id
+        destinations[0]?.id
     );
 
-    const selectedDestination = destinations.find(
-        (d) => d.id === selectedDestinationId
+    const selectedDestination = useMemo(
+        () => destinations.find((d) => d.id === selectedDestinationId),
+        [selectedDestinationId]
     );
 
-    const handleViewPlan = () => {
+    const handleViewPlan = useCallback(() => {
         navigate("/rencana-pelesir");
-    };
+    }, [navigate]);
+
+    const handleSaveDestination = useCallback(
+        async (destination) => {
+            if (!user) {
+                alert("Kamu harus login terlebih dahulu untuk menyimpan destinasi.");
+                return;
+            }
+
+            if (!destination?.slug) {
+                console.error(
+                    "Slug tidak ditemukan untuk destination id:",
+                    destination?.id
+                );
+                alert("Terjadi kesalahan: destinasi belum dipetakan ke tempat.");
+                return;
+            }
+
+            const placeId = destination.slug;
+            const ticketPrice = destination.ticketPrice ?? 0;
+
+            try {
+                await axios.post(`${API_BASE_URL}/itinerary/add`, {
+                    userId: user.id,
+                    placeId,
+                    ticketPrice,
+                });
+
+                alert("Destinasi berhasil disimpan ke Rencana Pelesir.");
+            } catch (err) {
+                console.error("Gagal menyimpan destinasi ke itinerary:", err);
+                alert("Terjadi kesalahan saat menyimpan destinasi.");
+            }
+        },
+        [user]
+    );
+
+    if (!selectedDestination) {
+        return (
+            <div className="min-h-screen bg-white">
+                <Navbar />
+                <div className="max-w-3xl mx-auto px-8 py-20 text-center">
+                    <h1 className="text-3xl font-bold mb-4">Destinasi tidak ditemukan</h1>
+                    <p className="text-gray-600">
+                        Data destinasi belum tersedia atau terjadi kesalahan pada konfigurasi.
+                    </p>
+                </div>
+                <Footer />
+            </div>
+        );
+    }
 
     return (
         <div className="min-h-screen bg-white">
@@ -42,7 +100,10 @@ const Itinerary = () => {
 
             <div className="max-w-7xl mx-auto px-8 mb-12">
                 <div className="px-0">
-                    <DestinationDetail destination={selectedDestination} />
+                    <DestinationDetail
+                        destination={selectedDestination}
+                        onSave={handleSaveDestination}
+                    />
                 </div>
             </div>
 

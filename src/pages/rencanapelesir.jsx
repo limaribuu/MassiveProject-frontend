@@ -1,49 +1,75 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { ArrowLeft, Plus, Trash2 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-import DestinationPlanCard from "../components/itinerary/DestinationPlanCard.jsx";
+import axios from "axios";
 
-const savedDestinations = [
-    {
-        id: 1,
-        name: "Bukit Siguntang",
-        image: "/reco/bukit-siguntang.png",
-        ticketPrice: 7000,
-        operationalDays: "Senin - Minggu",
-        operationalHours: "08.00-17.00",
-        location:
-            "Taman Bukit Siguntang, Jalan Sultan M Mansyur 30139 Palembang South Sumatra."
-    },
-    {
-        id: 2,
-        name: "Museum Balaputra Dewa",
-        image: "/reco/balaputra.png",
-        ticketPrice: 7000,
-        operationalDays: "Senin - Minggu",
-        operationalHours: "08.30-15.30",
-        location:
-            "Museum Negeri Sumatera Selatan Balaputra Dewa, Jalan Srijaya I Km. 5,5 No. 255 30151 Palembang Sumatera Selatan"
-    },
-    {
-        id: 3,
-        name: "Museum Sultan Mahmud Badarrudin II",
-        image: "/img/dalammuseum.png",
-        ticketPrice: 7000,
-        operationalDays: "Selasa - Minggu",
-        operationalHours: "08.30-15.30",
-        location:
-            "Museum Sultan Mahmud Badaruddin II, Jalan Palembang Darussalam 30113 Palembang South Sumatra."
-    }
-];
+import DestinationPlanCard from "../components/itinerary/DestinationPlanCard.jsx";
+import { places } from "../data/places.js";
+import { getPlaceDetailBySlug } from "../data/placeDetails.js";
+import { useAuth } from "../hooks/useAuth";
+
+const API_BASE_URL = "http://localhost:5000/api";
 
 const RencanaPelesir = () => {
     const navigate = useNavigate();
-    const [destinations] = useState(savedDestinations);
+    const { user } = useAuth();
 
-    const totalCost = destinations.reduce(
-        (sum, dest) => sum + dest.ticketPrice,
-        0
-    );
+    const [destinations, setDestinations] = useState([]);
+    const [totalCost, setTotalCost] = useState(0);
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        async function fetchItinerary() {
+            if (!user) {
+                setLoading(false);
+                return;
+            }
+
+            try {
+                const res = await axios.get(
+                    `${API_BASE_URL}/itinerary/${user.id}`
+                );
+
+                if (res.data.success) {
+                    const items = res.data.items || [];
+                    const enriched = items.map((item) => {
+                        const place = places.find(
+                            (p) => p.slug === item.placeId
+                        );
+                        const detail = getPlaceDetailBySlug(item.placeId);
+
+                        return {
+                            id: item.id,
+                            slug: item.placeId,
+                            name: place?.title || item.placeId,
+                            image:
+                                detail?.mainImage ||
+                                place?.image ||
+                                "/img/default.png",
+                            ticketPrice: Number(item.ticketPrice) || 0,
+                            operationalDays:
+                                detail?.sidebar?.operationalDays ||
+                                "Senin - Minggu",
+                            operationalHours:
+                                detail?.sidebar?.operationalHours || "-",
+                            location:
+                                detail?.sidebar?.location ||
+                                "Palembang, Sumatera Selatan"
+                        };
+                    });
+
+                    setDestinations(enriched);
+                    setTotalCost(Number(res.data.totalCost) || 0);
+                }
+            } catch (err) {
+                console.error("Gagal mengambil itinerary:", err);
+            } finally {
+                setLoading(false);
+            }
+        }
+
+        fetchItinerary();
+    }, [user]);
 
     const handleBack = () => {
         navigate("/itinerary");
@@ -56,6 +82,7 @@ const RencanaPelesir = () => {
     const handleDeleteAll = () => {
         navigate("/delete-itinerary");
     };
+
 
     return (
         <div className="min-h-screen bg-gray-50 pb-24">
@@ -90,7 +117,13 @@ const RencanaPelesir = () => {
             </div>
 
             <div className="max-w-7xl mx-auto px-6 py-8">
-                {destinations.length === 0 ? (
+                {loading ? (
+                    <div className="text-center py-20">
+                        <p className="text-gray-500 text-lg">
+                            Memuat rencana pelesir...
+                        </p>
+                    </div>
+                ) : destinations.length === 0 ? (
                     <div className="text-center py-20">
                         <p className="text-gray-500 text-lg">
                             Belum ada destinasi yang disimpan
@@ -109,7 +142,8 @@ const RencanaPelesir = () => {
             <div className="fixed bottom-0 left-0 right-0 p-6 bg-linear-to-t from-white via-white to-transparent">
                 <div className="max-w-4xl mx-auto">
                     <button className="w-full bg-linear-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white font-bold text-xl py-5 rounded-full shadow-2xl transition-all">
-                        Estimasi Biaya : {totalCost.toLocaleString("id-ID")}
+                        Estimasi Biaya :{" "}
+                        {totalCost.toLocaleString("id-ID")}
                     </button>
                 </div>
             </div>

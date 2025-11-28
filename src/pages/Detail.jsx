@@ -1,13 +1,12 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
+import axios from "axios";
 
 import Navbar from "../components/common/Navbar.jsx";
 import BackButton from "../components/detail/BackButton.jsx";
 import TitleSection from "../components/detail/TitleSection.jsx";
 import Gallery from "../components/detail/Gallery.jsx";
-import InfoSidebar from "../components/detail/InfoSidebar.jsx";
 import SectionDetail from "../components/detail/SectionDetail.jsx";
-import RecommendationSection from "../components/home/recommendations/RecommendationSection.jsx";
 import RecommendationCard from "../components/home/recommendations/RecommendationCard.jsx";
 import Footer from "../components/common/Footer.jsx";
 
@@ -15,134 +14,249 @@ import { getPlaceBySlug, places } from "../data/places.js";
 import { getPlaceDetailBySlug } from "../data/placeDetails.js";
 import { useFavorites } from "../context/FavoritesProvider.jsx";
 
+const API_BASE_URL = "http://localhost:5000/api";
 
 const Detail = () => {
-    const { slug } = useParams();
-    const { addFavorite } = useFavorites();
+  const { slug } = useParams();
+  const { addFavorite } = useFavorites();
 
-    const place = getPlaceBySlug(slug);
-    const detail = getPlaceDetailBySlug(slug);
+  const place = getPlaceBySlug(slug);
+  const detail = getPlaceDetailBySlug(slug);
 
-    if (!place) {
-        return (
-            <>
-                <Navbar />
-                <div className="w-full px-4 md:px-10 lg:px-[55px] py-10 mx-auto">
-                    <p className="text-center text-red-500">
-                        Destinasi tidak ditemukan.
-                    </p>
-                </div>
-            </>
-        );
+  const [reviewSummary, setReviewSummary] = useState(null);
+  const [reviews, setReviews] = useState([]);
+
+  useEffect(() => {
+    async function fetchReviews() {
+      try {
+        const res = await axios.get(`${API_BASE_URL}/reviews/${slug}`);
+        if (res.data.success) {
+          setReviewSummary(res.data.summary);
+          setReviews(res.data.reviews);
+        }
+      } catch (err) {
+        console.error("Error load reviews:", err);
+      }
     }
+    fetchReviews();
+  }, [slug]);
 
-    const descriptionParagraphs =
-        detail?.description
-            ?.split(/\n\s*\n/)
-            .filter(Boolean) || [];
-
-    const handleAddItinerary = () => {
-        addFavorite(place);
-    };
-
-    const mapImage = detail?.mapImage || "/img/peta.png";
-    const mapTitle =
-        detail?.mapTitle || `Peta Lokasi ${place.title}`;
-
+  if (!place) {
     return (
-        <>
-            <Navbar />
+      <>
+        <Navbar />
+        <div className="w-full px-4 md:px-10 lg:px-[55px] py-10 mx-auto">
+          <p className="text-center text-red-500">
+            Destinasi tidak ditemukan.
+          </p>
+        </div>
+      </>
+    );
+  }
 
-            <main className="bg-white">
-                <div className="w-full px-4 md:px-10 lg:px-[55px] py-6 lg:py-10 mx-auto">
-                    <BackButton />
+  const descriptionParagraphs =
+    detail?.description?.split(/\n\s*\n/).filter(Boolean) || [];
 
-                    <TitleSection title={place.title} onAdd={handleAddItinerary} />
+  const handleAddItinerary = () => {
+    addFavorite(place);
+  };
 
-                    <Gallery
-                        mainImage={detail?.mainImage}
-                        images={detail?.galleryImages}
-                    />
+  const mapImage = detail?.mapImage || "/img/peta.png";
+  const mapTitle = detail?.mapTitle || `Peta Lokasi ${place.title}`;
 
-                    <section className="mt-8 space-y-8">
-                        <div className="flex flex-col lg:flex-row gap-8">
-                            <div className="lg:w-2/3 space-y-4">
-                                {descriptionParagraphs.length > 0 ? (
-                                    descriptionParagraphs.map((para, i) => (
-                                        <p
-                                            key={i}
-                                            className="text-[15px] leading-7 text-zinc-700 text-justify"
-                                        >
-                                            {para}
-                                        </p>
-                                    ))
-                                ) : (
-                                    <p className="text-[15px] leading-7 text-zinc-700 text-justify">
-                                        Belum ada deskripsi detail untuk destinasi ini.
-                                    </p>
-                                )}
-                            </div>
+  const avgRating = Number(reviewSummary?.averageRating || 0);
+  const roundedAvg = Math.round(avgRating);
 
-                            <div className="lg:w-1/3 lg:flex lg:justify-end">
-                                <InfoSidebar data={detail?.sidebar} />
-                            </div>
-                        </div>
+  return (
+    <>
+      <Navbar />
 
-                        {detail?.sections?.map((sec) => (
-                            <SectionDetail key={sec.title} title={sec.title}>
-                                <p className="text-[15px] leading-7 text-zinc-700 text-justify">
-                                    {sec.content}
-                                </p>
-                            </SectionDetail>
-                        ))}
-                    </section>
+      <main className="bg-white">
+        <div className="w-full px-4 md:px-10 lg:px-[55px] py-6 lg:py-10 mx-auto">
+          {/* HEADER: back + title kiri, tombol itinerary kanan */}
+          <div className="flex flex-col gap-3 mb-4">
+            <div className="flex items-center justify-between gap-4">
+              <div className="flex items-center gap-3">
+                <BackButton />
+                <div>
+                  <h1 className="text-2xl md:text-3xl font-semibold text-zinc-900">
+                    {place.title}
+                  </h1>
+                  {/* kalau mau subtitle lorem seperti desain, tinggal aktifkan */}
+                  {/* <p className="text-xs md:text-sm text-zinc-400">
+                    Lorem ipsum dolor sit amet
+                  </p> */}
+                </div>
+              </div>
 
-                    <section className="mt-12">
-                        <h2 className="text-xl font-semibold text-zinc-900 text-center mb-6">
-                            {mapTitle}
-                        </h2>
-                        <div className="rounded-2xl overflow-hidden shadow">
-                            <img
-                                src={mapImage}
-                                alt={mapTitle}
-                                className="w-full h-[260px] sm:h-80 md:h-[380px] object-cover"
+              <TitleSection title={place.title} onAdd={handleAddItinerary} />
+            </div>
+          </div>
+
+          {/* HERO: main image kiri + thumbnail + info card kanan */}
+          <Gallery
+            mainImage={detail?.mainImage}
+            images={detail?.galleryImages}
+            sidebarData={detail?.sidebar}
+          />
+
+          {/* DESKRIPSI & SECTION: full width di bawah hero */}
+          <section className="mt-8 space-y-8">
+            <div className="space-y-4">
+              {descriptionParagraphs.length > 0 ? (
+                descriptionParagraphs.map((para, i) => (
+                  <p
+                    key={i}
+                    className="text-[15px] leading-7 text-zinc-700 text-justify"
+                  >
+                    {para}
+                  </p>
+                ))
+              ) : (
+                <p className="text-[15px] leading-7 text-zinc-700 text-justify">
+                  Belum ada deskripsi detail untuk destinasi ini.
+                </p>
+              )}
+            </div>
+
+            {detail?.sections?.map((sec) => (
+              <SectionDetail key={sec.title} title={sec.title}>
+                <p className="text-[15px] leading-7 text-zinc-700 text-justify">
+                  {sec.content}
+                </p>
+              </SectionDetail>
+            ))}
+          </section>
+
+          {/* MAP */}
+          <section className="mt-12">
+            <h2 className="text-xl font-semibold text-zinc-900 text-center mb-6">
+              {mapTitle}
+            </h2>
+            <div className="rounded-2xl overflow-hidden shadow">
+              <img
+                src={mapImage}
+                alt={mapTitle}
+                className="w-full h-[260px] sm:h-80 md:h-[380px] object-cover"
+              />
+            </div>
+          </section>
+
+          {/* RATING & ULASAN */}
+          <section className="mt-12">
+            <h2 className="text-xl font-semibold text-zinc-900 mb-4">
+              Rating & Ulasan Pengunjung
+            </h2>
+
+            {!reviewSummary ? (
+              <p className="text-sm text-zinc-500">Memuat ulasan...</p>
+            ) : reviewSummary.totalReviews === 0 ? (
+              <p className="text-sm text-zinc-500">
+                Belum ada ulasan untuk destinasi ini.
+              </p>
+            ) : (
+              <div className="grid md:grid-cols-[240px,1fr] gap-6">
+                <div className="bg-white rounded-2xl shadow-sm border border-zinc-100 p-5">
+                  <div className="text-4xl font-bold">
+                    {avgRating.toFixed(1)}
+                  </div>
+
+                  <div className="text-yellow-500 text-lg">
+                    {"★".repeat(roundedAvg)}
+                    {"☆".repeat(5 - roundedAvg)}
+                  </div>
+
+                  <p className="text-xs text-zinc-500 mt-1">
+                    ({reviewSummary.totalReviews} reviews)
+                  </p>
+
+                  <div className="mt-4 space-y-1.5">
+                    {[5, 4, 3, 2, 1].map((star) => {
+                      const key = `count${star}`;
+                      const count = reviewSummary[key] || 0;
+                      const percent =
+                        reviewSummary.totalReviews > 0
+                          ? (count / reviewSummary.totalReviews) * 100
+                          : 0;
+
+                      return (
+                        <div key={star} className="flex items-center gap-2">
+                          <span className="w-4 text-xs">{star}</span>
+                          <div className="flex-1 h-2 rounded-full bg-zinc-200 overflow-hidden">
+                            <div
+                              className="h-full bg-yellow-400"
+                              style={{ width: `${percent}%` }}
                             />
+                          </div>
+                          <span className="w-5 text-xs text-right">
+                            {count}
+                          </span>
                         </div>
-                    </section>
-
-                    <section className="mt-12">
-                        <h2 className="text-xl font-semibold text-zinc-900 mb-4">
-                            Rating & Ulasan Pengunjung
-                        </h2>
-                        <p className="text-sm text-zinc-500">
-                            Bagian ini masih statis. Nanti bisa dihubungkan ke data
-                            ulasan atau halaman Ulasan terpisah.
-                        </p>
-                    </section>
+                      );
+                    })}
+                  </div>
                 </div>
 
-<section className="mt-12 mb-14 bg-slate-50">
-    <div className="w-full px-4 md:px-10 lg:px-[55px] py-10 mx-auto">
-        <h2 className="text-2xl font-semibold text-zinc-900 mb-6">
-            Rekomendasi Destinasi
-        </h2>
+                <div className="space-y-4">
+                  {reviews.map((r) => (
+                    <div
+                      key={r.id}
+                      className="flex gap-3 bg-white border border-zinc-100 rounded-2xl p-4"
+                    >
+                      <img
+                        src={r.avatar || "/avatar-default.png"}
+                        alt={r.name}
+                        className="w-10 h-10 rounded-full object-cover"
+                      />
+                      <div>
+                        <div className="flex items-center gap-2">
+                          <p className="font-semibold text-sm">
+                            {r.name || "Pengunjung"}
+                          </p>
+                          <span className="text-xs text-zinc-400">
+                            {r.createdAt}
+                          </span>
+                        </div>
 
-        <div className="grid gap-6 md:grid-cols-3">
-            {places
+                        <div className="text-xs text-yellow-500">
+                          {"★".repeat(r.rating)}
+                          {"☆".repeat(5 - r.rating)}
+                        </div>
+
+                        <p className="text-sm text-zinc-700 mt-1">
+                          {r.comment || "(Tidak ada komentar)"}
+                        </p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+          </section>
+        </div>
+
+        {/* REKOMENDASI DESTINASI */}
+        <section className="mt-12 mb-14 bg-slate-50">
+          <div className="w-full px-4 md:px-10 lg:px-[55px] py-10 mx-auto">
+            <h2 className="text-2xl font-semibold text-zinc-900 mb-6">
+              Rekomendasi Destinasi
+            </h2>
+
+            <div className="grid gap-6 md:grid-cols-3">
+              {places
                 .filter((p) => p.slug !== slug)
                 .slice(0, 3)
                 .map((place) => (
-                    <RecommendationCard key={place.id} place={place} />
+                  <RecommendationCard key={place.id} place={place} />
                 ))}
-        </div>
-    </div>
-</section>
+            </div>
+          </div>
+        </section>
+      </main>
 
-            </main>
-
-            <Footer />
-        </>
-    );
+      <Footer />
+    </>
+  );
 };
 
 export default Detail;

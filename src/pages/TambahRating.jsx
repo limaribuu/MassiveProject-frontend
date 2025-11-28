@@ -1,25 +1,25 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
+
 import Navbar from "../components/common/Navbar";
 import Footer from "../components/common/Footer.jsx";
 import BackButton from "../components/detail/BackButton";
+import UlasanPopup from "../components/popup/ulasanpopup.jsx";
+import { places } from "../data/places.js";
+import { useAuth } from "../hooks/useAuth";
 
-const destinations = [
-    "AMPERA",
-    "MUSEUM SULTAN MAHMUD BD II",
-    "MUSEUM BALAPUTRA DEWA",
-    "TAMAN PURBAKALA",
-    "AL-QURAN AL-AKBAR",
-    "BUKIT SIGUNTANG",
-    "PULAU KEMARO",
-    "BENTENG KUTO BESAK",
-    "MONPERA",
-    "JAKABARING SPORT CITY",
-    "KAMPUNG KAPITAN"
-];
+const API_BASE_URL = "http://localhost:5000/api";
+
+const destinations = places.map((p) => ({
+    slug: p.slug,
+    name: p.title
+}));
 
 const TambahRating = () => {
-    const [selectedDest, setSelectedDest] = useState("");
+    const { user } = useAuth();
+
+    const [selectedPlace, setSelectedPlace] = useState("");
     const [rating, setRating] = useState(0);
     const [hover, setHover] = useState(0);
     const [comment, setComment] = useState("");
@@ -29,11 +29,48 @@ const TambahRating = () => {
     const stars = [1, 2, 3, 4, 5];
     const displayRating = hover || rating;
 
-    const handleSubmit = (e) => {
-        e.preventDefault();
-        if (!selectedDest || rating === 0 || !comment.trim()) return;
+    useEffect(() => {
+        if (showSaved) {
+            const timer = setTimeout(() => {
+                setShowSaved(false);
+                navigate("/ulasan");
+            }, 2000);
 
-        setShowSaved(true);
+            return () => clearTimeout(timer);
+        }
+    }, [showSaved, navigate]);
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+
+        if (!user) {
+            alert("Kamu harus login dulu untuk memberikan ulasan.");
+            return;
+        }
+
+        if (!selectedPlace || rating === 0 || !comment.trim()) {
+            alert("Pilih destinasi, rating, dan tulis ulasan terlebih dahulu.");
+            return;
+        }
+
+        try {
+            await axios.post(`${API_BASE_URL}/reviews`, {
+                placeId: selectedPlace,
+                userId: user.id,
+                rating,
+                comment
+            });
+
+            setShowSaved(true);
+        } catch (err) {
+            console.error("Gagal menyimpan ulasan:", err);
+            alert("Terjadi kesalahan saat menyimpan ulasan. Coba lagi.");
+        }
+    };
+
+    const handleClosePopup = () => {
+        setShowSaved(false);
+        navigate("/ulasan");
     };
 
     return (
@@ -82,14 +119,14 @@ const TambahRating = () => {
                                 Pilih Destinasi
                             </label>
                             <select
-                                value={selectedDest}
-                                onChange={(e) => setSelectedDest(e.target.value)}
+                                value={selectedPlace}
+                                onChange={(e) => setSelectedPlace(e.target.value)}
                                 className="w-[220px] rounded-xl border border-orange-300 px-3 py-2 text-sm text-orange-500 font-medium focus:outline-none focus:ring-2 focus:ring-orange-300"
                             >
                                 <option value="">Pilih Destinasi</option>
                                 {destinations.map((d) => (
-                                    <option key={d} value={d}>
-                                        {d}
+                                    <option key={d.slug} value={d.slug}>
+                                        {d.name.toUpperCase()}
                                     </option>
                                 ))}
                             </select>
@@ -120,21 +157,10 @@ const TambahRating = () => {
                 {showSaved && (
                     <div
                         className="fixed inset-0 z-40 flex items-center justify-center bg-black/40"
-                        onClick={() => {
-                            setShowSaved(false);
-                            navigate("/ulasan");
-                        }}
+                        onClick={handleClosePopup}
                     >
-                        <div
-                            className="rounded-2xl bg-white px-10 py-8 text-center shadow-lg"
-                            onClick={(e) => e.stopPropagation()}
-                        >
-                            <h2 className="text-xl font-extrabold text-orange-500 mb-4">
-                                Ulasan Tersimpan
-                            </h2>
-                            <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-orange-400 text-white text-3xl">
-                                ✓
-                            </div>
+                        <div onClick={(e) => e.stopPropagation()}>
+                            <UlasanPopup />
                         </div>
                     </div>
                 )}

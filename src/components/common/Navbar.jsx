@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect } from "react";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "../../hooks/useAuth";
+import { places } from "../../data/places";
 
 const BACKEND_BASE_URL = "http://localhost:5000";
 
@@ -20,105 +21,195 @@ const navItems = [
 
 export default function Navbar() {
     const { pathname } = useLocation();
+    const navigate = useNavigate();
     const { user, logout } = useAuth();
+
     const [openMenu, setOpenMenu] = useState(false);
     const menuRef = useRef(null);
 
+    const [searchQuery, setSearchQuery] = useState("");
+
+    const filteredPlaces = React.useMemo(() => {
+        const q = searchQuery.trim().toLowerCase();
+        if (!q) return [];
+
+        const result = places.filter((p) =>
+            (p.title || "").toLowerCase().includes(q)
+        );
+
+        result.sort((a, b) => {
+            const at = a.title.toLowerCase();
+            const bt = b.title.toLowerCase();
+            const aStarts = at.startsWith(q);
+            const bStarts = bt.startsWith(q);
+            if (aStarts !== bStarts) return aStarts ? -1 : 1;
+            return at.localeCompare(bt);
+        });
+
+        return result.slice(0, 8);
+    }, [searchQuery]);
+
+    const handleSearchSubmit = (e) => {
+        e.preventDefault();
+        if (!filteredPlaces.length) return;
+        navigate(`/detail/${filteredPlaces[0].slug}`);
+        setSearchQuery("");
+    };
+
+    const handleSelectPlace = (place) => {
+        navigate(`/detail/${place.slug}`);
+        setSearchQuery("");
+    };
+
+    // close dropdown when clicking outside
     useEffect(() => {
-        function onClickOutside(e) {
+        const close = (e) => {
             if (menuRef.current && !menuRef.current.contains(e.target)) {
                 setOpenMenu(false);
             }
-        }
-        window.addEventListener("click", onClickOutside);
-        return () => window.removeEventListener("click", onClickOutside);
+        };
+        window.addEventListener("click", close);
+        return () => window.removeEventListener("click", close);
     }, []);
 
     return (
-        <div className="w-full border-b border-gray-200">
-            <div className="mx-auto max-w-[1200px] px-4 sm:px-6">
-                <nav className="grid grid-cols-[auto_1fr_auto] items-center gap-3 py-3">
-                    <Link to="/home" className="flex items-center gap-3">
-                        <img
-                            src="/logopelesir.png"
-                            alt="Logo Pelisir Palembang"
-                            className="h-12 w-12 object-contain"
-                        />
-                        <span className="text-xl sm:text-2xl font-extrabold tracking-wide text-[#1F2937]">
-                            PELISIR PALEMBANG
-                        </span>
-                    </Link>
+        <div className="w-full border-b border-gray-200 bg-white">
+            <div className="mx-auto max-w-[1250px] px-6">
+                
+                {/* FLEX BAR */}
+                <nav className="flex items-center justify-between py-4 gap-6">
+                    
+                    {/* LEFT SECTION: LOGO + MENU */}
+                    <div className="flex items-center gap-10">
+                        {/* LOGO */}
+                        <Link to="/home" className="flex items-center gap-3">
+                            <img
+                                src="/logopelesir.png"
+                                alt="Logo"
+                                className="h-12 w-12 object-contain"
+                            />
+                            <span className="text-2xl font-extrabold tracking-wide text-[#1F2937]">
+                                PELISIR PALEMBANG
+                            </span>
+                        </Link>
 
-                    <div className="hidden md:flex items-center justify-center gap-8 min-w-0">
-                        {navItems.map(({ to, label }) => {
-                            const active = pathname === to;
-                            return (
-                                <Link
-                                    key={to}
-                                    to={to}
-                                    className={[
-                                        "text-[17px] font-medium transition whitespace-nowrap",
-                                        active ? "text-[#F1721D]" : "text-gray-500 hover:text-gray-700",
-                                    ].join(" ")}
-                                >
-                                    {label}
-                                </Link>
-                            );
-                        })}
+                        {/* MENU */}
+                        <div className="hidden md:flex items-center gap-8">
+                            {navItems.map(({ to, label }) => {
+                                const active = pathname === to;
+                                return (
+                                    <Link
+                                        key={to}
+                                        to={to}
+                                        className={[
+                                            "text-[17px] font-medium transition",
+                                            active
+                                                ? "text-[#F1721D]"
+                                                : "text-gray-600 hover:text-gray-900",
+                                        ].join(" ")}
+                                    >
+                                        {label}
+                                    </Link>
+                                );
+                            })}
+                        </div>
                     </div>
 
-                    <div className="flex items-center justify-end gap-2 sm:gap-4">
-                        <button
-                            aria-label="Cari"
-                            className="inline-flex h-10 w-10 items-center justify-center rounded-full bg-gray-200"
-                        >
-                            <svg
-                                className="h-5 w-5"
-                                viewBox="0 0 24 24"
-                                fill="none"
-                                stroke="currentColor"
-                                strokeWidth="2"
-                            >
-                                <circle cx="11" cy="11" r="8"></circle>
-                                <path d="m21 21-4.35-4.35"></path>
-                            </svg>
-                        </button>
+                    {/* SPACER */}
+                    <div className="flex-1"></div>
 
-                        {!user && (
+                    {/* RIGHT SECTION: SEARCH + PROFILE */}
+                    <div className="flex items-center gap-6">
+                        
+                        {/* SEARCH */}
+                        <div className="relative">
+                            <form onSubmit={handleSearchSubmit}>
+                                <div className="flex items-center rounded-full bg-gray-100 px-3 py-1.5 w-52 sm:w-64 lg:w-72">
+                                    <svg
+                                        className="h-5 w-5 text-gray-500"
+                                        viewBox="0 0 24 24"
+                                        fill="none"
+                                        stroke="currentColor"
+                                        strokeWidth="2"
+                                    >
+                                        <circle cx="11" cy="11" r="8"></circle>
+                                        <path d="m21 21-4.35-4.35"></path>
+                                    </svg>
+
+                                    <input
+                                        type="text"
+                                        value={searchQuery}
+                                        onChange={(e) => setSearchQuery(e.target.value)}
+                                        placeholder="Cari destinasi..."
+                                        className="ml-2 w-full bg-transparent text-sm text-gray-700 focus:outline-none"
+                                    />
+                                </div>
+                            </form>
+
+                            {/* RESULTS */}
+                            {searchQuery.trim() !== "" && filteredPlaces.length > 0 && (
+                                <div className="absolute right-0 z-50 mt-2 w-72 sm:w-80 bg-white border border-gray-200 rounded-xl shadow-lg max-h-80 overflow-y-auto">
+                                    {filteredPlaces.map((p) => (
+                                        <button
+                                            key={p.slug}
+                                            onClick={() => handleSelectPlace(p)}
+                                            className="flex w-full items-start gap-3 px-3 py-2 text-left hover:bg-gray-50"
+                                        >
+                                            {p.img && (
+                                                <img
+                                                    src={p.img}
+                                                    alt={p.title}
+                                                    className="h-10 w-10 rounded-md object-cover"
+                                                />
+                                            )}
+                                            <div>
+                                                <p className="text-sm font-medium text-gray-900">
+                                                    {p.title}
+                                                </p>
+                                                {p.desc && (
+                                                    <p className="text-xs text-gray-500 line-clamp-2">
+                                                        {p.desc}
+                                                    </p>
+                                                )}
+                                            </div>
+                                        </button>
+                                    ))}
+                                </div>
+                            )}
+                        </div>
+
+                        {/* PROFILE */}
+                        {!user ? (
                             <>
                                 <Link
                                     to="/signup"
-                                    className="rounded-xl border border-gray-300 px-4 py-2 text-[16px] font-medium text-gray-600 hover:bg-gray-50"
+                                    className="rounded-xl border border-gray-300 px-4 py-2 font-medium text-gray-600 hover:bg-gray-50"
                                 >
                                     Daftar
                                 </Link>
                                 <Link
                                     to="/login"
-                                    className="rounded-xl bg-[#F1721D] px-4 py-2 text-[16px] font-semibold text-white hover:opacity-90"
+                                    className="rounded-xl bg-[#F1721D] px-4 py-2 font-semibold text-white hover:opacity-90"
                                 >
                                     Login
                                 </Link>
                             </>
-                        )}
-
-                        {user && (
+                        ) : (
                             <div className="relative" ref={menuRef}>
                                 <button
-                                    onClick={() => setOpenMenu((s) => !s)}
+                                    onClick={() => setOpenMenu(!openMenu)}
                                     className="flex items-center gap-2 rounded-xl border border-gray-200 px-3 py-2 hover:bg-gray-50"
                                 >
-                                    <span className="inline-flex h-7 w-7 items-center justify-center overflow-hidden rounded-full bg-gray-200">
+                                    <span className="h-9 w-9 rounded-full overflow-hidden">
                                         <img
                                             src={resolveAvatar(user.avatar)}
                                             alt={user.name}
                                             className="h-full w-full object-cover"
                                         />
                                     </span>
-
                                     <span className="hidden sm:block text-[16px] font-medium text-gray-700 max-w-[140px] truncate">
                                         {user.name}
                                     </span>
-
                                     <svg
                                         className="h-4 w-4 text-gray-500"
                                         viewBox="0 0 24 24"
@@ -132,21 +223,14 @@ export default function Navbar() {
 
                                 {openMenu && (
                                     <div className="absolute right-0 mt-2 w-72 rounded-2xl border border-gray-200 bg-white shadow-xl z-50">
-                                        <div className="flex items-center gap-3 p-4">
-                                            <span className="inline-flex h-10 w-10 items-center justify-center overflow-hidden rounded-full bg-gray-200">
-                                                <img
-                                                    src={resolveAvatar(user.avatar)}
-                                                    alt={user.name}
-                                                    className="h-full w-full object-cover"
-                                                />
-                                            </span>
-                                            <div className="min-w-0">
-                                                <div className="font-semibold text-gray-800 truncate">
-                                                    {user.name}
-                                                </div>
-                                                <div className="text-sm text-gray-500 truncate">
-                                                    {user.email}
-                                                </div>
+                                        <div className="p-4 flex items-center gap-3">
+                                            <img
+                                                src={resolveAvatar(user.avatar)}
+                                                className="h-10 w-10 rounded-full object-cover"
+                                            />
+                                            <div>
+                                                <p className="font-semibold text-gray-800">{user.name}</p>
+                                                <p className="text-sm text-gray-500">{user.email}</p>
                                             </div>
                                         </div>
 
@@ -156,8 +240,12 @@ export default function Navbar() {
                                                 className="flex items-center gap-3 px-4 py-3 hover:bg-gray-50"
                                                 onClick={() => setOpenMenu(false)}
                                             >
-                                                <svg className="h-5 w-5 text-[#F1721D]" viewBox="0 0 24 24" fill="currentColor">
-                                                    <path d="M12 21.35 10.55 20.03C5.4 15.36 2 12.28 2 8.5A4.5 4.5 0 0 1 6.5 4c1.74 0 3.41.81 4.5 2.09A6 6 0 0 1 21 8.5c0 3.78-3.4 6.86-8.55 11.53Z" />
+                                                <svg
+                                                    className="h-5 w-5 text-[#F1721D]"
+                                                    viewBox="0 0 24 24"
+                                                    fill="currentColor"
+                                                >
+                                                    <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5A5.5 5.5 0 0 1 7.5 3 5.6 5.6 0 0 1 12 5.09 5.6 5.6 0 0 1 16.5 3 5.5 5.5 0 0 1 22 8.5c0 3.78-3.4 6.86-8.55 11.53Z" />
                                                 </svg>
                                                 <span className="text-gray-700 font-medium">
                                                     Destinasi Favorite
@@ -169,13 +257,20 @@ export default function Navbar() {
                                                 className="flex items-center gap-3 px-4 py-3 hover:bg-gray-50"
                                                 onClick={() => setOpenMenu(false)}
                                             >
-                                                <svg className="h-5 w-5 text-[#F1721D]" viewBox="0 0 24 24" fill="currentColor">
+                                                <svg
+                                                    className="h-5 w-5 text-[#F1721D]"
+                                                    viewBox="0 0 24 24"
+                                                    fill="currentColor"
+                                                >
                                                     <path d="M12 12a5 5 0 1 0-5-5 5 5 0 0 0 5 5Zm0 2c-4.42 0-8 2.24-8 5v1h16v-1c0-2.76-3.58-5-8-5Z" />
                                                 </svg>
-                                                <span className="text-gray-700 font-medium">Profile</span>
+                                                <span className="text-gray-700 font-medium">
+                                                    Profile
+                                                </span>
                                             </Link>
 
                                             <button
+                                                type="button"
                                                 onClick={() => {
                                                     logout();
                                                     setOpenMenu(false);
@@ -190,6 +285,7 @@ export default function Navbar() {
                             </div>
                         )}
                     </div>
+
                 </nav>
             </div>
         </div>

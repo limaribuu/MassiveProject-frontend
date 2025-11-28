@@ -1,54 +1,84 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { ArrowLeft } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
+
 import DeleteItineraryCard from "../components/itinerary/DeleteItineraryCard";
 import DeletePopup from "../components/popup/deletepopup";
+import { places } from "../data/places.js";
+import { getPlaceDetailBySlug } from "../data/placeDetails.js";
+import { useAuth } from "../hooks/useAuth";
 
-const savedDestinations = [
-    {
-        id: 1,
-        name: "Bukit Siguntang",
-        image: "/reco/bukit-siguntang.png",
-        ticketPrice: 7000,
-        operationalDays: "Senin - Minggu",
-        operationalHours: "08.00-17.00",
-        location:
-            "Taman Bukit Siguntang, Jalan Sultan M Mansyur 30139 Palembang South Sumatra."
-    },
-    {
-        id: 2,
-        name: "Museum Balaputra Dewa",
-        image: "/reco/balaputra.png",
-        ticketPrice: 7000,
-        operationalDays: "Senin - Minggu",
-        operationalHours: "08.30-15.30",
-        location:
-            "Museum Negeri Sumatera Selatan Balaputra Dewa, Jalan Srijaya I Km. 5,5 No. 255 30151 Palembang Sumatera Selatan"
-    },
-    {
-        id: 3,
-        name: "Museum Sultan Mahmud Badarrudin II",
-        image: "/img/dalammuseum.png",
-        ticketPrice: 7000,
-        operationalDays: "Selasa - Minggu",
-        operationalHours: "08.30-15.30",
-        location:
-            "Museum Sultan Mahmud Badaruddin II, Jalan Palembang Darussalam 30113 Palembang South Sumatra."
-    }
-];
+const API_BASE_URL = "http://localhost:5000/api";
 
 const DeleteItinerary = () => {
     const navigate = useNavigate();
-    const [destinations, setDestinations] = useState(savedDestinations);
+    const { user } = useAuth();
+
+    const [destinations, setDestinations] = useState([]);
+    const [loading, setLoading] = useState(true);
     const [showDeletePopup, setShowDeletePopup] = useState(false);
-    const [destinationToDelete, setDestinationToDelete] = useState(null);
+    const [destinationToDelete, setDestinationToDelete] = useState(null); // slug
+
+    useEffect(() => {
+        async function fetchItinerary() {
+            if (!user) {
+                setLoading(false);
+                return;
+            }
+
+            try {
+                const res = await axios.get(
+                    `${API_BASE_URL}/itinerary/${user.id}`
+                );
+
+                if (res.data.success) {
+                    const items = res.data.items || [];
+
+                    const enriched = items.map((item) => {
+                        const place = places.find(
+                            (p) => p.slug === item.placeId
+                        );
+                        const detail = getPlaceDetailBySlug(item.placeId);
+
+                        return {
+                            rowId: item.id,
+                            slug: item.placeId,
+                            name: place?.title || item.placeId,
+                            image:
+                                detail?.mainImage ||
+                                place?.image ||
+                                "/img/default.png",
+                            ticketPrice: Number(item.ticketPrice) || 0,
+                            operationalDays:
+                                detail?.sidebar?.operationalDays ||
+                                "Senin - Minggu",
+                            operationalHours:
+                                detail?.sidebar?.operationalHours || "-",
+                            location:
+                                detail?.sidebar?.location ||
+                                "Palembang, Sumatera Selatan"
+                        };
+                    });
+
+                    setDestinations(enriched);
+                }
+            } catch (err) {
+                console.error("Gagal mengambil itinerary:", err);
+            } finally {
+                setLoading(false);
+            }
+        }
+
+        fetchItinerary();
+    }, [user]);
 
     const handleBack = () => {
         navigate("/rencana-pelesir");
     };
 
-    const handleDeleteClick = (destinationId) => {
-        setDestinationToDelete(destinationId);
+    const handleDeleteClick = (slug) => {
+        setDestinationToDelete(slug);
         setShowDeletePopup(true);
     };
 
@@ -57,12 +87,27 @@ const DeleteItinerary = () => {
         setDestinationToDelete(null);
     };
 
-    const handleConfirmDelete = () => {
-        setDestinations(
-            destinations.filter((dest) => dest.id !== destinationToDelete)
-        );
-        setShowDeletePopup(false);
-        setDestinationToDelete(null);
+    const handleConfirmDelete = async () => {
+        if (!user || !destinationToDelete) return;
+
+        try {
+            await axios.delete(`${API_BASE_URL}/itinerary/remove`, {
+                data: {
+                    userId: user.id,
+                    placeId: destinationToDelete
+                }
+            });
+
+            setDestinations((prev) =>
+                prev.filter((dest) => dest.slug !== destinationToDelete)
+            );
+        } catch (err) {
+            console.error("Gagal menghapus destinasi dari itinerary:", err);
+            alert("Terjadi kesalahan saat menghapus destinasi.");
+        } finally {
+            setShowDeletePopup(false);
+            setDestinationToDelete(null);
+        }
     };
 
     const handleSave = () => {
@@ -82,13 +127,19 @@ const DeleteItinerary = () => {
                         </button>
 
                         <h1 className="text-3xl font-bold text-orange-500">
-                            Rencana pelesir
+                            Rencana Pelesir
                         </h1>
                     </div>
                 </div>
 
                 <div className="max-w-7xl mx-auto px-6 py-8">
-                    {destinations.length === 0 ? (
+                    {loading ? (
+                        <div className="text-center py-20">
+                            <p className="text-gray-500 text-lg">
+                                Memuat data...
+                            </p>
+                        </div>
+                    ) : destinations.length === 0 ? (
                         <div className="text-center py-20">
                             <p className="text-gray-500 text-lg">
                                 Semua destinasi telah dihapus
@@ -97,10 +148,10 @@ const DeleteItinerary = () => {
                     ) : (
                         destinations.map((destination) => (
                             <DeleteItineraryCard
-                                key={destination.id}
+                                key={destination.slug}
                                 destination={destination}
                                 onDelete={() =>
-                                    handleDeleteClick(destination.id)
+                                    handleDeleteClick(destination.slug)
                                 }
                             />
                         ))

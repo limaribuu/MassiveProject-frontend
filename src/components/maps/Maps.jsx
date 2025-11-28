@@ -1,7 +1,19 @@
 import React, { useState, useEffect, useRef } from "react";
 import { RotateCcw, X, Menu, ArrowLeft } from "lucide-react";
 
-const Maps = () => {
+function cx(...cls) {
+  return cls.filter(Boolean).join(" ");
+}
+
+const Maps = ({
+  variant = "page", // "page" | "section"
+  className = "",
+  showBack = true,
+  showMenu = true,
+  onBack,
+}) => {
+  const isPage = variant === "page";
+
   const [leafletLoaded, setLeafletLoaded] = useState(false);
   const [map, setMap] = useState(null);
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -39,7 +51,7 @@ const Maps = () => {
     },
     {
       lat: -2.992861,
-      lng: 104.75225, 
+      lng: 104.75225,
       name: "Bukit Siguntang",
       address: "Bukit Lama, Ilir Barat I, Kota Palembang",
       image:
@@ -160,43 +172,27 @@ const Maps = () => {
     },
   ];
 
-  // Load Leaflet library
+  // Load Leaflet CSS/JS & style popup
   useEffect(() => {
-    // Load CSS
     const cssLink = document.createElement("link");
     cssLink.rel = "stylesheet";
     cssLink.href = "https://unpkg.com/leaflet@1.7.1/dist/leaflet.css";
     document.head.appendChild(cssLink);
 
-    // Add custom popup styles
     const style = document.createElement("style");
     style.innerHTML = `
-      .custom-popup .leaflet-popup-content-wrapper {
-        border-radius: 12px;
-        padding: 15px;
-        box-shadow: 0 4px 20px rgba(0,0,0,0.15);
-      }
-      .custom-popup .leaflet-popup-content {
-        margin: 0;
-        width: auto !important;
-      }
-      .custom-popup .leaflet-popup-tip {
-        box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-      }
-      .custom-popup button:hover {
-        background-color: #e35a00 !important;
-      }
+      .custom-popup .leaflet-popup-content-wrapper { border-radius: 12px; padding: 15px; box-shadow: 0 4px 20px rgba(0,0,0,0.15); }
+      .custom-popup .leaflet-popup-content { margin: 0; width: auto !important; }
+      .custom-popup .leaflet-popup-tip { box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+      .custom-popup button:hover { background-color: #e35a00 !important; }
+      .leaflet-container { height: 100%; width: 100%; }
     `;
     document.head.appendChild(style);
 
-    // Load JS
     const script = document.createElement("script");
     script.src = "https://unpkg.com/leaflet@1.7.1/dist/leaflet.js";
     script.async = false;
-    script.onload = () => {
-      console.log("Leaflet loaded successfully");
-      setLeafletLoaded(true);
-    };
+    script.onload = () => setLeafletLoaded(true);
     document.body.appendChild(script);
 
     return () => {
@@ -206,10 +202,9 @@ const Maps = () => {
     };
   }, []);
 
-  // Initialize map
+  // Init map
   useEffect(() => {
     if (!leafletLoaded || map || !mapRef.current) return;
-
     const L = window.L;
     if (!L) return;
 
@@ -227,29 +222,24 @@ const Maps = () => {
       maxZoom: 18,
     }).addTo(mymap);
 
-    // Add markers with custom popups
+    // markers + popup (sama seperti sebelumnya)
     locations.forEach((loc) => {
       const popupContent = `
         <div style="width: 300px; font-family: Arial, sans-serif;">
           <div style="position: relative; margin: -15px -15px 10px -15px;">
-            <img src="${loc.image}" alt="${loc.name}" 
-                 style="width: 100%; height: 180px; object-fit: cover; border-radius: 8px 8px 0 0;" 
+            <img src="${loc.image}" alt="${loc.name}"
+                 style="width: 100%; height: 180px; object-fit: cover; border-radius: 8px 8px 0 0;"
                  onerror="this.src='https://images.unsplash.com/photo-1569163139394-de4798aa62b6?w=400&h=300&fit=crop'">
           </div>
           <h3 style="margin: 0 0 8px 0; font-size: 18px; font-weight: bold; color: #1a1a1a;">${loc.name}</h3>
-          <p style="margin: 0 0 8px 0; font-size: 13px; color: #666; line-height: 1.4;">
-            📍 ${loc.address}
-          </p>
-          <p style="margin: 0 0 12px 0; font-size: 13px; color: #444; line-height: 1.5;">
-            ${loc.description}
-          </p>
-          <button onclick="void(0)" 
+          <p style="margin: 0 0 8px 0; font-size: 13px; color: #666; line-height: 1.4;">📍 ${loc.address}</p>
+          <p style="margin: 0 0 12px 0; font-size: 13px; color: #444; line-height: 1.5;">${loc.description}</p>
+          <button onclick="void(0)"
                   style="width: 100%; padding: 10px; background-color: #fd6b1c; color: white; border: none; border-radius: 6px; font-size: 14px; font-weight: 600; cursor: pointer; transition: background-color 0.3s;">
             📋 Lihat Detail
           </button>
         </div>
       `;
-
       const marker = L.marker([loc.lat, loc.lng])
         .addTo(mymap)
         .bindPopup(popupContent, {
@@ -259,112 +249,88 @@ const Maps = () => {
       markersRef.current[loc.name.toLowerCase()] = marker;
     });
 
-    // Add my location button
+    // tombol "lokasi saya"
     const myLocationButton = L.control({ position: "bottomright" });
     myLocationButton.onAdd = function () {
       const div = L.DomUtil.create("div", "my-location-button");
       div.innerHTML =
         '<button title="Lokasi Saya" class="p-2 bg-white border border-gray-300 rounded-lg cursor-pointer shadow-md hover:bg-gray-50"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><circle cx="12" cy="12" r="3"></circle></svg></button>';
-
-      div.onclick = function () {
-        getUserLocation();
-      };
-
+      div.onclick = () => getUserLocation();
       return div;
     };
     myLocationButton.addTo(mymap);
 
     setMap(mymap);
-
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [leafletLoaded]);
 
   const getUserLocation = () => {
-    if (navigator.geolocation) {
-      setLoading(true);
+    if (!navigator.geolocation) {
+      alert("Geolocation tidak didukung oleh browser Anda.");
+      return;
+    }
+    setLoading(true);
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        setLoading(false);
+        const L = window.L;
+        const newUserLocation = {
+          lat: position.coords.latitude,
+          lng: position.coords.longitude,
+        };
+        setUserLocation(newUserLocation);
+        setUseMyLocation(true);
 
-      navigator.geolocation.getCurrentPosition(
-        (position) => {
-          setLoading(false);
-          const L = window.L;
+        if (userLocationMarkerRef.current)
+          map.removeLayer(userLocationMarkerRef.current);
 
-          const newUserLocation = {
-            lat: position.coords.latitude,
-            lng: position.coords.longitude,
-          };
+        const myLocationIcon = L.icon({
+          iconUrl:
+            "https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-red.png",
+          iconSize: [25, 41],
+          iconAnchor: [12, 41],
+          popupAnchor: [1, -34],
+        });
 
-          setUserLocation(newUserLocation);
-          setUseMyLocation(true);
+        userLocationMarkerRef.current = L.marker(
+          [newUserLocation.lat, newUserLocation.lng],
+          { icon: myLocationIcon }
+        )
+          .addTo(map)
+          .bindPopup("Lokasi Saya")
+          .openPopup();
 
-          if (userLocationMarkerRef.current) {
-            map.removeLayer(userLocationMarkerRef.current);
-          }
+        map.setView([newUserLocation.lat, newUserLocation.lng], 19);
 
-          const myLocationIcon = L.icon({
-            iconUrl:
-              "https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-red.png",
-            iconSize: [25, 41],
-            iconAnchor: [12, 41],
-            popupAnchor: [1, -34],
-          });
-
-          userLocationMarkerRef.current = L.marker(
+        if (position.coords.accuracy) {
+          if (accuracyCircleRef.current)
+            map.removeLayer(accuracyCircleRef.current);
+          accuracyCircleRef.current = L.circle(
             [newUserLocation.lat, newUserLocation.lng],
             {
-              icon: myLocationIcon,
+              radius: position.coords.accuracy,
+              color: "white",
+              fillColor: "white",
+              fillOpacity: 0.15,
             }
-          )
-            .addTo(map)
-            .bindPopup("Lokasi Saya")
-            .openPopup();
-
-          map.setView([newUserLocation.lat, newUserLocation.lng], 19);
-
-          if (position.coords.accuracy) {
-            if (accuracyCircleRef.current) {
-              map.removeLayer(accuracyCircleRef.current);
-            }
-
-            accuracyCircleRef.current = L.circle(
-              [newUserLocation.lat, newUserLocation.lng],
-              {
-                radius: position.coords.accuracy,
-                color: "blue",
-                fillColor: "#30c",
-                fillOpacity: 0.15,
-              }
-            ).addTo(map);
-          }
-        },
-        (error) => {
-          setLoading(false);
-          let errorMsg = "";
-          switch (error.code) {
-            case error.PERMISSION_DENIED:
-              errorMsg = "Anda menolak permintaan geolokasi.";
-              break;
-            case error.POSITION_UNAVAILABLE:
-              errorMsg = "Informasi lokasi tidak tersedia.";
-              break;
-            case error.TIMEOUT:
-              errorMsg = "Permintaan untuk mendapatkan lokasi timed out.";
-              break;
-            default:
-              errorMsg = "Terjadi kesalahan yang tidak diketahui.";
-              break;
-          }
-          alert(errorMsg);
-          setUseMyLocation(false);
-        },
-        {
-          enableHighAccuracy: true,
-          timeout: 10000,
-          maximumAge: 0,
+          ).addTo(map);
         }
-      );
-    } else {
-      alert("Geolocation tidak didukung oleh browser Anda.");
-    }
+      },
+      (error) => {
+        setLoading(false);
+        const msg =
+          error.code === error.PERMISSION_DENIED
+            ? "Anda menolak permintaan geolokasi."
+            : error.code === error.POSITION_UNAVAILABLE
+            ? "Informasi lokasi tidak tersedia."
+            : error.code === error.TIMEOUT
+            ? "Permintaan untuk mendapatkan lokasi timed out."
+            : "Terjadi kesalahan yang tidak diketahui.";
+        alert(msg);
+        setUseMyLocation(false);
+      },
+      { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
+    );
   };
 
   const handleSearch = () => {
@@ -388,12 +354,11 @@ const Maps = () => {
       const matched = locations.find((loc) =>
         loc.name.toLowerCase().includes(input.toLowerCase())
       );
-
       if (matched) {
         map.setView([matched.lat, matched.lng], 19);
         setTimeout(() => {
-          const matchedMarker = markersRef.current[matched.name.toLowerCase()];
-          if (matchedMarker) matchedMarker.openPopup();
+          const m = markersRef.current[matched.name.toLowerCase()];
+          if (m) m.openPopup();
         }, 300);
       } else {
         alert("Lokasi atau koordinat tidak ditemukan.");
@@ -409,40 +374,29 @@ const Maps = () => {
       getUserLocation();
       return;
     }
-
     if (!toLocation) {
       alert("Silakan pilih lokasi tujuan.");
       return;
     }
 
     let locFrom;
-
     if (useMyLocation) {
       locFrom = { ...userLocation, name: "Lokasi Saya" };
     } else {
-      if (!fromLocation) {
-        alert("Silakan pilih lokasi awal.");
-        return;
-      }
-      if (fromLocation === toLocation) {
-        alert("Pilih dua lokasi yang berbeda.");
-        return;
-      }
+      if (!fromLocation) return alert("Silakan pilih lokasi awal.");
+      if (fromLocation === toLocation)
+        return alert("Pilih dua lokasi yang berbeda.");
       locFrom = locations.find((l) => l.name === fromLocation);
     }
-
     const locTo = locations.find((l) => l.name === toLocation);
 
-    if (routeLayerRef.current) {
-      map.removeLayer(routeLayerRef.current);
-    }
+    if (routeLayerRef.current) map.removeLayer(routeLayerRef.current);
 
     setDirectionsVisible(true);
     setDirectionsContent('<p class="text-gray-600">Sedang memuat rute...</p>');
 
     let routeColor = "blue";
     let profile = "foot-walking";
-
     if (vehicle === "motorbike") {
       routeColor = "green";
       profile = "driving-car";
@@ -472,16 +426,11 @@ const Maps = () => {
       );
 
       const data = await response.json();
-
-      if (data.error) {
-        alert(`Error: ${data.error.message}`);
-        return;
-      }
+      if (data.error) return alert(`Error: ${data.error.message}`);
 
       routeLayerRef.current = L.geoJSON(data, {
         style: { color: routeColor, weight: 5 },
       }).addTo(map);
-
       map.fitBounds(routeLayerRef.current.getBounds());
 
       if (vehicleMarkerRef.current) {
@@ -491,7 +440,6 @@ const Maps = () => {
 
       const coords = data.features[0].geometry.coordinates;
       let i = 0;
-
       const vehicleIcons = {
         foot: L.icon({
           iconUrl:
@@ -542,7 +490,6 @@ const Maps = () => {
         <hr class="mb-3 border-gray-300">
         <ol class="list-decimal pl-5 space-y-2 text-sm">
       `;
-
       steps.forEach((step) => {
         directionsHTML += `<li class="text-gray-700">${
           step.instruction
@@ -553,17 +500,28 @@ const Maps = () => {
       directionsHTML += "</ol>";
 
       setDirectionsContent(directionsHTML);
-    } catch (error) {
-      console.error("Error fetching route:", error);
+    } catch (e) {
+      console.error(e);
       alert("Terjadi kesalahan saat mengambil rute. Silakan coba lagi.");
     }
   };
 
   return (
-    <div className="relative w-full h-screen">
+    <div
+      className={cx(
+        "relative w-full",
+        isPage ? "h-screen" : "h-[420px] rounded-2xl overflow-hidden",
+        className
+      )}
+    >
       {/* Loading Overlay */}
       {loading && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-2000">
+        <div
+          className={cx(
+            isPage ? "fixed inset-0" : "absolute inset-0",
+            "bg-black bg-opacity-50 flex items-center justify-center z-2000"
+          )}
+        >
           <div className="bg-white rounded-lg p-6 shadow-xl">
             <p className="text-gray-800">Mendapatkan lokasi Anda...</p>
           </div>
@@ -571,32 +529,55 @@ const Maps = () => {
       )}
 
       {/* Back Button */}
-      <button
-        onClick={() => window.history.back()}
-        className="fixed z-1100 top-2 left-13 w-10 h-10 bg-[#fd6b1c] text-white rounded-lg flex items-center justify-center hover:bg-[#e35a00] shadow-lg"
-        title="Kembali"
-      >
-        <ArrowLeft size={20} />
-      </button>
+      {showBack && (
+        <button
+          onClick={() => (onBack ? onBack() : window.history.back())}
+          className={cx(
+            isPage
+              ? "fixed top-3 left-13 z-1100" // ← dari left-3 jadi left-5
+              : "absolute top-3 left-13 z-20", // ← dari left-3 jadi left-5
+            "w-10 h-10 bg-[#fd6b1c] text-white rounded-lg flex items-center justify-center hover:bg-[#e35a00] shadow-lg"
+          )}
+          title="Kembali"
+        >
+          <ArrowLeft size={20} />
+        </button>
+      )}
 
       {/* Show Sidebar Button */}
-      <button
-        onClick={() => setSidebarOpen(true)}
-        className={`fixed z-1100 bg-[#fd6b1c] text-white rounded-lg shadow-lg hover:bg-[#e35a00] transition-all ${
-          sidebarOpen ? "hidden" : "flex items-center justify-center"
-        } top-20 left-2 w-10 h-10`}
-      >
-        <Menu size={20} />
-      </button>
+      {showMenu && (
+        <button
+          onClick={() => setSidebarOpen(true)}
+          className={cx(
+            sidebarOpen ? "hidden" : "flex items-center justify-center",
+            isPage
+              ? "fixed top-20 left-2 z-1100"
+              : "absolute top-16 left-2 z-20",
+            "w-10 h-10 bg-[#fd6b1c] text-white rounded-lg shadow-lg hover:bg-[#e35a00] transition-all"
+          )}
+          title="Menu"
+        >
+          <Menu size={20} />
+        </button>
+      )}
 
       {/* Sidebar */}
       <div
-        className={`fixed z-1000 bg-white bg-opacity-[0.97] shadow-xl transition-all duration-400 ${
-          sidebarOpen ? "md:left-6 md:top-6" : "md:-left-[400px] md:top-6"
-        } md:rounded-2xl rounded-t-2xl md:w-80 w-full md:h-[85vh] h-[60vh] p-5 md:pt-10`}
+        className={cx(
+          isPage
+            ? "fixed z-1000 bg-white bg-opacity-[0.97] shadow-xl transition-all duration-400 md:rounded-2xl rounded-t-2xl md:w-80 w-full md:h-[85vh] h-[60vh] md:top-6"
+            : "absolute z-30 bg-white/95 shadow-xl transition-all duration-300 rounded-xl w-[min(320px,calc(100%-24px))] h-[calc(100%-24px)] top-3",
+          sidebarOpen
+            ? isPage
+              ? "md:left-6 left-0"
+              : "left-3"
+            : isPage
+            ? "md:-left-[400px] left-0 md:top-6"
+            : "-left-[360px]"
+        )}
       >
         {/* Top Buttons */}
-        <div className="absolute top-1 right-3 flex gap-2">
+        <div className="sticky top-0 z-30 bg-white/95 px-3 py-2 flex justify-end gap-2">
           <button
             onClick={() => window.location.reload()}
             className="w-8 h-8 bg-[#fd6b1c] text-white rounded-full flex items-center justify-center hover:bg-[#e35a00] shadow-md"
@@ -604,6 +585,7 @@ const Maps = () => {
           >
             <RotateCcw size={16} />
           </button>
+
           <button
             onClick={() => setSidebarOpen(false)}
             className="w-8 h-8 bg-[#fd6b1c] text-white rounded-full flex items-center justify-center hover:bg-[#e35a00] shadow-md"
@@ -612,13 +594,11 @@ const Maps = () => {
             <X size={18} />
           </button>
         </div>
-
         {/* Drag Handle (Mobile) */}
         <div className="md:hidden w-16 h-1.5 bg-gray-300 rounded-full mx-auto mb-4 cursor-grab active:cursor-grabbing"></div>
 
         {/* Content */}
-        <div className="overflow-y-auto max-h-[calc(100%-40px)] md:max-h-[calc(100%-60px)] pb-5">
-          {/* Search */}
+        <div className="overflow-y-auto max-h-[calc(100%-40px)] md:max-h-[calc(100%-60px)] p-5">
           <input
             type="text"
             value={searchInput}
@@ -633,7 +613,6 @@ const Maps = () => {
             Cari
           </button>
 
-          {/* Use My Location Checkbox */}
           <div className="flex items-center justify-between mb-4 p-3 bg-gray-50 rounded-lg">
             <label htmlFor="use-my-location" className="text-sm text-gray-700">
               Ingin gunakan titik anda berada?
@@ -644,15 +623,12 @@ const Maps = () => {
               checked={useMyLocation}
               onChange={(e) => {
                 setUseMyLocation(e.target.checked);
-                if (e.target.checked && !userLocation) {
-                  getUserLocation();
-                }
+                if (e.target.checked && !userLocation) getUserLocation();
               }}
               className="w-5 h-5 cursor-pointer"
             />
           </div>
 
-          {/* From Location */}
           {!useMyLocation && (
             <div className="mb-4">
               <label
@@ -677,7 +653,6 @@ const Maps = () => {
             </div>
           )}
 
-          {/* To Location */}
           <div className="mb-4">
             <label
               htmlFor="to"
@@ -700,7 +675,6 @@ const Maps = () => {
             </select>
           </div>
 
-          {/* Vehicle Selection */}
           <div className="mb-4">
             <label
               htmlFor="vehicle-select"
@@ -720,7 +694,6 @@ const Maps = () => {
             </select>
           </div>
 
-          {/* Route Button */}
           <button
             onClick={handleRoute}
             className="w-full bg-[#fd6b1c] text-white py-3 rounded-lg font-semibold hover:bg-[#e35a00]"
@@ -733,9 +706,17 @@ const Maps = () => {
       {/* Directions Panel */}
       {directionsVisible && (
         <div
-          className={`fixed top-5 bg-white bg-opacity-95 backdrop-blur-sm rounded-2xl shadow-2xl p-4 max-w-xs max-h-96 overflow-y-auto z-999 transition-all duration-300 ${
-            directionsMinimized ? "right-[-280px]" : "right-5"
-          }`}
+          className={cx(
+            isPage
+              ? "fixed top-5 right-5 z-999"
+              : "absolute top-4 right-4 z-40",
+            "bg-white bg-opacity-95 backdrop-blur-sm rounded-2xl shadow-2xl p-4 max-w-xs max-h-96 overflow-y-auto transition-all duration-300",
+            directionsMinimized
+              ? isPage
+                ? "translate-x-[280px]"
+                : "translate-x-[260px]"
+              : "translate-x-0"
+          )}
         >
           <button
             onClick={() => setDirectionsMinimized(!directionsMinimized)}
