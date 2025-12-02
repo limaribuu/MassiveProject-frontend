@@ -4,8 +4,8 @@ import { useAuth } from "../../hooks/useAuth";
 import { places } from "../../data/places";
 import ProfileHeroCard from "./ProfileHeroCard";
 
-const API_BASE_URL = "http://localhost:5000/api";
-const BACKEND_BASE_URL = "http://localhost:5000";
+import { API_BASE_URL } from "../../config/api";
+import { BACKEND_BASE_URL } from "../../config/api";
 
 function resolveAvatar(path) {
     if (!path) return "/avatar-default.png";
@@ -22,37 +22,14 @@ const CATEGORY_LABELS = {
     religi: "Religi",
 };
 
-function getFavoriteCategoriesFromLocalStorage() {
-    if (typeof window === "undefined") return [];
-
-    const raw = localStorage.getItem("favorite_ids");
-    if (!raw) return [];
-
-    let favIds;
-    try {
-        favIds = JSON.parse(raw);
-    } catch {
-        return [];
-    }
-
-    if (!Array.isArray(favIds) || favIds.length === 0) return [];
-
-    const favPlaces = places.filter((p) => favIds.includes(p.id));
-
-    const counts = {};
-    favPlaces.forEach((p) => {
-        const cats = Array.isArray(p.category) ? p.category : [p.category];
-        cats.forEach((cat) => {
-            counts[cat] = (counts[cat] || 0) + 1;
-        });
-    });
-
-    const sorted = Object.entries(counts).sort((a, b) => b[1] - a[1]);
-
-    return sorted.slice(0, 3).map(([cat]) => CATEGORY_LABELS[cat] || cat);
+function formatCategoryLabel(key) {
+    if (!key) return "";
+    const lower = String(key).toLowerCase();
+    if (CATEGORY_LABELS[lower]) return CATEGORY_LABELS[lower];
+    return lower.charAt(0).toUpperCase() + lower.slice(1);
 }
 
-export default function ProfileDetails({ user }) {
+export default function ProfileDetails({ user, favoriteCategory, favoriteCategories }) {
     const { login } = useAuth();
 
     const [showGenderModal, setShowGenderModal] = useState(false);
@@ -72,18 +49,24 @@ export default function ProfileDetails({ user }) {
     const [saving, setSaving] = useState(false);
     const [error, setError] = useState("");
 
-    const [favoriteCategories, setFavoriteCategories] = useState([]);
+    const favoriteCategoryList =
+        Array.isArray(favoriteCategories) && favoriteCategories.length > 0
+            ? favoriteCategories
+            : favoriteCategory
+            ? [favoriteCategory]
+            : [];
+
+    const displayFavoriteCategories = favoriteCategoryList.map((cat) =>
+        formatCategoryLabel(cat)
+    );
 
     useEffect(() => {
         setGenderInput(user?.gender || "");
-        setDobInput(user?.tanggalLahir ? user.tanggalLahir.substring(0, 10) : "");
+        setDobInput(
+            user?.tanggalLahir ? user.tanggalLahir.substring(0, 10) : ""
+        );
         setPhoneInput(user?.noTelpon || "");
     }, [user]);
-
-    useEffect(() => {
-        const cats = getFavoriteCategoriesFromLocalStorage();
-        setFavoriteCategories(cats);
-    }, []);
 
     const genderText =
         user?.gender === "L"
@@ -182,7 +165,9 @@ export default function ProfileDetails({ user }) {
             );
 
             if (!res.data.success) {
-                throw new Error(res.data.message || "Gagal mengupdate foto profil");
+                throw new Error(
+                    res.data.message || "Gagal mengupdate foto profil"
+                );
             }
 
             login(res.data.user);
@@ -253,13 +238,13 @@ export default function ProfileDetails({ user }) {
                                 Kategori Favorit
                             </div>
                             <div className="flex flex-wrap gap-2">
-                                {favoriteCategories.length === 0 ? (
+                                {displayFavoriteCategories.length === 0 ? (
                                     <span className="text-sm text-gray-500">
                                         Belum ada destinasi favorit
                                     </span>
                                 ) : (
-                                    favoriteCategories.map((name) => (
-                                        <Tag key={name}>{name}</Tag>
+                                    displayFavoriteCategories.map((label) => (
+                                        <Tag key={label}>{label}</Tag>
                                     ))
                                 )}
                             </div>
@@ -399,7 +384,7 @@ function Item({ label, value, editable, link, onClick }) {
 
 function Tag({ children }) {
     return (
-        <span className="rounded-md bg-orange-100 text-[#F1721D] text-sm px-3 py-1">
+        <span className="rounded-lg bg-[#F1721D] text-white text-sm px-4 py-2">
             {children}
         </span>
     );

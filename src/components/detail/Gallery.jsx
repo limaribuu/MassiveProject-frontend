@@ -12,7 +12,7 @@ const Gallery = ({ mainImage, images = [] }) => {
                     <img
                         src={main}
                         alt="Foto utama destinasi"
-                        className="w-full h-[260px] sm:h-80 md:h-[380px] lg:h-[420px] object-cover"
+                        className="w-full h-80 sm:h-[420px] md:h-[480px] lg:h-[570px] object-cover"
                     />
                 </div>
             </div>
@@ -26,7 +26,7 @@ const Gallery = ({ mainImage, images = [] }) => {
                         <img
                             src={src}
                             alt={`Galeri ${i + 1}`}
-                            className="w-full h-[100px] sm:h-[130px] lg:h-[130px] object-cover"
+                            className="w-full h-[130px] sm:h-40 lg:h-[180px] object-cover"
                         />
                     </div>
                 ))}

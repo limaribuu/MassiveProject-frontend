@@ -12,14 +12,10 @@ export default function RecommendationSection({ title, items = [] }) {
             )}
 
             <div className="rc__grid">
-                {items.map((it) => (
+                {items.map((place) => (
                     <RecommendationCard
-                        key={it.id}
-                        title={it.title}
-                        desc={it.desc}
-                        img={it.img}
-                        rating={it.rating}
-                        to={it.to}
+                        key={place.id || place.slug}
+                        place={place}
                     />
                 ))}
             </div>

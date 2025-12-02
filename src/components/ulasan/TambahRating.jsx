@@ -5,234 +5,223 @@ import Footer from "../components/common/Footer.jsx";
 import BackButton from "../components/detail/BackButton";
 
 const destinations = [
-  "AMPERA",
-  "MUSEUM SULTAN MAHMUD BD II",
-  "MUSEUM BALAPUTRA DEWA",
-  "TAMAN PURBAKALA",
-  "AL-QURAN AL-AKBAR",
-  "BUKIT SIGUNTANG",
-  "PULAU KEMARO",
-  "BENTENG KUTO BESAK",
-  "MONPERA",
-  "JAKABARING SPORT CITY",
-  "KAMPUNG KAPITAN",
+    "AMPERA",
+    "MUSEUM SULTAN MAHMUD BD II",
+    "MUSEUM BALAPUTRA DEWA",
+    "TAMAN PURBAKALA",
+    "AL-QURAN AL-AKBAR",
+    "BUKIT SIGUNTANG",
+    "PULAU KEMARO",
+    "BENTENG KUTO BESAK",
+    "MONPERA",
+    "JAKABARING SPORT CITY",
+    "KAMPUNG KAPITAN"
 ];
 
 const TambahRating = () => {
-  const [selectedDest, setSelectedDest] = useState("");
-  const [rating, setRating] = useState(0);
-  const [hover, setHover] = useState(0);
-  const [comment, setComment] = useState("");
-  const [showSaved, setShowSaved] = useState(false);
-  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+    const [selectedDest, setSelectedDest] = useState("");
+    const [rating, setRating] = useState(0);
+    const [hover, setHover] = useState(0);
+    const [comment, setComment] = useState("");
+    const [showSaved, setShowSaved] = useState(false);
+    const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
-  const navigate = useNavigate();
-  const stars = [1, 2, 3, 4, 5];
-  const displayRating = hover || rating;
+    const navigate = useNavigate();
+    const stars = [1, 2, 3, 4, 5];
+    const displayRating = hover || rating;
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    if (!selectedDest || rating === 0 || !comment.trim()) return;
+    const handleSubmit = (e) => {
+        e.preventDefault();
+        if (!selectedDest || rating === 0 || !comment.trim()) return;
+        setShowSaved(true);
+    };
 
-    setShowSaved(true);
-  };
+    const handleSelectDest = (dest) => {
+        setSelectedDest(dest);
+        setIsDropdownOpen(false);
+    };
 
-  const handleSelectDest = (dest) => {
-    setSelectedDest(dest);
-    setIsDropdownOpen(false);
-  };
+    const labelDest = selectedDest || "Pilih Destinasi";
 
-  const labelDest = selectedDest || "Pilih Destinasi";
+    return (
+        <>
+            <Navbar />
 
-  return (
-    <>
-      <Navbar />
-
-      <main className="min-h-screen bg-white">
-        <div className="mx-auto max-w-4xl px-6 pt-6">
-          {/* HEADER */}
-          <div className="flex items-center justify-between">
-            <BackButton onClick={() => navigate(-1)} />
-            <h1 className="text-[24px] md:text-[26px] font-extrabold text-orange-500">
-              Tambahkan Rating
-            </h1>
-            <div className="w-9" />
-          </div>
-
-          <div className="mt-3 border-b-2 border-orange-300" />
-
-          {/* RATING + DROPDOWN DESTINASI */}
-          <div className="mt-8 flex flex-col items-center gap-6 md:flex-row md:items-center md:justify-between">
-            {/* BINTANG */}
-            <div className="flex items-center gap-2">
-              {stars.map((s) => (
-                <button
-                  key={s}
-                  type="button"
-                  onClick={() => setRating(s)}
-                  onMouseEnter={() => setHover(s)}
-                  onMouseLeave={() => setHover(0)}
-                  className="p-1"
-                >
-                  <svg
-                    viewBox="0 0 24 24"
-                    className={`w-10 h-10 ${
-                      s <= displayRating ? "text-orange-400" : "text-gray-300"
-                    } transition`}
-                    fill="currentColor"
-                  >
-                    <path d="M12 .587l3.668 7.431 8.2 1.192-5.934 5.786 1.402 8.172L12 18.897l-7.336 3.87 1.402-8.172L.132 9.21l8.2-1.192z" />
-                  </svg>
-                </button>
-              ))}
-            </div>
-
-            {/* DROPDOWN DESTINASI - STYLE SEPERTI "SEMUA KATEGORI" */}
-            <div className="relative">
-              <label className="block text-right text-[13px] text-gray-500 mb-1">
-                Pilih Destinasi
-              </label>
-
-              <div
-                tabIndex={0}
-                onBlur={() => setIsDropdownOpen(false)}
-                className="relative"
-              >
-                {/* BUTTON ATAS */}
-                <button
-                  type="button"
-                  onClick={() => setIsDropdownOpen((o) => !o)}
-                  className="
-                    flex items-center justify-between
-                    gap-3
-                    w-[230px]
-                    bg-white
-                    border border-orange-300
-                    rounded-full
-                    px-4 py-2.5
-                    shadow-[0_6px_16px_rgba(249,115,22,0.25)]
-                    text-sm font-semibold
-                    text-orange-500
-                  "
-                >
-                  <div className="flex items-center gap-2">
-                    {/* icon kotak 4 mirip kategori */}
-                    <div className="w-6 h-6 rounded-md bg-orange-500 flex items-center justify-center">
-                      <div className="grid grid-cols-2 gap-[2px]">
-                        <span className="w-1.5 h-1.5 bg-white rounded-[2px]" />
-                        <span className="w-1.5 h-1.5 bg-white rounded-[2px]" />
-                        <span className="w-1.5 h-1.5 bg-white rounded-[2px]" />
-                        <span className="w-1.5 h-1.5 bg-white rounded-[2px]" />
-                      </div>
-                    </div>
-                    <span>{labelDest}</span>
-                  </div>
-
-                  <svg
-                    className={`w-4 h-4 transition-transform ${
-                      isDropdownOpen ? "rotate-180" : ""
-                    }`}
-                    viewBox="0 0 20 20"
-                    fill="currentColor"
-                  >
-                    <path d="M5.23 7.21a.75.75 0 011.06.02L10 10.94l3.71-3.71a.75.75 0 011.06 1.06l-4.24 4.25a.75.75 0 01-1.06 0L5.21 8.29a.75.75 0 01.02-1.08z" />
-                  </svg>
-                </button>
-
-                {/* DROPDOWN LIST */}
-                {isDropdownOpen && (
-                  <div
-                    className="
-                      absolute right-0 mt-2
-                      w-[230px]
-                      rounded-[20px]
-                      bg-white
-                      shadow-[0_8px_24px_rgba(0,0,0,0.12)]
-                      border border-orange-100
-                      overflow-hidden
-                      z-20
-                    "
-                  >
-                    {/* item “header” mirip contoh: background oranye muda */}
-                    <div className="px-4 py-2.5 bg-orange-50 text-[13px] font-semibold text-orange-500">
-                      {labelDest}
+            <main className="min-h-screen bg-white">
+                <div className="mx-auto max-w-4xl px-6 pt-6">
+                    <div className="flex items-center justify-between">
+                        <BackButton onClick={() => navigate(-1)} />
+                        <h1 className="text-[24px] md:text-[26px] font-extrabold text-orange-500">
+                            Tambahkan Rating
+                        </h1>
+                        <div className="w-9" />
                     </div>
 
-                    <ul className="py-1">
-                      {destinations.map((d) => (
-                        <li key={d}>
-                          <button
-                            type="button"
-                            onClick={() => handleSelectDest(d)}
-                            className={`
-                              w-full text-left px-4 py-2.5 text-[14px]
-                              ${
-                                selectedDest === d
-                                  ? "bg-orange-50 text-orange-500 font-semibold"
-                                  : "text-slate-800 hover:bg-slate-50"
-                              }
-                            `}
-                          >
-                            {d}
-                          </button>
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
+                    <div className="mt-3 border-b-2 border-orange-300" />
+
+                    <div className="mt-8 flex flex-col items-center gap-6 md:flex-row md:items-center md:justify-between">
+                        <div className="flex items-center gap-2">
+                            {stars.map((s) => (
+                                <button
+                                    key={s}
+                                    type="button"
+                                    onClick={() => setRating(s)}
+                                    onMouseEnter={() => setHover(s)}
+                                    onMouseLeave={() => setHover(0)}
+                                    className="p-1"
+                                >
+                                    <svg
+                                        viewBox="0 0 24 24"
+                                        className={`w-10 h-10 ${
+                                            s <= displayRating ? "text-orange-400" : "text-gray-300"
+                                        } transition`}
+                                        fill="currentColor"
+                                    >
+                                        <path d="M12 .587l3.668 7.431 8.2 1.192-5.934 5.786 1.402 8.172L12 18.897l-7.336 3.87 1.402-8.172L.132 9.21l8.2-1.192z" />
+                                    </svg>
+                                </button>
+                            ))}
+                        </div>
+
+                        <div className="relative">
+                            <label className="block text-right text-[13px] text-gray-500 mb-1">
+                                Pilih Destinasi
+                            </label>
+
+                            <div
+                                tabIndex={0}
+                                onBlur={() => setIsDropdownOpen(false)}
+                                className="relative"
+                            >
+                                <button
+                                    type="button"
+                                    onClick={() => setIsDropdownOpen((o) => !o)}
+                                    className="
+                                        flex items-center justify-between
+                                        gap-3
+                                        w-[230px]
+                                        bg-white
+                                        border border-orange-300
+                                        rounded-full
+                                        px-4 py-2.5
+                                        shadow-[0_6px_16px_rgba(249,115,22,0.25)]
+                                        text-sm font-semibold
+                                        text-orange-500
+                                    "
+                                >
+                                    <div className="flex items-center gap-2">
+                                        <div className="w-6 h-6 rounded-md bg-orange-500 flex items-center justify-center">
+                                            <div className="grid grid-cols-2 gap-0.5">
+                                                <span className="w-1.5 h-1.5 bg-white rounded-xs" />
+                                                <span className="w-1.5 h-1.5 bg-white rounded-xs" />
+                                                <span className="w-1.5 h-1.5 bg-white rounded-xs" />
+                                                <span className="w-1.5 h-1.5 bg-white rounded-xs" />
+                                            </div>
+                                        </div>
+                                        <span>{labelDest}</span>
+                                    </div>
+
+                                    <svg
+                                        className={`w-4 h-4 transition-transform ${
+                                            isDropdownOpen ? "rotate-180" : ""
+                                        }`}
+                                        viewBox="0 0 20 20"
+                                        fill="currentColor"
+                                    >
+                                        <path d="M5.23 7.21a.75.75 0 011.06.02L10 10.94l3.71-3.71a.75.75 0 011.06 1.06l-4.24 4.25a.75.75 0 01-1.06 0L5.21 8.29a.75.75 0 01.02-1.08z" />
+                                    </svg>
+                                </button>
+
+                                {isDropdownOpen && (
+                                    <div
+                                        className="
+                                            absolute right-0 mt-2
+                                            w-[230px]
+                                            rounded-[20px]
+                                            bg-white
+                                            shadow-[0_8px_24px_rgba(0,0,0,0.12)]
+                                            border border-orange-100
+                                            overflow-hidden
+                                            z-20
+                                        "
+                                    >
+                                        <div className="px-4 py-2.5 bg-orange-50 text-[13px] font-semibold text-orange-500">
+                                            {labelDest}
+                                        </div>
+
+                                        <ul className="py-1">
+                                            {destinations.map((d) => (
+                                                <li key={d}>
+                                                    <button
+                                                        type="button"
+                                                        onClick={() => handleSelectDest(d)}
+                                                        className={`
+                                                            w-full text-left px-4 py-2.5 text-[14px]
+                                                            ${
+                                                                selectedDest === d
+                                                                    ? "bg-orange-50 text-orange-500 font-semibold"
+                                                                    : "text-slate-800 hover:bg-slate-50"
+                                                            }
+                                                        `}
+                                                    >
+                                                        {d}
+                                                    </button>
+                                                </li>
+                                            ))}
+                                        </ul>
+                                    </div>
+                                )}
+                            </div>
+                        </div>
+                    </div>
+
+                    <form onSubmit={handleSubmit} className="mt-10">
+                        <label className="block text-sm font-semibold text-orange-500 mb-2">
+                            Berikan Ulasan :
+                        </label>
+                        <textarea
+                            value={comment}
+                            onChange={(e) => setComment(e.target.value)}
+                            rows={7}
+                            className="w-full rounded-2xl border border-orange-300 px-4 py-3 text-[15px] text-gray-700 focus:outline-none focus:ring-2 focus:ring-orange-300"
+                            placeholder="Tulis pengalamanmu di sini..."
+                        />
+
+                        <button
+                            type="submit"
+                            className="mt-6 rounded-2xl bg-orange-400 px-8 py-2.5 text-white text-[16px] font-semibold shadow-md hover:bg-orange-500"
+                        >
+                            Simpan
+                        </button>
+                    </form>
+                </div>
+
+                {showSaved && (
+                    <div
+                        className="fixed inset-0 z-40 flex items-center justify-center bg-black/40"
+                        onClick={() => {
+                            setShowSaved(false);
+                            navigate("/ulasan");
+                        }}
+                    >
+                        <div
+                            className="rounded-2xl bg-white px-10 py-8 text-center shadow-lg"
+                            onClick={(e) => e.stopPropagation()}
+                        >
+                            <h2 className="text-xl font-extrabold text-orange-500 mb-4">
+                                Ulasan Tersimpan
+                            </h2>
+                            <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-orange-400 text-white text-3xl">
+                                ✓
+                            </div>
+                        </div>
+                    </div>
                 )}
-              </div>
-            </div>
-          </div>
+            </main>
 
-          {/* FORM ULASAN */}
-          <form onSubmit={handleSubmit} className="mt-10">
-            <label className="block text-sm font-semibold text-orange-500 mb-2">
-              Berikan Ulasan :
-            </label>
-            <textarea
-              value={comment}
-              onChange={(e) => setComment(e.target.value)}
-              rows={7}
-              className="w-full rounded-2xl border border-orange-300 px-4 py-3 text-[15px] text-gray-700 focus:outline-none focus:ring-2 focus:ring-orange-300"
-              placeholder="Tulis pengalamanmu di sini..."
-            />
-
-            <button
-              type="submit"
-              className="mt-6 rounded-2xl bg-orange-400 px-8 py-2.5 text-white text-[16px] font-semibold shadow-md hover:bg-orange-500"
-            >
-              Simpan
-            </button>
-          </form>
-        </div>
-
-        {/* MODAL SUKSES */}
-        {showSaved && (
-          <div
-            className="fixed inset-0 z-40 flex items-center justify-center bg-black/40"
-            onClick={() => {
-              setShowSaved(false);
-              navigate("/ulasan");
-            }}
-          >
-            <div
-              className="rounded-2xl bg-white px-10 py-8 text-center shadow-lg"
-              onClick={(e) => e.stopPropagation()}
-            >
-              <h2 className="text-xl font-extrabold text-orange-500 mb-4">
-                Ulasan Tersimpan
-              </h2>
-              <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-orange-400 text-white text-3xl">
-                ✓
-              </div>
-            </div>
-          </div>
-        )}
-      </main>
-
-      <Footer />
-    </>
-  );
+            <Footer />
+        </>
+    );
 };
 
 export default TambahRating;

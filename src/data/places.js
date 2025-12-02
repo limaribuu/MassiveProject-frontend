@@ -5,7 +5,6 @@ export const places = [
         title: "Museum Balaputra Dewa",
         desc: "Museum arkeologi dan budaya Sumatera Selatan.",
         img: "/reco/balaputra.png",
-        rating: 4.0,
         category: ["sejarah"]
     },
     {
@@ -14,7 +13,6 @@ export const places = [
         title: "Bukit Siguntang",
         desc: "Situs bersejarah Kerajaan Sriwijaya.",
         img: "/reco/bukit-siguntang.png",
-        rating: 4.0,
         category: ["sejarah", "religi", "alam"]
     },
     {
@@ -23,7 +21,6 @@ export const places = [
         title: "Benteng Kuto Besak",
         desc: "Benteng peninggalan Kesultanan Palembang.",
         img: "/reco/bkb.png",
-        rating: 4.0,
         category: ["sejarah", "ikonik"]
     },
     {
@@ -32,7 +29,6 @@ export const places = [
         title: "Jembatan Ampera",
         desc: "Ikon kota Palembang di atas Sungai Musi—wajib foto!",
         img: "/reco/ampera.png",
-        rating: 4.0,
         category: ["ikonik"]
     },
     {
@@ -41,7 +37,6 @@ export const places = [
         title: "Pulau Kemaro",
         desc: "Pulau di Sungai Musi dengan pagoda, vihara, dan legenda Tan Bun An & Siti Fatimah.",
         img: "/reco/pulau-kemaro.png",
-        rating: 4.0,
         category: ["religi", "alam"]
     },
     {
@@ -50,7 +45,6 @@ export const places = [
         title: "Taman Purbakala",
         desc: "Destinasi bersejarah yang menyimpan peninggalan zaman Sriwijaya.",
         img: "/reco/taman-purbakala.png",
-        rating: 4.0,
         category: ["sejarah", "alam"]
     },
     {
@@ -59,7 +53,6 @@ export const places = [
         title: "Lorong Basah Night Culinary",
         desc: "Destinasi kuliner malam populer di Palembang.",
         img: "/reco/lorong-basah.png",
-        rating: 4.0,
         category: ["kuliner"]
     },
     {
@@ -68,7 +61,6 @@ export const places = [
         title: "Jakabaring Sport City",
         desc: "Pusat olahraga terbesar di Palembang dengan stadion dan fasilitas modern.",
         img: "/reco/jakabaring.png",
-        rating: 4.0,
         category: ["ikonik"]
     },
     {
@@ -77,7 +69,6 @@ export const places = [
         title: "Bayt Al-Quran Al-Akbar",
         desc: "Destinasi religi dengan Al-Quran ukir raksasa yang megah.",
         img: "/reco/bayt-alquran.png",
-        rating: 4.0,
         category: ["religi"]
     },
     {
@@ -86,16 +77,14 @@ export const places = [
         title: "Monpera",
         desc: "Monumen perjuangan rakyat Palembang melawan penjajah.",
         img: "/reco/monpera.png",
-        rating: 4.0,
         category: ["sejarah", "ikonik"]
     },
     {
         id: "museum-smb-ii",
         slug: "museum-smb-ii",
         title: "Museum Sultan Mahmud Badaruddin II",
-        desc: "Monumen perjuangan rakyat Palembang melawan penjajah.",
+        desc: "Museum sejarah Kesultanan Palembang dan perjuangan masyarakat.",
         img: "/reco/museum-smb2.png",
-        rating: 4.0,
         category: ["sejarah", "ikonik"]
     },
     {
@@ -104,7 +93,6 @@ export const places = [
         title: "Kampung Kapitan",
         desc: "Kawasan bersejarah di tepi Sungai Musi dengan rumah kayu kolonial dan Tionghoa.",
         img: "/reco/kampung-kapitan.png",
-        rating: 4.0,
         category: ["sejarah"]
     }
 ];

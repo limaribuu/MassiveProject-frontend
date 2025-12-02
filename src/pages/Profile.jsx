@@ -24,20 +24,33 @@ export default function Profile() {
 
     const favorites = useMemo(() => {
         if (!favoriteIds || favoriteIds.length === 0) return [];
-
         return places
             .filter((p) => favoriteIds.includes(p.id))
             .map((p) => ({
-                id: p.id,
-                title: p.title,
+                ...p,
                 desc: p.desc || p.description || "",
                 image: p.image || p.img,
-                rating:
-                    typeof p.rating === "number"
-                        ? p.rating
-                        : Number(p.rating || 0) || 0,
             }));
     }, [favoriteIds]);
+
+    const favoriteCategories = useMemo(() => {
+        if (!favorites || favorites.length === 0) return [];
+        const counts = {};
+        favorites.forEach((place) => {
+            (place.category || []).forEach((cat) => {
+                const key = String(cat).toLowerCase();
+                counts[key] = (counts[key] || 0) + 1;
+            });
+        });
+        const MAX_FAVORITE_CATEGORIES = 2;
+
+        return Object.entries(counts)
+            .sort((a, b) => b[1] - a[1])
+            .slice(0, MAX_FAVORITE_CATEGORIES)
+            .map(([cat]) => cat);
+    }, [favorites]);
+
+    const favoriteCategory = favoriteCategories[0] || null;
 
     return (
         <div className="min-h-screen flex flex-col">
@@ -53,10 +66,19 @@ export default function Profile() {
                         />
 
                         <div>
-                            {tab === "profile" && <ProfileDetails user={user} />}
+                            {tab === "profile" && (
+                                <ProfileDetails
+                                    user={user}
+                                    favoriteCategory={favoriteCategory}
+                                    favoriteCategories={favoriteCategories}
+                                />
+                            )}
 
                             {tab === "favorites" && (
-                                <ProfileFavorites items={favorites} />
+                                <ProfileFavorites
+                                    items={favorites}
+                                    favoriteCategory={favoriteCategory}
+                                />
                             )}
                         </div>
                     </div>

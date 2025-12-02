@@ -1,6 +1,6 @@
 import React from "react";
 
-const BACKEND_BASE_URL = "http://localhost:5000";
+import { BACKEND_BASE_URL } from "../../config/api";
 
 function resolveAvatar(path) {
     if (!path) return "/avatar-default.png";

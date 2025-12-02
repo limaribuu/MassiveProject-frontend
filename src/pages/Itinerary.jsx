@@ -9,7 +9,7 @@ import Navbar from "../components/common/Navbar";
 import Footer from "../components/common/Footer";
 import { useAuth } from "../hooks/useAuth";
 
-const API_BASE_URL = "http://localhost:5000/api";
+import { API_BASE_URL } from "../config/api";
 
 const Itinerary = () => {
     const navigate = useNavigate();

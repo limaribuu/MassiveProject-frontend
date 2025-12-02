@@ -42,7 +42,7 @@ const DestinationDetail = ({ destination, onSave }) => {
                         onClick={handleSaveClick}
                         className="mt-4 md:mt-0 md:absolute md:bottom-0 md:right-0 bg-orange-500 hover:bg-orange-600 text-white font-semibold py-3 px-8 rounded-lg transition-colors shadow-lg"
                     >
-                        Simpan Destinasi
+                        + Simpan Destinasi
                     </button>
                 </div>
             </div>

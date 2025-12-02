@@ -7,11 +7,10 @@ export const placeDetails = {
             "/img/destinasi/balaputra-2.jpg",
             "/img/destinasi/balaputra-3.jpg"
         ],
-        description: `
-Museum Balaputra Dewa merupakan museum arkeologi dan budaya yang menampilkan berbagai koleksi sejarah Sumatera Selatan. Di dalamnya terdapat koleksi arca batu, prasasti, keramik, tekstil, hingga miniatur rumah adat Limas yang menjadi ikon Palembang. Museum ini menjadi tempat yang tepat untuk mengenal lebih jauh sejarah dan kebudayaan di wilayah Sumatera Selatan.
-
-Selain benda-benda bersejarah, pengunjung juga dapat melihat replika rumah adat yang ditata lengkap dengan interior tradisionalnya. Suasana museum yang tenang menjadikannya cocok untuk wisata edukasi bagi pelajar maupun wisatawan umum.
-        `.trim(),
+        description: [
+            "Museum Balaputra Dewa merupakan museum arkeologi dan budaya yang menampilkan berbagai koleksi sejarah Sumatera Selatan. Di dalamnya terdapat koleksi arca batu, prasasti, keramik, tekstil, hingga miniatur rumah adat Limas yang menjadi ikon Palembang. Museum ini menjadi tempat yang tepat untuk mengenal lebih jauh sejarah dan kebudayaan di wilayah Sumatera Selatan.",
+            "Selain benda-benda bersejarah, pengunjung juga dapat melihat replika rumah adat yang ditata lengkap dengan interior tradisionalnya. Suasana museum yang tenang menjadikannya cocok untuk wisata edukasi bagi pelajar maupun wisatawan umum."
+        ].join("\n\n"),
         sidebar: {
             jamOperasional: "Selasa – Minggu\n08.00 – 15.30",
             lokasi: "Museum Balaputra Dewa, Jl. Srijaya I, Palembang",
@@ -42,34 +41,35 @@ Selain benda-benda bersejarah, pengunjung juga dapat melihat replika rumah adat 
             "/img/tumpuk2.png",
             "/img/tumpuk3.png"
         ],
-        description: `
-Museum Sultan Mahmud Badaruddin II merupakan museum sejarah yang menempati bangunan peninggalan kolonial Belanda di tepi Sungai Musi. Museum ini menyimpan berbagai koleksi tentang Kesultanan Palembang, budaya Melayu, hingga benda bersejarah era kolonial. Di dalamnya terdapat koleksi senjata tradisional, kerajinan tangan, prasasti, naskah kuno, hingga miniatur rumah adat Palembang. Museum ini berfungsi sebagai pusat informasi sejarah Palembang dan Sumatera Selatan serta tempat edukasi masyarakat mengenai perkembangan budaya lokal. Selain itu, arsitektur gedungnya sendiri menjadi daya tarik karena menggabungkan gaya Eropa dan tradisi Palembang yang khas.
-
-Pengunjung juga dapat melihat ruang pamer tematik yang ditata berdasarkan periode sejarah, sehingga lebih mudah memahami konteksnya. Museum Sultan Mahmud Badaruddin II menjadi salah satu destinasi penting bagi wisatawan yang ingin mengetahui identitas dan perjalanan sejarah kota Palembang secara mendalam.
-        `.trim(),
+        description: [
+            "Museum Sultan Mahmud Badaruddin II merupakan museum sejarah yang menempati bangunan peninggalan kolonial Belanda di tepi Sungai Musi. Museum ini menyimpan berbagai koleksi tentang Kesultanan Palembang, budaya Melayu, hingga benda bersejarah era kolonial. Di dalamnya terdapat koleksi senjata tradisional, kerajinan tangan, prasasti, naskah kuno, hingga miniatur rumah adat Palembang. Museum ini berfungsi sebagai pusat informasi sejarah Palembang dan Sumatera Selatan serta tempat edukasi masyarakat mengenai perkembangan budaya lokal. Selain itu, arsitektur gedungnya sendiri menjadi daya tarik karena menggabungkan gaya Eropa dan tradisi Palembang yang khas.",
+            "Pengunjung juga dapat melihat ruang pamer tematik yang ditata berdasarkan periode sejarah, sehingga lebih mudah memahami konteksnya. Museum Sultan Mahmud Badaruddin II menjadi salah satu destinasi penting bagi wisatawan yang ingin mengetahui identitas dan perjalanan sejarah kota Palembang secara mendalam."
+        ].join("\n\n"),
         sidebar: {
             jamOperasional: "Selasa – Minggu\n10.00 – 17.00",
-            lokasi: "Sultan Mahmud Badaruddin II Museum, Jl. Sultan Mahmud Badaruddin, 19 Ilir, Palembang",
-            hargaTiket: "Dewasa: Rp10.000\nPelajar: Rp5.000",
+            lokasi:
+                "Museum Sultan Mahmud Badaruddin II, Jl. Sultan Mahmud Badaruddin, 19 Ilir, Palembang",
+            hargaTiket:
+                "Anak & Pelajar: Rp1.000\nMahasiswa: Rp2.000\nUmum: Rp5.000\nTuris mancanegara: Rp20.000",
             fasilitas: "Area parkir, pemandu wisata, toilet, ruang pameran, area foto"
         },
         sections: [
             {
-                title: "Koleksi Dan Artefak",
+                title: "Koleksi dan Artefak",
                 content:
-                    "Museum Sultan Mahmud Badaruddin II menampilkan koleksi tekstil, senjata, pakaian tradisional, kerajinan, dan koin Sumatera Selatan. Kebun-kebun museum dipenuhi dengan artefak dari zaman Sriwijaya, misalnya patung Ganesha dan Buddha."
+                    "Museum Sultan Mahmud Badaruddin II menampilkan koleksi tekstil, senjata, pakaian tradisional, kerajinan, dan koin Sumatera Selatan. Halaman dan taman museum juga menyimpan artefak dari zaman Sriwijaya, seperti patung Ganesha dan Buddha."
             },
             {
                 title: "Kunjungan",
                 content:
-                    "Museum ini buka setiap hari Selasa hingga Minggu dan tutup pada hari Senin. Tiket masuk dikenakan harga Rp1.000 untuk anak-anak dan pelajar, Rp2.000 untuk mahasiswa, Rp5.000 untuk umum, dan Rp20.000 untuk turis mancanegara."
+                    "Museum ini buka setiap hari Selasa hingga Minggu dan tutup pada hari Senin. Tiket masuk dibedakan berdasarkan kategori pengunjung, dengan tarif terjangkau untuk pelajar hingga umum."
             }
         ],
         mapImage: "/img/peta.png",
         mapTitle: "Peta Lokasi Museum Sultan Mahmud Badaruddin II"
     },
 
-    "bkb": {
+    bkb: {
         title: "Benteng Kuto Besak",
         mainImage: "/img/destinasi/bkb-main.jpg",
         galleryImages: [
@@ -77,11 +77,10 @@ Pengunjung juga dapat melihat ruang pamer tematik yang ditata berdasarkan period
             "/img/destinasi/bkb-2.png",
             "/img/destinasi/bkb-3.png"
         ],
-        description: `
-Benteng Kuto Besak adalah benteng bersejarah yang terletak di tepi Sungai Musi dan menjadi salah satu ikon kota Palembang. Benteng ini dibangun pada masa Kesultanan Palembang Darussalam dan menjadi pusat pemerintahan pada masanya. Arsitektur benteng yang kokoh dengan dinding tinggi menjadikannya saksi bisu perjalanan sejarah Palembang.
-
-Kini, area sekitar Benteng Kuto Besak menjadi ruang publik yang ramai dikunjungi wisatawan dan warga lokal, terutama pada sore dan malam hari. Lokasinya yang berhadapan langsung dengan Sungai Musi membuat pemandangan di sekitar benteng sangat menarik, apalagi saat matahari terbenam.
-        `.trim(),
+        description: [
+            "Benteng Kuto Besak adalah benteng bersejarah yang terletak di tepi Sungai Musi dan menjadi salah satu ikon kota Palembang. Benteng ini dibangun pada masa Kesultanan Palembang Darussalam dan menjadi pusat pemerintahan pada masanya. Arsitektur benteng yang kokoh dengan dinding tinggi menjadikannya saksi bisu perjalanan sejarah Palembang.",
+            "Kini, area sekitar Benteng Kuto Besak menjadi ruang publik yang ramai dikunjungi wisatawan dan warga lokal, terutama pada sore dan malam hari. Lokasinya yang berhadapan langsung dengan Sungai Musi membuat pemandangan di sekitar benteng sangat menarik, apalagi saat matahari terbenam."
+        ].join("\n\n"),
         sidebar: {
             jamOperasional: "Setiap Hari\n24 Jam (Area Terbuka)",
             lokasi: "Benteng Kuto Besak, Jl. Sultan Mahmud Badaruddin, Palembang",
@@ -112,16 +111,16 @@ Kini, area sekitar Benteng Kuto Besak menjadi ruang publik yang ramai dikunjungi
             "/img/destinasi/kapitan-2.jpg",
             "/img/destinasi/kapitan-3.jpg"
         ],
-        description: `
-Kampung Kapitan merupakan kawasan permukiman tua di tepi Sungai Musi yang dulunya dihuni oleh keturunan Tionghoa. Di sini masih berdiri rumah-rumah panggung kayu dengan arsitektur khas, yang menjadi saksi akulturasi budaya Tionghoa dan Palembang. Kampung ini menyimpan kisah panjang hubungan dagang dan budaya di masa lalu.
-
-Suasana kampung yang tenang dengan gang-gang sempit dan rumah tradisional menjadikannya menarik untuk dijelajahi. Wisatawan dapat menyusuri area permukiman, melihat detail arsitektur rumah, serta mendengar cerita dari warga setempat.
-        `.trim(),
+        description: [
+            "Kampung Kapitan merupakan kawasan permukiman tua di tepi Sungai Musi yang dulunya dihuni oleh keturunan Tionghoa. Di sini masih berdiri rumah-rumah panggung kayu dengan arsitektur khas, yang menjadi saksi akulturasi budaya Tionghoa dan Palembang. Kampung ini menyimpan kisah panjang hubungan dagang dan budaya di masa lalu.",
+            "Suasana kampung yang tenang dengan gang-gang sempit dan rumah tradisional menjadikannya menarik untuk dijelajahi. Wisatawan dapat menyusuri area permukiman, melihat detail arsitektur rumah, serta mendengar cerita dari warga setempat."
+        ].join("\n\n"),
         sidebar: {
             jamOperasional: "Setiap Hari\n08.00 – 17.00",
             lokasi: "Kampung Kapitan, Seberang Ulu, Palembang",
             hargaTiket: "Biasanya Gratis (donasi sukarela)",
-            fasilitas: "Pemandu lokal, area foto, akses perahu dari Sungai Musi"
+            fasilitas:
+                "Pemandu lokal, area foto, akses perahu dari Sungai Musi"
         },
         sections: [
             {
@@ -139,7 +138,7 @@ Suasana kampung yang tenang dengan gang-gang sempit dan rumah tradisional menjad
         mapTitle: "Peta Lokasi Kampung Kapitan"
     },
 
-    "ampera": {
+    ampera: {
         title: "Jembatan Ampera",
         mainImage: "/img/destinasi/ampera-main.jpg",
         galleryImages: [
@@ -147,15 +146,14 @@ Suasana kampung yang tenang dengan gang-gang sempit dan rumah tradisional menjad
             "/img/destinasi/ampera-2.jpg",
             "/img/destinasi/ampera-3.jpg"
         ],
-        description: `
-Jembatan Ampera adalah ikon utama kota Palembang yang membentang di atas Sungai Musi. Dibangun pada era Orde Lama, jembatan ini awalnya dapat diangkat bagian tengahnya untuk memberi ruang bagi kapal besar yang melintas. Meskipun kini mekanisme tersebut tidak lagi digunakan, bentuk dan skalanya tetap menjadi daya tarik utama.
-
-Pada siang hari, jembatan ini tampak megah dengan latar Sungai Musi dan aktivitas perahu di bawahnya. Saat malam, lampu-lampu warna-warni menjadikan suasana sekitar jembatan semakin hidup dan romantis.
-        `.trim(),
+        description: [
+            "Jembatan Ampera adalah ikon utama kota Palembang yang membentang di atas Sungai Musi. Dibangun pada era Orde Lama, jembatan ini awalnya dapat diangkat bagian tengahnya untuk memberi ruang bagi kapal besar yang melintas. Meskipun kini mekanisme tersebut tidak lagi digunakan, bentuk dan skalanya tetap menjadi daya tarik utama.",
+            "Pada siang hari, jembatan ini tampak megah dengan latar Sungai Musi dan aktivitas perahu di bawahnya. Saat malam, lampu-lampu warna-warni menjadikan suasana sekitar jembatan semakin hidup dan romantis."
+        ].join("\n\n"),
         sidebar: {
             jamOperasional: "Setiap Hari\n24 Jam (Jembatan & Area Sekitar)",
             lokasi: "Jembatan Ampera, Sungai Musi, Palembang",
-            hargaTiket: "Gratis (hanya biaya parkir di area sekitar)",
+            hargaTiket: "Gratis (biaya parkir di area sekitar)",
             fasilitas: "Area foto, pedagang kuliner, perahu wisata Sungai Musi"
         },
         sections: [
@@ -180,18 +178,18 @@ Pada siang hari, jembatan ini tampak megah dengan latar Sungai Musi dan aktivita
         galleryImages: [
             "/img/destinasi/bukit-1.jpg",
             "/img/destinasi/bukit-2.jpg",
-            "/img/destinasi//bukit-3.jpg"
+            "/img/destinasi/bukit-3.jpg"
         ],
-        description: `
-Bukit Siguntang adalah bukit bersejarah yang diyakini sebagai salah satu lokasi penting Kerajaan Sriwijaya. Di kawasan ini terdapat makam-makam tokoh yang dihormati, serta beberapa artefak yang berkaitan dengan masa kejayaan Sriwijaya. Suasana bukit yang rindang membuatnya cocok untuk refleksi dan wisata sejarah.
-
-Selain nilai sejarahnya, Bukit Siguntang juga menawarkan suasana tenang jauh dari keramaian kota. Pengunjung dapat menikmati udara sejuk dan pemandangan hijau di sekitarnya.
-        `.trim(),
+        description: [
+            "Bukit Siguntang adalah bukit bersejarah yang diyakini sebagai salah satu lokasi penting Kerajaan Sriwijaya. Di kawasan ini terdapat makam-makam tokoh yang dihormati, serta beberapa artefak yang berkaitan dengan masa kejayaan Sriwijaya. Suasana bukit yang rindang membuatnya cocok untuk refleksi dan wisata sejarah.",
+            "Selain nilai sejarahnya, Bukit Siguntang juga menawarkan suasana tenang jauh dari keramaian kota. Pengunjung dapat menikmati udara sejuk dan pemandangan hijau di sekitarnya."
+        ].join("\n\n"),
         sidebar: {
             jamOperasional: "Setiap Hari\n08.00 – 17.00",
             lokasi: "Bukit Siguntang, Kertapati, Palembang",
             hargaTiket: "Dewasa: Rp5.000\nPelajar: Rp2.000",
-            fasilitas: "Area parkir, tangga menuju puncak bukit, papan informasi sejarah"
+            fasilitas:
+                "Area parkir, tangga menuju puncak bukit, papan informasi sejarah"
         },
         sections: [
             {
@@ -217,15 +215,15 @@ Selain nilai sejarahnya, Bukit Siguntang juga menawarkan suasana tenang jauh dar
             "/img/destinasi/kemaro-2.png",
             "/img/destinasi/kemaro-3.png"
         ],
-        description: `
-Pulau Kemaro adalah sebuah pulau kecil di Sungai Musi yang terkenal dengan pagoda sembilan lantai, vihara, dan legenda cinta Tan Bun An dan Siti Fatimah. Pulau ini menjadi salah satu tujuan wisata favorit, terutama saat perayaan Imlek dan Cap Go Meh ketika ribuan orang memadati kawasan ini.
-
-Selain unsur religi dan budaya Tionghoa yang kuat, Pulau Kemaro juga menawarkan pemandangan Sungai Musi dari sudut yang berbeda. Suasana pulau yang tenang membuat pengunjung betah berlama-lama.
-        `.trim(),
+        description: [
+            "Pulau Kemaro adalah sebuah pulau kecil di Sungai Musi yang terkenal dengan pagoda sembilan lantai, vihara, dan legenda cinta Tan Bun An dan Siti Fatimah. Pulau ini menjadi salah satu tujuan wisata favorit, terutama saat perayaan Imlek dan Cap Go Meh ketika ribuan orang memadati kawasan ini.",
+            "Selain unsur religi dan budaya Tionghoa yang kuat, Pulau Kemaro juga menawarkan pemandangan Sungai Musi dari sudut yang berbeda. Suasana pulau yang tenang membuat pengunjung betah berlama-lama."
+        ].join("\n\n"),
         sidebar: {
             jamOperasional: "Setiap Hari\n08.00 – 18.00",
             lokasi: "Pulau Kemaro, Sungai Musi, Palembang",
-            hargaTiket: "Gratis (biaya sewa perahu menuju pulau bervariasi)",
+            hargaTiket:
+                "Gratis (biaya sewa perahu menuju pulau bervariasi)",
             fasilitas: "Vihara, pagoda, area foto, tempat duduk, pedagang makanan"
         },
         sections: [
@@ -252,14 +250,16 @@ Selain unsur religi dan budaya Tionghoa yang kuat, Pulau Kemaro juga menawarkan 
             "/img/destinasi/purbakala-2.jpg",
             "/img/destinasi/purbakala-3.jpg"
         ],
-        description: `
-Taman Purbakala merupakan kawasan yang menyimpan berbagai peninggalan arkeologi dari masa Sriwijaya. Di area ini terdapat sisa-sisa struktur bangunan, arca, dan temuan lain yang menunjukkan kejayaan Palembang di masa lampau. Suasananya hijau dan tenang sehingga cocok untuk wisata sejarah sekaligus rekreasi ringan.
-        `.trim(),
+        description: [
+            "Taman Purbakala merupakan kawasan yang menyimpan berbagai peninggalan arkeologi dari masa Sriwijaya. Di area ini terdapat sisa-sisa struktur bangunan, arca, dan temuan lain yang menunjukkan kejayaan Palembang di masa lampau.",
+            "Suasananya hijau dan tenang sehingga cocok untuk wisata sejarah sekaligus rekreasi ringan."
+        ].join("\n\n"),
         sidebar: {
             jamOperasional: "Setiap Hari\n08.00 – 17.00",
             lokasi: "Taman Purbakala, Palembang",
             hargaTiket: "Dewasa: Rp5.000\nPelajar: Rp2.000",
-            fasilitas: "Area parkir, ruang terbuka hijau, papan informasi, area foto"
+            fasilitas:
+                "Area parkir, ruang terbuka hijau, papan informasi, area foto"
         },
         sections: [
             {
@@ -285,14 +285,16 @@ Taman Purbakala merupakan kawasan yang menyimpan berbagai peninggalan arkeologi 
             "/img/destinasi/lorong-basah-2.jpg",
             "/img/destinasi/lorong-basah-3.jpg"
         ],
-        description: `
-Lorong Basah Night Culinary adalah destinasi kuliner malam yang populer di Palembang. Di sepanjang lorong ini berjajar kios dan gerobak yang menjual berbagai makanan, mulai dari kuliner khas Palembang hingga jajanan modern. Lampu-lampu dan dekorasi di malam hari membuat suasana semakin meriah.
-        `.trim(),
+        description: [
+            "Lorong Basah Night Culinary adalah destinasi kuliner malam yang populer di Palembang. Di sepanjang lorong ini berjajar kios dan gerobak yang menjual berbagai makanan, mulai dari kuliner khas Palembang hingga jajanan modern.",
+            "Lampu-lampu dan dekorasi di malam hari membuat suasana semakin meriah dan menjadi tempat favorit anak muda untuk berkumpul."
+        ].join("\n\n"),
         sidebar: {
             jamOperasional: "Setiap Hari\n18.00 – 23.00",
             lokasi: "Lorong Basah, kawasan pusat kota Palembang",
             hargaTiket: "Gratis (bayar sesuai makanan yang dibeli)",
-            fasilitas: "Area duduk, aneka kios makanan, spot foto malam hari"
+            fasilitas:
+                "Area duduk, aneka kios makanan, spot foto malam hari"
         },
         sections: [
             {
@@ -310,7 +312,7 @@ Lorong Basah Night Culinary adalah destinasi kuliner malam yang populer di Palem
         mapTitle: "Peta Lokasi Lorong Basah Night Culinary"
     },
 
-    "jakabaring": {
+    jakabaring: {
         title: "Jakabaring Sport City",
         mainImage: "/img/destinasi/jakabaring-main.png",
         galleryImages: [
@@ -318,14 +320,17 @@ Lorong Basah Night Culinary adalah destinasi kuliner malam yang populer di Palem
             "/img/destinasi/jakabaring-2.png",
             "/img/destinasi/jakabaring-3.png"
         ],
-        description: `
-Jakabaring Sport City adalah kompleks olahraga terbesar di Palembang yang menjadi lokasi berbagai event nasional dan internasional. Di dalamnya terdapat stadion sepak bola, arena renang, lintasan atletik, dan berbagai fasilitas olahraga lainnya.
-        `.trim(),
+        description: [
+            "Jakabaring Sport City adalah kompleks olahraga terbesar di Palembang yang menjadi lokasi berbagai event nasional dan internasional. Di dalamnya terdapat stadion sepak bola, arena renang, lintasan atletik, dan berbagai fasilitas olahraga lainnya.",
+            "Kawasan ini juga memiliki danau dan area terbuka yang dimanfaatkan warga untuk jogging, bersepeda, atau sekadar menikmati suasana sore."
+        ].join("\n\n"),
         sidebar: {
             jamOperasional: "Setiap Hari\n06.00 – 22.00",
             lokasi: "Jakabaring Sport City, Jakabaring, Palembang",
-            hargaTiket: "Bervariasi sesuai acara dan fasilitas yang digunakan",
-            fasilitas: "Stadion, arena renang, lintasan atletik, danau, area jogging"
+            hargaTiket:
+                "Bervariasi sesuai acara dan fasilitas yang digunakan",
+            fasilitas:
+                "Stadion, arena renang, lintasan atletik, danau, area jogging"
         },
         sections: [
             {
@@ -351,9 +356,10 @@ Jakabaring Sport City adalah kompleks olahraga terbesar di Palembang yang menjad
             "/img/destinasi/bayt-quran-2.jpg",
             "/img/destinasi/bayt-quran-3.jpg"
         ],
-        description: `
-Bayt Al-Quran Al-Akbar dikenal sebagai tempat yang menyimpan Al-Quran raksasa yang diukir pada lembaran kayu. Ukiran ayat-ayat suci yang detail dan megah menjadikannya salah satu destinasi religi paling unik di Palembang.
-        `.trim(),
+        description: [
+            "Bayt Al-Quran Al-Akbar dikenal sebagai tempat yang menyimpan Al-Quran raksasa yang diukir pada lembaran kayu. Ukiran ayat-ayat suci yang detail dan megah menjadikannya salah satu destinasi religi paling unik di Palembang.",
+            "Selain melihat langsung Al-Quran ukir, pengunjung juga dapat belajar tentang proses pembuatannya dan makna di balik karya seni ini."
+        ].join("\n\n"),
         sidebar: {
             jamOperasional: "Setiap Hari\n08.00 – 17.00",
             lokasi: "Bayt Al-Quran Al-Akbar, Gandus, Palembang",
@@ -369,14 +375,14 @@ Bayt Al-Quran Al-Akbar dikenal sebagai tempat yang menyimpan Al-Quran raksasa ya
             {
                 title: "Wisata Religi",
                 content:
-                    "Tempat ini sering dikunjungi untuk wisata religi, baik oleh masyarakat lokal maupun wisatawan dari luar kota. Pengunjung dapat belajar tentang proses pembuatan dan makna di balik karya ini."
+                    "Tempat ini sering dikunjungi untuk wisata religi, baik oleh masyarakat lokal maupun wisatawan dari luar kota. Pengunjung dapat merasakan nuansa religius sekaligus mengapresiasi karya seni Islam."
             }
         ],
         mapImage: "/img/peta-bayt-quran.png",
         mapTitle: "Peta Lokasi Bayt Al-Quran Al-Akbar"
     },
 
-    "monpera": {
+    monpera: {
         title: "Monpera",
         mainImage: "/img/destinasi/monpera-main.jpg",
         galleryImages: [
@@ -384,25 +390,27 @@ Bayt Al-Quran Al-Akbar dikenal sebagai tempat yang menyimpan Al-Quran raksasa ya
             "/img/destinasi/monpera-2.jpg",
             "/img/destinasi/monpera-3.jpg"
         ],
-        description: `
-Monumen Perjuangan Rakyat (Monpera) adalah monumen yang dibangun untuk mengenang perjuangan rakyat Palembang melawan penjajahan. Bangunan dengan bentuk unik ini terletak di pusat kota dan menjadi salah satu landmark penting.
-        `.trim(),
+        description: [
+            "Monumen Perjuangan Rakyat (Monpera) adalah monumen yang dibangun untuk mengenang perjuangan rakyat Palembang melawan penjajahan. Bangunan dengan bentuk unik ini terletak di pusat kota dan menjadi salah satu landmark penting.",
+            "Di dalam area Monpera terdapat ruang pameran kecil yang menampilkan diorama dan informasi mengenai sejarah perjuangan rakyat Palembang. Area sekitar monumen juga sering dimanfaatkan untuk kegiatan masyarakat."
+        ].join("\n\n"),
         sidebar: {
             jamOperasional: "Setiap Hari\n08.00 – 17.00",
             lokasi: "Monpera, pusat kota Palembang",
             hargaTiket: "Biasanya Gratis atau donasi sukarela",
-            fasilitas: "Area parkir, ruang pameran kecil, area foto, ruang terbuka"
+            fasilitas:
+                "Area parkir, ruang pameran kecil, area foto, ruang terbuka"
         },
         sections: [
             {
                 title: "Sejarah Monumen",
                 content:
-                    "Monpera dibangun sebagai penghormatan terhadap para pejuang yang berjuang mempertahankan Palembang dari penjajah. Di dalamnya terdapat diorama dan informasi mengenai perjuangan tersebut."
+                    "Monpera dibangun sebagai penghormatan terhadap para pejuang yang berjuang mempertahankan Palembang dari penjajah. Di dalamnya terdapat diorama dan informasi mengenai peristiwa-peristiwa penting dalam sejarah kota ini."
             },
             {
                 title: "Area Sekitar Monpera",
                 content:
-                    "Lokasinya yang berada di pusat kota membuat Monpera mudah dikunjungi. Area sekitar juga sering digunakan untuk berbagai kegiatan masyarakat."
+                    "Lokasinya yang berada di pusat kota membuat Monpera mudah dikunjungi. Area sekitar juga sering digunakan untuk berbagai kegiatan masyarakat, seperti upacara, pertunjukan seni, dan acara komunitas."
             }
         ],
         mapImage: "/img/peta-monpera.png",
