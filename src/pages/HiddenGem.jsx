@@ -1,66 +1,94 @@
-import React, { useMemo } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
+
 import BackButton from "../components/detail/BackButton.jsx";
 import RecommendationSection from "../components/home/recommendations/RecommendationSection.jsx";
 import Footer from "../components/common/Footer.jsx";
 
-const Populer = () => {
-    const navigate = useNavigate();
+import { places } from "../data/places.js";
+import { API_BASE_URL } from "../config/api";
 
-    const hiddenGems = useMemo(
+const toNumberSafe = (value, fallback = 0) => {
+    if (value === null || value === undefined) return fallback;
+    if (typeof value === "number") return Number.isFinite(value) ? value : fallback;
+
+    const cleaned = String(value).replace(/[^\d.-]/g, "");
+    const n = Number(cleaned);
+    return Number.isFinite(n) ? n : fallback;
+};
+
+const HiddenGem = () => {
+    const navigate = useNavigate();
+    const [ratingMap, setRatingMap] = useState({});
+
+    useEffect(() => {
+        const controller = new AbortController();
+
+        async function fetchRatingSummary() {
+            try {
+                const res = await axios.get(`${API_BASE_URL}/reviews-summary`, {
+                    signal: controller.signal,
+                });
+
+                if (res.data?.success && Array.isArray(res.data.summary)) {
+                    const map = {};
+                    for (const r of res.data.summary) {
+                        const key = typeof r.place_id === "string" ? r.place_id : String(r.place_id || "");
+                        if (!key) continue;
+
+                        map[key] = {
+                            averageRating: toNumberSafe(r.averageRating ?? 0, 0),
+                            totalReviews: Number(r.totalReviews ?? 0),
+                        };
+                    }
+                    setRatingMap(map);
+                } else {
+                    setRatingMap({});
+                }
+            } catch (err) {
+                const isCanceled =
+                    err?.name === "CanceledError" ||
+                    err?.code === "ERR_CANCELED" ||
+                    controller.signal.aborted;
+
+                if (!isCanceled) {
+                    console.error("Error load rating summary:", err);
+                    setRatingMap({});
+                }
+            }
+        }
+
+        fetchRatingSummary();
+
+        return () => controller.abort();
+    }, []);
+
+    const HIDDEN_GEM_SLUGS = useMemo(
         () => [
-            { 
-                id: 1, 
-                title: "Museum Sultan Mahmud Badaruddin II", 
-                desc: "Menampilkan koleksi sejarah Kesultanan Palembang dan peninggalan budaya Melayu. Cocok untuk mengenal lebih dekat warisan kota Palembang.", 
-                img: "/reco/museum-smb2.png", 
-                rating: 4.0, 
-                to: "/detail/museum-smb-ii" 
-            },
-            { 
-                id: 2, 
-                title: "Museum Balaputra Dewa", 
-                desc: "Museum berisi peninggalan arkeologi, etnografi, dan budaya Sumatera Selatan, termasuk rumah adat Limas yang ikonik.", 
-                img: "/reco/balaputra.png", 
-                rating: 4.0, 
-                to: "/detail/museum-balaputra" 
-            },
-            { 
-                id: 3, 
-                title: "Bukit Siguntang", 
-                desc: "Bukit bersejarah yang diyakini sebagai situs Kerajaan Sriwijaya dan dikenal sebagai kawasan ziarah spiritual.", 
-                img: "/reco/bukit-siguntang.png", 
-                rating: 4.0, 
-                to: "/detail/bukit-siguntang" 
-            },
-            {
-                id: 4,
-                title: "Taman Purbakala",
-                desc: "Destinasi bersejarah di Palembang yang menyimpan peninggalan zaman Sriwijaya.",
-                img: "/reco/taman-purbakala.png",
-                rating: 4.0,
-                to: "/detail/taman-purbakala",
-            },
-            {
-                id: 5,
-                title: "Lorong Basah Night Culinary",
-                desc: "Destinasi kuliner malam populer di Palembang, penuh jajanan khas Palembang dan makanan modern.",
-                img: "/reco/lorong-basah.png",         
-                rating: 4.0,
-                to: "/detail/lorong-basah",
-            },
-            {
-                id: 6,
-                title: "Bayt Al-Quran Al-Akbar",
-                desc: "Destinasi religi di Palembang yang terkenal dengan Al-Quran raksasa ukir kayu. Pengunjung bisa melihat langsung keindahan ayat suci berukir.",
-                img: "/reco/bayt-alquran.png",    
-                rating: 4.0,
-                to: "/detail/bayt-alquran",
-            },
-            
+            "museum-smb-ii",
+            "museum-balaputra",
+            "bukit-siguntang",
+            "taman-purbakala",
+            "lorong-basah",
+            "bayt-quran",
         ],
         []
     );
+
+    const hiddenGems = useMemo(() => {
+        return places
+            .filter((p) => HIDDEN_GEM_SLUGS.includes(p.slug))
+            .map((p) => {
+                const avg = ratingMap[p.slug]?.averageRating ?? p.rating ?? 0;
+
+                return {
+                    ...p,
+                    rating: avg,
+                    to: `/detail/${p.slug}`,
+                };
+            });
+    }, [HIDDEN_GEM_SLUGS, ratingMap]);
 
     return (
         <div className="bg-white min-h-screen flex flex-col">
@@ -77,7 +105,7 @@ const Populer = () => {
             <div className="flex justify-center my-8">
                 <img
                     src="/reco/museum.png"
-                    alt="Populer"
+                    alt="Hidden Gem"
                     className="w-full max-w-[1400px] h-auto rounded-xl shadow-md"
                 />
             </div>
@@ -89,4 +117,4 @@ const Populer = () => {
     );
 };
 
-export default Populer;
+export default HiddenGem;

@@ -8,7 +8,8 @@ import { destinations } from "../data/itinerarydata";
 import Navbar from "../components/common/Navbar";
 import Footer from "../components/common/Footer";
 import { useAuth } from "../hooks/useAuth";
-
+import DestinationPopup from "../components/popup/DestinasiPopup";
+import FailPopup from "../components/popup/failPopUp";
 import { API_BASE_URL } from "../config/api";
 
 const Itinerary = () => {
@@ -24,14 +25,22 @@ const Itinerary = () => {
         [selectedDestinationId]
     );
 
+    const [showSuccessPopup, setShowSuccessPopup] = useState(false);
+    const [showFailPopup, setShowFailPopup] = useState(false);
+    const [showLoginPopup, setShowLoginPopup] = useState(false);
+
     const handleViewPlan = useCallback(() => {
         navigate("/rencana-pelesir");
     }, [navigate]);
 
     const handleSaveDestination = useCallback(
         async (destination) => {
-            if (!user) {
-                alert("Kamu harus login terlebih dahulu untuk menyimpan destinasi.");
+            const token = localStorage.getItem("token");
+
+            if (!user || !token) {
+                setShowSuccessPopup(false);
+                setShowFailPopup(false);
+                setShowLoginPopup(true);
                 return;
             }
 
@@ -48,16 +57,27 @@ const Itinerary = () => {
             const ticketPrice = destination.ticketPrice ?? 0;
 
             try {
-                await axios.post(`${API_BASE_URL}/itinerary/add`, {
-                    userId: user.id,
-                    placeId,
-                    ticketPrice,
-                });
+                await axios.post(
+                    `${API_BASE_URL}/itinerary/add`,
+                    {
+                        placeId,
+                        ticketPrice,
+                    },
+                    {
+                        headers: {
+                            Authorization: `Bearer ${token}`,
+                        },
+                    }
+                );
 
-                alert("Destinasi berhasil disimpan ke Rencana Pelesir.");
+                setShowFailPopup(false);
+                setShowLoginPopup(false);
+                setShowSuccessPopup(true);
             } catch (err) {
                 console.error("Gagal menyimpan destinasi ke itinerary:", err);
-                alert("Terjadi kesalahan saat menyimpan destinasi.");
+                setShowSuccessPopup(false);
+                setShowLoginPopup(false);
+                setShowFailPopup(true);
             }
         },
         [user]
@@ -68,9 +88,12 @@ const Itinerary = () => {
             <div className="min-h-screen bg-white">
                 <Navbar />
                 <div className="max-w-3xl mx-auto px-8 py-20 text-center">
-                    <h1 className="text-3xl font-bold mb-4">Destinasi tidak ditemukan</h1>
+                    <h1 className="text-3xl font-bold mb-4">
+                        Destinasi tidak ditemukan
+                    </h1>
                     <p className="text-gray-600">
-                        Data destinasi belum tersedia atau terjadi kesalahan pada konfigurasi.
+                        Data destinasi belum tersedia atau terjadi kesalahan pada
+                        konfigurasi.
                     </p>
                 </div>
                 <Footer />
@@ -117,6 +140,23 @@ const Itinerary = () => {
             </div>
 
             <Footer />
+
+            <DestinationPopup
+                isOpen={showSuccessPopup}
+                onClose={() => setShowSuccessPopup(false)}
+                variant="saved"
+            />
+
+            <DestinationPopup
+                isOpen={showLoginPopup}
+                onClose={() => setShowLoginPopup(false)}
+                variant="login-required"
+            />
+
+            <FailPopup
+                isOpen={showFailPopup}
+                onClose={() => setShowFailPopup(false)}
+            />
         </div>
     );
 };

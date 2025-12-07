@@ -1,33 +1,60 @@
 import React, { useState } from "react";
 import { ArrowLeft, ChevronDown } from "lucide-react";
+import axios from "axios";
+import { useAuth } from "../hooks/useAuth";
 import DestinationPopup from "../components/popup/DestinasiPopup";
+import { API_BASE_URL } from "../config/api";
 
 const allDestinations = [
-    { id: 1, name: "Jembatan Ampera" },
-    { id: 2, name: "Museum Sultan Mahmud" },
-    { id: 3, name: "Museum Balaputra Dewa" },
-    { id: 4, name: "Taman Purbakala" },
-    { id: 5, name: "Al-Qur'an Al-Akbar" },
-    { id: 6, name: "Monpera" },
-    { id: 7, name: "Benteng Kuto Besak" },
-    { id: 8, name: "Pulau Kemaro" }
+    { id: 1, slug: "jembatan-ampera", name: "Jembatan Ampera" },
+    { id: 2, slug: "museum-sultan-mahmud", name: "Museum Sultan Mahmud" },
+    { id: 3, slug: "museum-balaputra-dewa", name: "Museum Balaputra Dewa" },
+    { id: 4, slug: "taman-purbakala", name: "Taman Purbakala" },
+    { id: 5, slug: "alquran-al-akbar", name: "Al-Qur'an Al-Akbar" },
+    { id: 6, slug: "monpera", name: "Monpera" },
+    { id: 7, slug: "benteng-kuto-besak", name: "Benteng Kuto Besak" },
+    { id: 8, slug: "pulau-kemaro", name: "Pulau Kemaro" },
 ];
 
 const EditRencana = () => {
+    const { user } = useAuth();
     const [isDropdownOpen, setIsDropdownOpen] = useState(true);
-    const [selectedDestinationId, setSelectedDestinationId] = useState(null);
+    const [selectedDestination, setSelectedDestination] = useState(null);
     const [showPopup, setShowPopup] = useState(false);
 
     const handleBack = () => {
         window.history.back();
     };
 
-    const handleSave = () => {
-        if (selectedDestinationId) {
+    const handleSave = async () => {
+        if (!selectedDestination || !user) return;
+
+        const token = localStorage.getItem("token");
+        if (!token) return;
+
+        try {
+            await axios.post(
+                `${API_BASE_URL}/itinerary/add`,
+                {
+                    placeId: selectedDestination.slug,
+                    ticketPrice: 0, // default
+                },
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                }
+            );
+
             setShowPopup(true);
+
             setTimeout(() => {
                 setShowPopup(false);
-            }, 2000);
+                window.history.back();
+            }, 1500);
+        } catch (err) {
+            console.error("Gagal menambah ke itinerary:", err);
+            alert("Gagal menyimpan rencana.");
         }
     };
 
@@ -65,30 +92,24 @@ const EditRencana = () => {
 
                     {isDropdownOpen && (
                         <div className="space-y-4">
-                            {allDestinations.map((destination) => (
+                            {allDestinations.map((dest) => (
                                 <div
-                                    key={destination.id}
-                                    onClick={() =>
-                                        setSelectedDestinationId(
-                                            destination.id
-                                        )
-                                    }
+                                    key={dest.id}
+                                    onClick={() => setSelectedDestination(dest)}
                                     className="bg-white rounded-2xl shadow-md p-6 flex items-center justify-between cursor-pointer hover:shadow-lg transition-shadow"
                                 >
                                     <h3 className="text-orange-500 font-bold text-xl">
-                                        {destination.name}
+                                        {dest.name}
                                     </h3>
 
                                     <div
                                         className={`w-8 h-8 rounded-full border-4 flex items-center justify-center transition-all ${
-                                            selectedDestinationId ===
-                                            destination.id
+                                            selectedDestination?.id === dest.id
                                                 ? "border-orange-500 bg-orange-500"
                                                 : "border-orange-500 bg-white"
                                         }`}
                                     >
-                                        {selectedDestinationId ===
-                                            destination.id && (
+                                        {selectedDestination?.id === dest.id && (
                                             <div className="w-3 h-3 rounded-full bg-white"></div>
                                         )}
                                     </div>
@@ -101,10 +122,10 @@ const EditRencana = () => {
                 <div className="fixed bottom-8 right-8">
                     <button
                         onClick={handleSave}
-                        disabled={!selectedDestinationId}
+                        disabled={!selectedDestination}
                         className={`px-12 py-4 rounded-2xl font-bold text-xl shadow-2xl transition-all ${
-                            selectedDestinationId
-                                ? "bg-orange-500 hover:bg-orange-600 text-white cursor-pointer"
+                            selectedDestination
+                                ? "bg-orange-500 hover:bg-orange-600 text-white"
                                 : "bg-gray-300 text-gray-500 cursor-not-allowed"
                         }`}
                     >

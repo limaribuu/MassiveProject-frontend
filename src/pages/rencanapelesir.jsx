@@ -20,18 +20,25 @@ const RencanaPelesir = () => {
 
     useEffect(() => {
         async function fetchItinerary() {
-            if (!user) {
+            const token = localStorage.getItem("token");
+
+            if (!user || !token) {
+                setDestinations([]);
+                setTotalCost(0);
                 setLoading(false);
                 return;
             }
 
             try {
-                const res = await axios.get(
-                    `${API_BASE_URL}/itinerary/${user.id}`
-                );
+                const res = await axios.get(`${API_BASE_URL}/itinerary`, {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                });
 
                 if (res.data.success) {
                     const items = res.data.items || [];
+
                     const enriched = items.map((item) => {
                         const place = places.find(
                             (p) => p.slug === item.placeId
@@ -54,15 +61,20 @@ const RencanaPelesir = () => {
                                 detail?.sidebar?.operationalHours || "-",
                             location:
                                 detail?.sidebar?.location ||
-                                "Palembang, Sumatera Selatan"
+                                "Palembang, Sumatera Selatan",
                         };
                     });
 
                     setDestinations(enriched);
                     setTotalCost(Number(res.data.totalCost) || 0);
+                } else {
+                    setDestinations([]);
+                    setTotalCost(0);
                 }
             } catch (err) {
                 console.error("Gagal mengambil itinerary:", err);
+                setDestinations([]);
+                setTotalCost(0);
             } finally {
                 setLoading(false);
             }
@@ -82,7 +94,6 @@ const RencanaPelesir = () => {
     const handleDeleteAll = () => {
         navigate("/delete-itinerary");
     };
-
 
     return (
         <div className="min-h-screen bg-gray-50 pb-24">

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import axios from "axios";
 
 import Navbar from "../components/common/Navbar.jsx";
@@ -9,55 +9,86 @@ import { Link } from "react-router-dom";
 import Maps from "../components/maps/Maps.jsx";
 
 import { places } from "../data/places.js";
+import { API_BASE_URL } from "../config/api";
 
-const API_BASE_URL = "http://localhost:5000/api";
+const toNumberSafe = (value, fallback = 0) => {
+    if (value === null || value === undefined) return fallback;
+    if (typeof value === "number") return Number.isFinite(value) ? value : fallback;
+
+    const cleaned = String(value).replace(/[^\d.-]/g, "");
+    const n = Number(cleaned);
+    return Number.isFinite(n) ? n : fallback;
+};
 
 export default function Home() {
     const [ratingMap, setRatingMap] = useState({});
 
     useEffect(() => {
+        const controller = new AbortController();
+
         async function fetchRatingSummary() {
             try {
-                const res = await axios.get(`${API_BASE_URL}/reviews-summary`);
-                if (res.data.success && res.data.ratings) {
-                    setRatingMap(res.data.ratings);
+                const res = await axios.get(`${API_BASE_URL}/reviews-summary`, {
+                    signal: controller.signal,
+                });
+
+                if (res.data?.success && Array.isArray(res.data.summary)) {
+                    const map = {};
+                    for (const r of res.data.summary) {
+                        const key = typeof r.place_id === "string" ? r.place_id : String(r.place_id || "");
+                        if (!key) continue;
+
+                        map[key] = {
+                            averageRating: toNumberSafe(r.averageRating ?? 0, 0),
+                            totalReviews: Number(r.totalReviews ?? 0),
+                        };
+                    }
+                    setRatingMap(map);
+                } else {
+                    setRatingMap({});
                 }
             } catch (err) {
-                console.error("Error load rating summary:", err);
+                const isCanceled =
+                    err?.name === "CanceledError" ||
+                    err?.code === "ERR_CANCELED" ||
+                    controller.signal.aborted;
+
+                if (!isCanceled) {
+                    console.error("Error load rating summary:", err);
+                    setRatingMap({});
+                }
             }
         }
+
         fetchRatingSummary();
+
+        return () => controller.abort();
     }, []);
 
-    const applyRatingFromBackend = (items) =>
-        items.map((item) => {
-            const slug = item.slug;
-            const backendRating =
-                slug && ratingMap[slug] ? ratingMap[slug].averageRating : null;
+    const applyRatingFromBackend = useMemo(() => {
+        return (items) =>
+            items.map((item) => {
+                const slug = item?.slug;
+                const backendRating = slug ? ratingMap[slug]?.averageRating : null;
 
-            return {
-                ...item,
-                rating: backendRating ?? item.rating ?? 0,
-            };
-        });
+                return {
+                    ...item,
+                    rating: backendRating ?? item.rating ?? 0,
+                };
+            });
+    }, [ratingMap]);
 
-    const hiddenGemSlugs = [
-        "museum-smb-ii",
-        "museum-balaputra",
-        "bukit-siguntang",
-    ];
-
-    const hiddenGems = places.filter((p) =>
-        hiddenGemSlugs.includes(p.slug)
-    );
-
-    const hiddenGemsWithRating = applyRatingFromBackend(hiddenGems);
+    const hiddenGemSlugs = ["museum-smb-ii", "museum-balaputra", "bukit-siguntang"];
+    const hiddenGemsWithRating = useMemo(() => {
+        const hiddenGems = places.filter((p) => hiddenGemSlugs.includes(p.slug));
+        return applyRatingFromBackend(hiddenGems);
+    }, [applyRatingFromBackend]);
 
     const popularSlugs = ["bkb", "ampera", "pulau-kemaro"];
-
-    const popular = places.filter((p) => popularSlugs.includes(p.slug));
-
-    const popularWithRating = applyRatingFromBackend(popular);
+    const popularWithRating = useMemo(() => {
+        const popular = places.filter((p) => popularSlugs.includes(p.slug));
+        return applyRatingFromBackend(popular);
+    }, [applyRatingFromBackend]);
 
     return (
         <>
@@ -73,12 +104,7 @@ export default function Home() {
                     </h2>
                     <div className="flex justify-center mt-6">
                         <div className="w-full max-w-[1450px] h-[600px] rounded-xl shadow-md overflow-hidden">
-                            <Maps
-                                variant="section"
-                                className="h-full"
-                                showBack={false}
-                                showMenu={false}
-                            />
+                            <Maps variant="section" className="h-full" showBack={false} showMenu={false} />
                         </div>
                     </div>
                 </div>
@@ -91,10 +117,7 @@ export default function Home() {
                 <RecommendationSection items={hiddenGemsWithRating} />
 
                 <div className="rc__cta-wrap">
-                    <Link
-                        to="/hidden-gem"
-                        className="rc__cta mb-20 inline-block text-center"
-                    >
+                    <Link to="/hidden-gem" className="rc__cta mb-20 inline-block text-center">
                         Lihat Selengkapnya
                     </Link>
                 </div>
@@ -106,10 +129,7 @@ export default function Home() {
                 <RecommendationSection items={popularWithRating} />
 
                 <div className="rc__cta-wrap">
-                    <Link
-                        to="/populer"
-                        className="rc__cta mb-30 inline-block text-center"
-                    >
+                    <Link to="/populer" className="rc__cta mb-30 inline-block text-center">
                         Lihat Selengkapnya
                     </Link>
                 </div>

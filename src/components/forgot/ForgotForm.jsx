@@ -1,82 +1,84 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 
-import { API_BASE_URL } from "../../config/api";
+const API_BASE_URL = "http://localhost:5000/api";
+const emailRegex = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i;
 
 export default function ForgotForm() {
-    const [email, setEmail] = useState("");
-    const [loading, setLoading] = useState(false);
-    const [message, setMessage] = useState("");
+  const [email, setEmail] = useState("");
+  const [emailError, setEmailError] = useState("");
 
-    async function handleSubmit(e) {
-        e.preventDefault();
-        setMessage("");
+  const [loading, setLoading] = useState(false);
+  const [message, setMessage] = useState("");
+  const [type, setType] = useState("");
 
-        const val = email.trim();
-        if (!val) return alert("Email tidak boleh kosong.");
-        const ok = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(val);
-        if (!ok) return alert("Format email tidak valid.");
+  const handleEmail = (v) => {
+    setEmail(v);
+    if (!v.trim()) setEmailError("Email wajib diisi");
+    else if (!emailRegex.test(v)) setEmailError("Format email tidak valid");
+    else setEmailError("");
+  };
 
-        try {
-            setLoading(true);
+  async function handleSubmit(e) {
+    e.preventDefault();
+    if (emailError || !email) return;
 
-            const res = await fetch(`${API_BASE_URL}/forgot`, {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify({ email: val }),
-            });
+    try {
+      setLoading(true);
 
-            const data = await res.json();
+      const res = await fetch(`${API_BASE_URL}/forgot`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email }),
+      });
 
-            if (!res.ok || !data.success) {
-                throw new Error(data.message || "Email tidak ditemukan");
-            }
+      const data = await res.json();
+      if (!res.ok || !data.success) throw new Error(data.message);
 
-            setMessage(
-                data.message ||
-                    "Link reset kata sandi telah dikirim ke email kamu (simulasi)."
-            );
-        } catch (err) {
-            console.error(err);
-            setMessage(
-                err.message || "Terjadi kesalahan saat proses lupa kata sandi."
-            );
-        } finally {
-            setLoading(false);
-        }
+      setMessage(data.message);
+      setType("success");
+    } catch (err) {
+      setMessage(err.message);
+      setType("error");
+    } finally {
+      setLoading(false);
     }
+  }
 
-    return (
-        <>
-            <h1>Lupa Kata Sandi</h1>
-            <p className="subtitle">
-                Silakan masukkan email terdaftar. Kami akan mengirimkan link yang akan
-                mengarahkan kamu untuk atur ulang kata sandi.
-            </p>
+  return (
+    <>
+      <h1>Lupa Kata Sandi</h1>
+      <p className="subtitle">
+        Silakan masukkan email terdaftar. Kami akan mengirimkan link yang akan
+        mengarahkan kamu untuk atur ulang kata sandi.
+      </p>
 
-            <form onSubmit={handleSubmit} noValidate>
-                {message && (
-                    <p style={{ fontSize: 14, marginBottom: 8 }}>{message}</p>
-                )}
+      {message && (
+        <p className={type === "success" ? "text-success" : "text-error"}>
+          {message}
+        </p>
+      )}
 
-                <input
-                    type="email"
-                    placeholder="Email"
-                    aria-label="Email"
-                    required
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                />
-                <button type="submit" className="btn-login" disabled={loading}>
-                    <span>{loading ? "Memproses..." : "Kirim"}</span>
-                </button>
-            </form>
+      <form onSubmit={handleSubmit} noValidate>
+        <div className="form-group">
+          <input
+            type="email"
+            placeholder="Email"
+            value={email}
+            onChange={(e) => handleEmail(e.target.value)}
+            className={emailError ? "input-error" : ""}
+          />
+          <span className="error-text">{emailError || "\u00A0"}</span>
+        </div>
 
-            <p className="signup-text">
-                Ingat Kata Sandi? <Link to="/login">Login</Link>
-            </p>
-        </>
-    );
+        <button className="btn-login" disabled={loading}>
+          {loading ? "Memproses..." : "Kirim"}
+        </button>
+      </form>
+
+      <p className="signup-text">
+        Ingat password? <Link to="/login">Login</Link>
+      </p>
+    </>
+  );
 }

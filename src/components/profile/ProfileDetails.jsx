@@ -4,8 +4,16 @@ import { useAuth } from "../../hooks/useAuth";
 import { places } from "../../data/places";
 import ProfileHeroCard from "./ProfileHeroCard";
 
-import { API_BASE_URL } from "../../config/api";
-import { BACKEND_BASE_URL } from "../../config/api";
+import { API_BASE_URL, BACKEND_BASE_URL } from "../../config/api";
+
+const validatePassword = (value) => {
+    if (value.length < 8)
+        return "Password harus 8+ karakter, mengandung angka & simbol";
+    if (!/\d/.test(value)) return "Password harus mengandung angka";
+    if (!/[!@#$%^&*]/.test(value))
+        return "Password harus mengandung simbol (!@#$%^&*)";
+    return "";
+};
 
 function resolveAvatar(path) {
     if (!path) return "/avatar-default.png";
@@ -22,51 +30,115 @@ const CATEGORY_LABELS = {
     religi: "Religi",
 };
 
-function formatCategoryLabel(key) {
-    if (!key) return "";
-    const lower = String(key).toLowerCase();
-    if (CATEGORY_LABELS[lower]) return CATEGORY_LABELS[lower];
-    return lower.charAt(0).toUpperCase() + lower.slice(1);
+const normalizeFavoriteId = (value) => {
+    if (value === null || value === undefined) return "";
+
+    const s = String(value).trim();
+    if (!s) return "";
+
+    if (/^\d+$/.test(s)) {
+        const n = Number(s);
+        const match = places.find((p) => Number(p.id) === n);
+        return match?.slug ? String(match.slug) : s;
+    }
+
+    return s;
+};
+
+function getFavoriteCategoriesFromLocalStorage() {
+    if (typeof window === "undefined") return [];
+
+    const raw = localStorage.getItem("favorites_ids");
+    if (!raw) return [];
+
+    let favIds;
+    try {
+        favIds = JSON.parse(raw);
+    } catch {
+        return [];
+    }
+
+    if (!Array.isArray(favIds) || favIds.length === 0) return [];
+
+    const favSlugs = Array.from(
+        new Set(favIds.map(normalizeFavoriteId).filter(Boolean))
+    );
+
+    const favPlaces = places.filter((p) => favSlugs.includes(p.slug));
+
+    const counts = {};
+    favPlaces.forEach((p) => {
+        const cats = Array.isArray(p.category) ? p.category : [p.category];
+        cats.forEach((cat) => {
+            if (!cat) return;
+            counts[cat] = (counts[cat] || 0) + 1;
+        });
+    });
+
+    const sorted = Object.entries(counts).sort((a, b) => b[1] - a[1]);
+
+    return sorted.slice(0, 3).map(([cat]) => CATEGORY_LABELS[cat] || cat);
 }
 
-export default function ProfileDetails({ user, favoriteCategory, favoriteCategories }) {
+export default function ProfileDetails({ user }) {
     const { login } = useAuth();
 
     const [showGenderModal, setShowGenderModal] = useState(false);
     const [showDobModal, setShowDobModal] = useState(false);
     const [showPhoneModal, setShowPhoneModal] = useState(false);
     const [showAvatarModal, setShowAvatarModal] = useState(false);
+    const [showNameModal, setShowNameModal] = useState(false);
+    const [showPasswordModal, setShowPasswordModal] = useState(false);
 
     const [genderInput, setGenderInput] = useState(user?.gender || "");
     const [dobInput, setDobInput] = useState(
         user?.tanggalLahir ? user.tanggalLahir.substring(0, 10) : ""
     );
     const [phoneInput, setPhoneInput] = useState(user?.noTelpon || "");
+    const [nameInput, setNameInput] = useState(user?.name || "");
 
     const [avatarFile, setAvatarFile] = useState(null);
     const [avatarPreview, setAvatarPreview] = useState(null);
 
+    const [oldPasswordInput, setOldPasswordInput] = useState("");
+    const [newPasswordInput, setNewPasswordInput] = useState("");
+    const [confirmPasswordInput, setConfirmPasswordInput] = useState("");
+    const [newPasswordError, setNewPasswordError] = useState("");
+    const [confirmPasswordError, setConfirmPasswordError] = useState("");
+
     const [saving, setSaving] = useState(false);
     const [error, setError] = useState("");
 
-    const favoriteCategoryList =
-        Array.isArray(favoriteCategories) && favoriteCategories.length > 0
-            ? favoriteCategories
-            : favoriteCategory
-            ? [favoriteCategory]
-            : [];
-
-    const displayFavoriteCategories = favoriteCategoryList.map((cat) =>
-        formatCategoryLabel(cat)
-    );
+    const [favoriteCategories, setFavoriteCategories] = useState([]);
 
     useEffect(() => {
         setGenderInput(user?.gender || "");
-        setDobInput(
-            user?.tanggalLahir ? user.tanggalLahir.substring(0, 10) : ""
-        );
+        setDobInput(user?.tanggalLahir ? user.tanggalLahir.substring(0, 10) : "");
         setPhoneInput(user?.noTelpon || "");
+        setNameInput(user?.name || "");
     }, [user]);
+
+    useEffect(() => {
+        const cats = getFavoriteCategoriesFromLocalStorage();
+        setFavoriteCategories(cats);
+
+        const onStorage = (e) => {
+            if (e.key !== "favorites_ids") return;
+            const updated = getFavoriteCategoriesFromLocalStorage();
+            setFavoriteCategories(updated);
+        };
+
+        window.addEventListener("storage", onStorage);
+        return () => window.removeEventListener("storage", onStorage);
+    }, []);
+
+    useEffect(() => {
+        if (showPasswordModal) {
+            setError("");
+            setNewPasswordError("");
+            setConfirmPasswordError("");
+        }
+    }, [showPasswordModal]);
 
     const genderText =
         user?.gender === "L"
@@ -86,21 +158,28 @@ export default function ProfileDetails({ user, favoriteCategory, favoriteCategor
     async function updateProfile(partial) {
         if (!user) return;
 
+        const token = localStorage.getItem("token");
+        if (!token) {
+            setError("Sesi login berakhir. Silakan login kembali.");
+            return;
+        }
+
         try {
             setSaving(true);
             setError("");
 
             const payload = {
-                name: user.name,
+                name: partial.name ?? user.name,
                 gender: partial.gender ?? user.gender,
                 tanggalLahir: partial.tanggalLahir ?? user.tanggalLahir,
                 noTelpon: partial.noTelpon ?? user.noTelpon,
             };
 
-            const res = await axios.put(
-                `${API_BASE_URL}/profile/${user.id}`,
-                payload
-            );
+            const res = await axios.put(`${API_BASE_URL}/profile`, payload, {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            });
 
             if (!res.data.success) {
                 throw new Error(res.data.message || "Gagal memperbarui profil");
@@ -138,6 +217,96 @@ export default function ProfileDetails({ user, favoriteCategory, favoriteCategor
         setShowPhoneModal(false);
     }
 
+    async function handleSaveName(e) {
+        e.preventDefault();
+        const trimmed = (nameInput || "").trim();
+        if (!trimmed) {
+            setError("Nama lengkap tidak boleh kosong");
+            return;
+        }
+        await updateProfile({ name: trimmed });
+        setShowNameModal(false);
+    }
+
+    const handleNewPasswordChange = (value) => {
+        setNewPasswordInput(value);
+        const err = validatePassword(value);
+        setNewPasswordError(err);
+
+        if (confirmPasswordInput && value !== confirmPasswordInput) {
+            setConfirmPasswordError("Konfirmasi kata sandi tidak cocok");
+        } else {
+            setConfirmPasswordError("");
+        }
+    };
+
+    const handleConfirmPasswordChange = (value) => {
+        setConfirmPasswordInput(value);
+        if (value && value !== newPasswordInput) {
+            setConfirmPasswordError("Konfirmasi kata sandi tidak cocok");
+        } else {
+            setConfirmPasswordError("");
+        }
+    };
+
+    async function handleSavePassword(e) {
+        e.preventDefault();
+
+        if (!oldPasswordInput || !newPasswordInput || !confirmPasswordInput) {
+            setError("Semua kolom kata sandi wajib diisi");
+            return;
+        }
+
+        if (newPasswordError || confirmPasswordError) {
+            setError("Perbaiki kesalahan pada kata sandi terlebih dahulu");
+            return;
+        }
+
+        const token = localStorage.getItem("token");
+        if (!token) {
+            setError("Sesi login berakhir. Silakan login kembali.");
+            return;
+        }
+
+        try {
+            setSaving(true);
+            setError("");
+
+            const res = await axios.put(
+                `${API_BASE_URL}/profile/password`,
+                {
+                    oldPassword: oldPasswordInput,
+                    newPassword: newPasswordInput,
+                },
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                }
+            );
+
+            if (!res.data.success) {
+                throw new Error(res.data.message || "Gagal mengubah kata sandi");
+            }
+
+            setShowPasswordModal(false);
+            setOldPasswordInput("");
+            setNewPasswordInput("");
+            setConfirmPasswordInput("");
+            setNewPasswordError("");
+            setConfirmPasswordError("");
+        } catch (err) {
+            console.error(err);
+            setError(
+                err.response?.data?.message ||
+                    err.message ||
+                    "Terjadi kesalahan saat mengubah kata sandi"
+            );
+        } finally {
+            setSaving(false);
+        }
+    }
+
     function handleSelectAvatar(e) {
         const file = e.target.files[0];
         if (!file) return;
@@ -149,6 +318,12 @@ export default function ProfileDetails({ user, favoriteCategory, favoriteCategor
         e.preventDefault();
         if (!user || !avatarFile) return;
 
+        const token = localStorage.getItem("token");
+        if (!token) {
+            setError("Sesi login berakhir. Silakan login kembali.");
+            return;
+        }
+
         try {
             setSaving(true);
             setError("");
@@ -156,18 +331,15 @@ export default function ProfileDetails({ user, favoriteCategory, favoriteCategor
             const formData = new FormData();
             formData.append("avatar", avatarFile);
 
-            const res = await axios.post(
-                `${API_BASE_URL}/profile/${user.id}/avatar`,
-                formData,
-                {
-                    headers: { "Content-Type": "multipart/form-data" },
-                }
-            );
+            const res = await axios.post(`${API_BASE_URL}/profile/avatar`, formData, {
+                headers: {
+                    "Content-Type": "multipart/form-data",
+                    Authorization: `Bearer ${token}`,
+                },
+            });
 
             if (!res.data.success) {
-                throw new Error(
-                    res.data.message || "Gagal mengupdate foto profil"
-                );
+                throw new Error(res.data.message || "Gagal mengupdate foto profil");
             }
 
             login(res.data.user);
@@ -186,6 +358,9 @@ export default function ProfileDetails({ user, favoriteCategory, favoriteCategor
         }
     }
 
+    const genderTextValue = genderText;
+    const formattedBirthDateValue = formattedBirthDate;
+
     return (
         <section>
             <h2 className="text-2xl font-bold mb-6">Akun</h2>
@@ -197,31 +372,48 @@ export default function ProfileDetails({ user, favoriteCategory, favoriteCategor
             )}
 
             <div className="grid grid-cols-1 lg:grid-cols-[280px_1fr] gap-8">
-                <ProfileHeroCard
-                    user={user}
-                    onChangePhoto={() => setShowAvatarModal(true)}
-                />
+                <ProfileHeroCard user={user} onChangePhoto={() => setShowAvatarModal(true)} />
 
                 <div>
-                    <h3 className="font-semibold text-gray-800 mb-4">
-                        Pengaturan Profil
-                    </h3>
+                    <h3 className="font-semibold text-gray-800 mb-4">Pengaturan Profil</h3>
 
                     <div className="space-y-6">
-                        <Item label="Nama Lengkap" value={user?.name} editable />
+                        <Item
+                            label="Nama Lengkap"
+                            value={user?.name}
+                            editable
+                            onEdit={() => {
+                                setNameInput(user?.name || "");
+                                setShowNameModal(true);
+                            }}
+                        />
+
                         <Item label="Email" value={user?.email} />
-                        <Item label="Kata Sandi" value="************" editable />
+
+                        <Item
+                            label="Kata Sandi"
+                            value="************"
+                            editable
+                            onEdit={() => {
+                                setOldPasswordInput("");
+                                setNewPasswordInput("");
+                                setConfirmPasswordInput("");
+                                setNewPasswordError("");
+                                setConfirmPasswordError("");
+                                setShowPasswordModal(true);
+                            }}
+                        />
 
                         <Item
                             label="Jenis Kelamin"
-                            value={genderText}
+                            value={genderTextValue}
                             link
                             onClick={() => setShowGenderModal(true)}
                         />
 
                         <Item
                             label="Tanggal Lahir"
-                            value={formattedBirthDate}
+                            value={formattedBirthDateValue}
                             link
                             onClick={() => setShowDobModal(true)}
                         />
@@ -238,14 +430,12 @@ export default function ProfileDetails({ user, favoriteCategory, favoriteCategor
                                 Kategori Favorit
                             </div>
                             <div className="flex flex-wrap gap-2">
-                                {displayFavoriteCategories.length === 0 ? (
+                                {favoriteCategories.length === 0 ? (
                                     <span className="text-sm text-gray-500">
                                         Belum ada destinasi favorit
                                     </span>
                                 ) : (
-                                    displayFavoriteCategories.map((label) => (
-                                        <Tag key={label}>{label}</Tag>
-                                    ))
+                                    favoriteCategories.map((name) => <Tag key={name}>{name}</Tag>)
                                 )}
                             </div>
                         </div>
@@ -320,11 +510,7 @@ export default function ProfileDetails({ user, favoriteCategory, favoriteCategor
                     <div className="flex justify-center">
                         <div className="h-24 w-24 rounded-full overflow-hidden bg-gray-100">
                             <img
-                                src={
-                                    avatarPreview
-                                        ? avatarPreview
-                                        : resolveAvatar(user?.avatar)
-                                }
+                                src={avatarPreview ? avatarPreview : resolveAvatar(user?.avatar)}
                                 alt="Preview avatar"
                                 className="h-full w-full object-cover"
                             />
@@ -342,11 +528,80 @@ export default function ProfileDetails({ user, favoriteCategory, favoriteCategor
                     </p>
                 </div>
             </BaseModal>
+
+            <BaseModal
+                open={showNameModal}
+                title="Nama Lengkap"
+                onClose={() => setShowNameModal(false)}
+                onSubmit={handleSaveName}
+                submitLabel={saving ? "Menyimpan..." : "Simpan"}
+            >
+                <input
+                    type="text"
+                    className="w-full rounded-2xl border-2 border-[#F1721D] px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#F1721D]"
+                    placeholder="Masukkan Nama Lengkap"
+                    value={nameInput}
+                    onChange={(e) => setNameInput(e.target.value)}
+                />
+            </BaseModal>
+
+            <BaseModal
+                open={showPasswordModal}
+                title="Kata Sandi"
+                onClose={() => setShowPasswordModal(false)}
+                onSubmit={handleSavePassword}
+                submitLabel={saving ? "Menyimpan..." : "Simpan"}
+            >
+                <div>
+                    <input
+                        type="password"
+                        className="w-full rounded-2xl border-2 border-[#F1721D] px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#F1721D]"
+                        placeholder="Kata Sandi"
+                        value={oldPasswordInput}
+                        onChange={(e) => setOldPasswordInput(e.target.value)}
+                    />
+                    <p className="mt-0.5 text-[11px] text-red-500 min-h-3">{"\u00A0"}</p>
+                </div>
+
+                <div>
+                    <input
+                        type="password"
+                        className={`w-full rounded-2xl border-2 px-4 py-3 text-sm focus:outline-none focus:ring-2 ${
+                            newPasswordError
+                                ? "border-red-400 focus:ring-red-300"
+                                : "border-[#F1721D] focus:ring-[#F1721D]"
+                        }`}
+                        placeholder="Kata Sandi Baru"
+                        value={newPasswordInput}
+                        onChange={(e) => handleNewPasswordChange(e.target.value)}
+                    />
+                    <p className="mt-0.5 text-[11px] text-red-500 min-h-3">
+                        {newPasswordError || "\u00A0"}
+                    </p>
+                </div>
+
+                <div>
+                    <input
+                        type="password"
+                        className={`w-full rounded-2xl border-2 px-4 py-3 text-sm focus:outline-none focus:ring-2 ${
+                            confirmPasswordError
+                                ? "border-red-400 focus:ring-red-300"
+                                : "border-[#F1721D] focus:ring-[#F1721D]"
+                        }`}
+                        placeholder="Konfirmasi Kata Sandi"
+                        value={confirmPasswordInput}
+                        onChange={(e) => handleConfirmPasswordChange(e.target.value)}
+                    />
+                    <p className="mt-0.5 text-[11px] text-red-500 min-h-3">
+                        {confirmPasswordError || "\u00A0"}
+                    </p>
+                </div>
+            </BaseModal>
         </section>
     );
 }
 
-function Item({ label, value, editable, link, onClick }) {
+function Item({ label, value, editable, link, onClick, onEdit }) {
     const clickable = link && onClick;
     return (
         <div className="flex items-start justify-between gap-4">
@@ -367,16 +622,22 @@ function Item({ label, value, editable, link, onClick }) {
                 </div>
             </div>
             {editable && (
-                <svg
-                    className="h-5 w-5 text-gray-500 shrink-0"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2"
+                <button
+                    type="button"
+                    onClick={onEdit}
+                    className="shrink-0 text-gray-500 hover:text-[#F1721D]"
                 >
-                    <path d="M12 20h9" />
-                    <path d="M16.5 3.5a2.121 2.121 0 1 1 3 3L7 19l-4 1 1-4 12.5-12.5z" />
-                </svg>
+                    <svg
+                        className="h-5 w-5"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                    >
+                        <path d="M12 20h9" />
+                        <path d="M16.5 3.5a2.121 2.121 0 1 1 3 3L7 19l-4 1 1-4 12.5-12.5z" />
+                    </svg>
+                </button>
             )}
         </div>
     );
@@ -384,7 +645,7 @@ function Item({ label, value, editable, link, onClick }) {
 
 function Tag({ children }) {
     return (
-        <span className="rounded-lg bg-[#F1721D] text-white text-sm px-4 py-2">
+        <span className="rounded-md bg-orange-100 text-[#F1721D] text-sm px-3 py-1">
             {children}
         </span>
     );

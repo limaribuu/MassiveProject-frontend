@@ -1,66 +1,87 @@
-import React, { useMemo } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
+
 import BackButton from "../components/detail/BackButton.jsx";
 import RecommendationSection from "../components/home/recommendations/RecommendationSection.jsx";
 import Footer from "../components/common/Footer.jsx";
 
+import { places } from "../data/places.js";
+import { API_BASE_URL } from "../config/api";
+
+const toNumberSafe = (value, fallback = 0) => {
+    if (value === null || value === undefined) return fallback;
+    if (typeof value === "number") return Number.isFinite(value) ? value : fallback;
+
+    const cleaned = String(value).replace(/[^\d.-]/g, "");
+    const n = Number(cleaned);
+    return Number.isFinite(n) ? n : fallback;
+};
+
 const Populer = () => {
     const navigate = useNavigate();
+    const [ratingMap, setRatingMap] = useState({});
 
-    const hiddenGems = useMemo(
-        () => [
-            {
-                id: 1,
-                title: "Benteng Kuto Besak",
-                desc: "Benteng peninggalan Kesultanan Palembang yang terletak di tepi Sungai Musi.",
-                img: "/reco/bkb.png",
-                rating: 4.0,
-                to: "/detail/bkb",
-            },
-            {
-                id: 2,
-                title: "Jembatan Ampera",
-                desc: "Ikon kota Palembang di atas Sungai Musi—wajib foto!",
-                img: "/reco/ampera.png",
-                rating: 4.0,
-                to: "/detail/ampera",
-            },
-            {
-                id: 3,
-                title: "Pulau Kemaro",
-                desc: "Pulau di Sungai Musi dengan pagoda, vihara, dan legenda Tan Bun An & Siti Fatimah.",
-                img: "/reco/pulau-kemaro.png",
-                rating: 4.0,
-                to: "/detail/pulau-kemaro",
-            },
-            {
-                id: 4,
-                title: "Jakabaring Sport City",
-                desc: "Pusat olahraga terbesar di Palembang dengan stadion, arena renang, lintasan atletik, dan fasilitas modern.",
-                img: "/reco/jakabaring.png",     
-                rating: 4.0,
-                to: "/detail/jakabaring",
-            },
-            {
-                id: 5,
-                title: "Monpera",
-                desc: "Monumen bersejarah di pusat kota Palembang yang dibangun untuk mengenang perjuangan rakyat melawan penjajah.",
-                img: "/reco/monpera.png",       
-                rating: 4.0,
-                to: "/detail/monpera",
-            },
-            {
-                id: 6,
-                title: "Kampung Kapitan",
-                desc: "Kawasan bersejarah di tepi Sungai Musi yang menampilkan rumah kayu bergaya kolonial dan Tionghoa.",
-                img: "/reco/kampung-kapitan.png",
-                rating: 4.0,
-                to: "/detail/kampung-kapitan",
-            },
-            
-        ],
+    useEffect(() => {
+        const controller = new AbortController();
+
+        async function fetchRatingSummary() {
+            try {
+                const res = await axios.get(`${API_BASE_URL}/reviews-summary`, {
+                    signal: controller.signal,
+                });
+
+                if (res.data?.success && Array.isArray(res.data.summary)) {
+                    const map = {};
+                    for (const r of res.data.summary) {
+                        const key = typeof r.place_id === "string" ? r.place_id : String(r.place_id || "");
+                        if (!key) continue;
+
+                        map[key] = {
+                            averageRating: toNumberSafe(r.averageRating ?? 0, 0),
+                            totalReviews: Number(r.totalReviews ?? 0),
+                        };
+                    }
+                    setRatingMap(map);
+                } else {
+                    setRatingMap({});
+                }
+            } catch (err) {
+                const isCanceled =
+                    err?.name === "CanceledError" ||
+                    err?.code === "ERR_CANCELED" ||
+                    controller.signal.aborted;
+
+                if (!isCanceled) {
+                    console.error("Error load rating summary:", err);
+                    setRatingMap({});
+                }
+            }
+        }
+
+        fetchRatingSummary();
+
+        return () => controller.abort();
+    }, []);
+
+    const POPULER_SLUGS = useMemo(
+        () => ["bkb", "ampera", "pulau-kemaro", "jakabaring", "monpera", "kampung-kapitan"],
         []
     );
+
+    const populer = useMemo(() => {
+        return places
+            .filter((p) => POPULER_SLUGS.includes(p.slug))
+            .map((p) => {
+                const avg = ratingMap[p.slug]?.averageRating ?? p.rating ?? 0;
+
+                return {
+                    ...p,
+                    rating: avg,
+                    to: `/detail/${p.slug}`,
+                };
+            });
+    }, [POPULER_SLUGS, ratingMap]);
 
     return (
         <div className="bg-white min-h-screen flex flex-col">
@@ -82,7 +103,7 @@ const Populer = () => {
                 />
             </div>
 
-            <RecommendationSection items={hiddenGems} />
+            <RecommendationSection items={populer} />
 
             <Footer />
         </div>

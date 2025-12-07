@@ -10,6 +10,21 @@ import ProfileFavorites from "../components/profile/ProfileFavorites";
 import Navbar from "../components/common/Navbar";
 import Footer from "../components/common/Footer";
 
+const normalizeFavoriteId = (value) => {
+    if (value === null || value === undefined) return "";
+
+    const s = String(value).trim();
+    if (!s) return "";
+
+    if (/^\d+$/.test(s)) {
+        const n = Number(s);
+        const match = places.find((p) => Number(p.id) === n);
+        return match?.slug ? String(match.slug) : s;
+    }
+
+    return s;
+};
+
 export default function Profile() {
     const { user } = useAuth();
     const { ids: favoriteIds } = useFavorites();
@@ -23,34 +38,27 @@ export default function Profile() {
     };
 
     const favorites = useMemo(() => {
-        if (!favoriteIds || favoriteIds.length === 0) return [];
-        return places
-            .filter((p) => favoriteIds.includes(p.id))
+        const normalized = Array.isArray(favoriteIds)
+            ? Array.from(new Set(favoriteIds.map(normalizeFavoriteId).filter(Boolean)))
+            : [];
+
+        if (normalized.length === 0) return [];
+
+        const indexBySlug = Object.fromEntries(places.map((p) => [p.slug, p]));
+
+        return normalized
+            .map((slug) => indexBySlug[slug])
+            .filter(Boolean)
             .map((p) => ({
-                ...p,
+                id: p.slug,
+                slug: p.slug,
+                title: p.title,
                 desc: p.desc || p.description || "",
-                image: p.image || p.img,
+                img: p.img || p.image || "/img/placeholder.png",
+                rating: typeof p.rating === "number" ? p.rating : Number(p.rating || 0) || 0,
+                to: `/detail/${p.slug}`,
             }));
     }, [favoriteIds]);
-
-    const favoriteCategories = useMemo(() => {
-        if (!favorites || favorites.length === 0) return [];
-        const counts = {};
-        favorites.forEach((place) => {
-            (place.category || []).forEach((cat) => {
-                const key = String(cat).toLowerCase();
-                counts[key] = (counts[key] || 0) + 1;
-            });
-        });
-        const MAX_FAVORITE_CATEGORIES = 2;
-
-        return Object.entries(counts)
-            .sort((a, b) => b[1] - a[1])
-            .slice(0, MAX_FAVORITE_CATEGORIES)
-            .map(([cat]) => cat);
-    }, [favorites]);
-
-    const favoriteCategory = favoriteCategories[0] || null;
 
     return (
         <div className="min-h-screen flex flex-col">
@@ -59,27 +67,12 @@ export default function Profile() {
             <main className="flex-1">
                 <div className="mx-auto max-w-[1200px] px-4 sm:px-6 py-6">
                     <div className="grid grid-cols-1 md:grid-cols-[260px_1fr] gap-8">
-                        <ProfileSidebar
-                            user={user}
-                            activeTab={tab}
-                            onChangeTab={setTab}
-                        />
+                        <ProfileSidebar user={user} activeTab={tab} onChangeTab={setTab} />
 
                         <div>
-                            {tab === "profile" && (
-                                <ProfileDetails
-                                    user={user}
-                                    favoriteCategory={favoriteCategory}
-                                    favoriteCategories={favoriteCategories}
-                                />
-                            )}
+                            {tab === "profile" && <ProfileDetails user={user} />}
 
-                            {tab === "favorites" && (
-                                <ProfileFavorites
-                                    items={favorites}
-                                    favoriteCategory={favoriteCategory}
-                                />
-                            )}
+                            {tab === "favorites" && <ProfileFavorites items={favorites} />}
                         </div>
                     </div>
                 </div>

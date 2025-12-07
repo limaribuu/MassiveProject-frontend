@@ -18,27 +18,30 @@ const DeleteItinerary = () => {
     const [destinations, setDestinations] = useState([]);
     const [loading, setLoading] = useState(true);
     const [showDeletePopup, setShowDeletePopup] = useState(false);
-    const [destinationToDelete, setDestinationToDelete] = useState(null); // slug
+    const [destinationToDelete, setDestinationToDelete] = useState(null);
 
     useEffect(() => {
         async function fetchItinerary() {
-            if (!user) {
+            const token = localStorage.getItem("token");
+
+            if (!user || !token) {
+                setDestinations([]);
                 setLoading(false);
                 return;
             }
 
             try {
-                const res = await axios.get(
-                    `${API_BASE_URL}/itinerary/${user.id}`
-                );
+                const res = await axios.get(`${API_BASE_URL}/itinerary`, {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                });
 
                 if (res.data.success) {
                     const items = res.data.items || [];
 
                     const enriched = items.map((item) => {
-                        const place = places.find(
-                            (p) => p.slug === item.placeId
-                        );
+                        const place = places.find((p) => p.slug === item.placeId);
                         const detail = getPlaceDetailBySlug(item.placeId);
 
                         return {
@@ -51,13 +54,12 @@ const DeleteItinerary = () => {
                                 "/img/default.png",
                             ticketPrice: Number(item.ticketPrice) || 0,
                             operationalDays:
-                                detail?.sidebar?.operationalDays ||
-                                "Senin - Minggu",
+                                detail?.sidebar?.operationalDays || "Senin - Minggu",
                             operationalHours:
                                 detail?.sidebar?.operationalHours || "-",
                             location:
                                 detail?.sidebar?.location ||
-                                "Palembang, Sumatera Selatan"
+                                "Palembang, Sumatera Selatan",
                         };
                     });
 
@@ -88,21 +90,23 @@ const DeleteItinerary = () => {
     };
 
     const handleConfirmDelete = async () => {
-        if (!user || !destinationToDelete) return;
+        const token = localStorage.getItem("token");
+
+        if (!user || !destinationToDelete || !token) return;
 
         try {
             await axios.delete(`${API_BASE_URL}/itinerary/remove`, {
-                data: {
-                    userId: user.id,
-                    placeId: destinationToDelete
-                }
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+                data: { placeId: destinationToDelete },
             });
 
             setDestinations((prev) =>
                 prev.filter((dest) => dest.slug !== destinationToDelete)
             );
         } catch (err) {
-            console.error("Gagal menghapus destinasi dari itinerary:", err);
+            console.error("Gagal menghapus destinasi:", err);
             alert("Terjadi kesalahan saat menghapus destinasi.");
         } finally {
             setShowDeletePopup(false);
@@ -135,9 +139,7 @@ const DeleteItinerary = () => {
                 <div className="max-w-7xl mx-auto px-6 py-8">
                     {loading ? (
                         <div className="text-center py-20">
-                            <p className="text-gray-500 text-lg">
-                                Memuat data...
-                            </p>
+                            <p className="text-gray-500 text-lg">Memuat data...</p>
                         </div>
                     ) : destinations.length === 0 ? (
                         <div className="text-center py-20">
@@ -150,9 +152,7 @@ const DeleteItinerary = () => {
                             <DeleteItineraryCard
                                 key={destination.slug}
                                 destination={destination}
-                                onDelete={() =>
-                                    handleDeleteClick(destination.slug)
-                                }
+                                onDelete={() => handleDeleteClick(destination.slug)}
                             />
                         ))
                     )}

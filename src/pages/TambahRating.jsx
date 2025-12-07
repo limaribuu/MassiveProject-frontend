@@ -8,12 +8,11 @@ import BackButton from "../components/detail/BackButton";
 import UlasanPopup from "../components/popup/ulasanpopup.jsx";
 import { places } from "../data/places.js";
 import { useAuth } from "../hooks/useAuth";
-
 import { API_BASE_URL } from "../config/api";
 
 const destinations = places.map((p) => ({
     slug: p.slug,
-    name: p.title
+    name: p.title,
 }));
 
 const TambahRating = () => {
@@ -54,13 +53,26 @@ const TambahRating = () => {
             return;
         }
 
+        const token = localStorage.getItem("token");
+        if (!token) {
+            alert("Sesi login kamu tidak ditemukan. Silakan login ulang.");
+            return;
+        }
+
         try {
-            await axios.post(`${API_BASE_URL}/reviews`, {
-                placeId: selectedPlace,
-                userId: user.id,
-                rating,
-                comment
-            });
+            await axios.post(
+                `${API_BASE_URL}/reviews`,
+                {
+                    placeId: selectedPlace,
+                    rating,
+                    comment,
+                },
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                }
+            );
 
             setShowSaved(true);
         } catch (err) {
@@ -89,7 +101,6 @@ const TambahRating = () => {
                     <div className="mt-3 border-b-2 border-orange-300" />
 
                     <div className="mt-8 flex flex-col items-center gap-6 md:flex-row md:items-center md:justify-between">
-
                         <div className="flex items-center gap-2">
                             {stars.map((s) => (
                                 <button

@@ -160,6 +160,19 @@
   border: 1px solid #fcc;
 }
 
+/* Text success dari backend */
+.auth-page .text-success {
+  width: 80%;
+  margin: 0 auto 10px;
+  text-align: center;
+  color: #059669;
+  font-size: 13px;
+  padding: 8px;
+  background: #d1fae5;
+  border-radius: 6px;
+  border: 1px solid #6ee7b7;
+}
+
 .auth-page .forgot-password {
   width: 80%;
   margin: -2px auto 8px;
@@ -463,5 +476,131 @@
   .auth-page .forgot-password,
   .auth-page .agree-box {
     width: 90%;
+  }
+}
+
+/* ==================== SIGNUP SUCCESS POPUP ==================== */
+.signup-popup-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  background: rgba(0, 0, 0, 0.4);
+  animation: popupFadeIn 0.2s ease-out;
+}
+
+.signup-popup-card {
+  background: #fff;
+  border-radius: 16px;
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.18);
+  padding: 32px;
+  max-width: 420px;
+  width: 100%;
+  text-align: center;
+  animation: popupSlideUp 0.3s ease-out;
+}
+
+.signup-popup-icon {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 0 auto 24px;
+  width: 64px;
+  height: 64px;
+  background: #ff6b00;
+  border-radius: 50%;
+  box-shadow: 0 4px 12px rgba(255, 107, 0, 0.3);
+}
+
+.signup-popup-check {
+  width: 32px;
+  height: 32px;
+  color: #fff;
+}
+
+.signup-popup-title {
+  font-size: 32px;
+  font-weight: 700;
+  color: #1f2937;
+  margin: 0 0 16px 0;
+  line-height: 1.2;
+}
+
+.signup-popup-desc {
+  font-size: 18px;
+  color: #6b7280;
+  margin: 0 0 24px 0;
+  line-height: 1.5;
+}
+
+.signup-popup-btn {
+  width: 100%;
+  padding: 12px 32px;
+  background: #ff6b00;
+  color: #fff;
+  font-size: 16px;
+  font-weight: 600;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 8px rgba(255, 107, 0, 0.2);
+}
+
+.signup-popup-btn:hover {
+  background: #e25d00;
+  box-shadow: 0 4px 12px rgba(255, 107, 0, 0.3);
+  transform: translateY(-1px);
+}
+
+.signup-popup-btn:active {
+  transform: translateY(0);
+}
+
+@keyframes popupFadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes popupSlideUp {
+  from {
+    transform: translateY(20px) scale(0.95);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0) scale(1);
+    opacity: 1;
+  }
+}
+
+@media (max-width: 480px) {
+  .signup-popup-card {
+    padding: 24px;
+  }
+
+  .signup-popup-icon {
+    width: 56px;
+    height: 56px;
+    margin-bottom: 20px;
+  }
+
+  .signup-popup-check {
+    width: 28px;
+    height: 28px;
+  }
+
+  .signup-popup-title {
+    font-size: 28px;
+  }
+
+  .signup-popup-desc {
+    font-size: 16px;
   }
 }

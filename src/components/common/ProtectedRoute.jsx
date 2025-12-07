@@ -3,18 +3,30 @@ import { Navigate, useLocation } from "react-router-dom";
 import { useAuth } from "../../hooks/useAuth";
 
 export default function ProtectedRoute({ children }) {
-    const { user } = useAuth();
-    const location = useLocation();
+  const location = useLocation();
+  const { user, token, isAuthReady } = useAuth();
 
-    if (!user) {
-        return (
-            <Navigate
-                to="/login"
-                replace
-                state={{ from: location }} 
-            />
-        );
-    }
+  // ⬇️ jangan redirect sebelum auth siap (mencegah refresh -> login)
+  if (!isAuthReady) {
+    return (
+      <div style={{ padding: 24 }}>
+        <p>Memuat sesi...</p>
+      </div>
+    );
+  }
 
-    return children;
+  // minimal check: token harus ada (dan idealnya user juga ada)
+  const isAuthed = !!token && !!user;
+
+  if (!isAuthed) {
+    return (
+      <Navigate
+        to="/login"
+        replace
+        state={{ from: location.pathname + location.search }}
+      />
+    );
+  }
+
+  return children;
 }

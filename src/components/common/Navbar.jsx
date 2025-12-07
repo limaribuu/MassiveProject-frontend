@@ -3,7 +3,7 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "../../hooks/useAuth";
 import { places } from "../../data/places";
 
-import { BACKEND_BASE_URL } from "../../config/api";
+const BACKEND_BASE_URL = "http://localhost:5000";
 
 function resolveAvatar(path) {
     if (!path) return "/avatar-default.png";
@@ -24,9 +24,14 @@ export default function Navbar() {
     const navigate = useNavigate();
     const { user, logout } = useAuth();
 
+    // dropdown profile
     const [openMenu, setOpenMenu] = useState(false);
     const menuRef = useRef(null);
 
+    // burger mobile
+    const [mobileOpen, setMobileOpen] = useState(false);
+
+    // search
     const [searchQuery, setSearchQuery] = useState("");
 
     const filteredPlaces = React.useMemo(() => {
@@ -54,14 +59,16 @@ export default function Navbar() {
         if (!filteredPlaces.length) return;
         navigate(`/detail/${filteredPlaces[0].slug}`);
         setSearchQuery("");
+        setMobileOpen(false);
     };
 
     const handleSelectPlace = (place) => {
         navigate(`/detail/${place.slug}`);
         setSearchQuery("");
+        setMobileOpen(false);
     };
 
-    // close dropdown when clicking outside
+    // tutup dropdown profile kalau klik di luar
     useEffect(() => {
         const close = (e) => {
             if (menuRef.current && !menuRef.current.contains(e.target)) {
@@ -72,15 +79,18 @@ export default function Navbar() {
         return () => window.removeEventListener("click", close);
     }, []);
 
+    // kalau pindah halaman, tutup burger
+    useEffect(() => {
+        setMobileOpen(false);
+    }, [pathname]);
+
     return (
         <div className="w-full border-b border-gray-200 bg-white">
             <div className="mx-auto max-w-[1250px] px-6">
-                
-                {/* FLEX BAR */}
-                <nav className="flex items-center justify-between py-4 gap-6">
-                    
-                    {/* LEFT SECTION: LOGO + MENU */}
-                    <div className="flex items-center gap-10">
+                {/* TOP BAR */}
+                <nav className="flex items-center justify-between py-4 gap-4 md:gap-6">
+                    {/* LEFT: LOGO + MENU / BURGER */}
+                    <div className="flex items-center gap-3 md:gap-10">
                         {/* LOGO */}
                         <Link to="/home" className="flex items-center gap-3">
                             <img
@@ -88,12 +98,12 @@ export default function Navbar() {
                                 alt="Logo"
                                 className="h-12 w-12 object-contain"
                             />
-                            <span className="text-2xl font-extrabold tracking-wide text-[#1F2937]">
+                            <span className="hidden sm:inline text-xl sm:text-2xl font-extrabold tracking-wide text-[#1F2937]">
                                 PELISIR PALEMBANG
                             </span>
                         </Link>
 
-                        {/* MENU */}
+                        {/* DESKTOP MENU */}
                         <div className="hidden md:flex items-center gap-8">
                             {navItems.map(({ to, label }) => {
                                 const active = pathname === to;
@@ -113,16 +123,52 @@ export default function Navbar() {
                                 );
                             })}
                         </div>
+
+                        {/* BURGER MOBILE */}
+                        <button
+                            type="button"
+                            className="md:hidden inline-flex items-center justify-center rounded-lg p-2 text-gray-600 hover:bg-gray-100 focus:outline-none"
+                            onClick={() => setMobileOpen((prev) => !prev)}
+                        >
+                            <span className="sr-only">Toggle navigation</span>
+                            {mobileOpen ? (
+                                <svg
+                                    className="h-6 w-6"
+                                    viewBox="0 0 24 24"
+                                    stroke="currentColor"
+                                    strokeWidth="2"
+                                    fill="none"
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                >
+                                    <line x1="18" y1="6" x2="6" y2="18" />
+                                    <line x1="6" y1="6" x2="18" y2="18" />
+                                </svg>
+                            ) : (
+                                <svg
+                                    className="h-6 w-6"
+                                    viewBox="0 0 24 24"
+                                    stroke="currentColor"
+                                    strokeWidth="2"
+                                    fill="none"
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                >
+                                    <line x1="3" y1="6" x2="21" y2="6" />
+                                    <line x1="3" y1="12" x2="21" y2="12" />
+                                    <line x1="3" y1="18" x2="21" y2="18" />
+                                </svg>
+                            )}
+                        </button>
                     </div>
 
                     {/* SPACER */}
-                    <div className="flex-1"></div>
+                    <div className="flex-1" />
 
-                    {/* RIGHT SECTION: SEARCH + PROFILE */}
-                    <div className="flex items-center gap-6">
-                        
-                        {/* SEARCH */}
-                        <div className="relative">
+                    {/* RIGHT: SEARCH + PROFILE */}
+                    <div className="flex items-center gap-3 sm:gap-6">
+                        {/* DESKTOP SEARCH */}
+                        <div className="relative hidden md:block">
                             <form onSubmit={handleSearchSubmit}>
                                 <div className="flex items-center rounded-full bg-gray-100 px-3 py-1.5 w-52 sm:w-64 lg:w-72">
                                     <svg
@@ -139,51 +185,56 @@ export default function Navbar() {
                                     <input
                                         type="text"
                                         value={searchQuery}
-                                        onChange={(e) => setSearchQuery(e.target.value)}
+                                        onChange={(e) =>
+                                            setSearchQuery(e.target.value)
+                                        }
                                         placeholder="Cari destinasi..."
                                         className="ml-2 w-full bg-transparent text-sm text-gray-700 focus:outline-none"
                                     />
                                 </div>
                             </form>
 
-                            {/* RESULTS */}
-                            {searchQuery.trim() !== "" && filteredPlaces.length > 0 && (
-                                <div className="absolute right-0 z-50 mt-2 w-72 sm:w-80 bg-white border border-gray-200 rounded-xl shadow-lg max-h-80 overflow-y-auto">
-                                    {filteredPlaces.map((p) => (
-                                        <button
-                                            key={p.slug}
-                                            onClick={() => handleSelectPlace(p)}
-                                            className="flex w-full items-start gap-3 px-3 py-2 text-left hover:bg-gray-50"
-                                        >
-                                            {p.img && (
-                                                <img
-                                                    src={p.img}
-                                                    alt={p.title}
-                                                    className="h-10 w-10 rounded-md object-cover"
-                                                />
-                                            )}
-                                            <div>
-                                                <p className="text-sm font-medium text-gray-900">
-                                                    {p.title}
-                                                </p>
-                                                {p.desc && (
-                                                    <p className="text-xs text-gray-500 line-clamp-2">
-                                                        {p.desc}
-                                                    </p>
+                            {/* DESKTOP RESULTS */}
+                            {searchQuery.trim() !== "" &&
+                                filteredPlaces.length > 0 && (
+                                    <div className="absolute right-0 z-50 mt-2 w-64 sm:w-72 bg-white border border-gray-200 rounded-xl shadow-lg max-h-80 overflow-y-auto">
+                                        {filteredPlaces.map((p) => (
+                                            <button
+                                                key={p.slug}
+                                                onClick={() =>
+                                                    handleSelectPlace(p)
+                                                }
+                                                className="flex w-full items-start gap-3 px-3 py-2 text-left hover:bg-gray-50"
+                                            >
+                                                {p.img && (
+                                                    <img
+                                                        src={p.img}
+                                                        alt={p.title}
+                                                        className="h-10 w-10 rounded-md object-cover"
+                                                    />
                                                 )}
-                                            </div>
-                                        </button>
-                                    ))}
-                                </div>
-                            )}
+                                                <div>
+                                                    <p className="text-sm font-medium text-gray-900">
+                                                        {p.title}
+                                                    </p>
+                                                    {p.desc && (
+                                                        <p className="text-xs text-gray-500 line-clamp-2">
+                                                            {p.desc}
+                                                        </p>
+                                                    )}
+                                                </div>
+                                            </button>
+                                        ))}
+                                    </div>
+                                )}
                         </div>
 
-                        {/* PROFILE */}
+                        {/* PROFILE / AUTH */}
                         {!user ? (
                             <>
                                 <Link
                                     to="/signup"
-                                    className="rounded-xl border border-gray-300 px-4 py-2 font-medium text-gray-600 hover:bg-gray-50"
+                                    className="hidden sm:inline rounded-xl border border-gray-300 px-4 py-2 font-medium text-gray-600 hover:bg-gray-50"
                                 >
                                     Daftar
                                 </Link>
@@ -229,8 +280,12 @@ export default function Navbar() {
                                                 className="h-10 w-10 rounded-full object-cover"
                                             />
                                             <div>
-                                                <p className="font-semibold text-gray-800">{user.name}</p>
-                                                <p className="text-sm text-gray-500">{user.email}</p>
+                                                <p className="font-semibold text-gray-800">
+                                                    {user.name}
+                                                </p>
+                                                <p className="text-sm text-gray-500">
+                                                    {user.email}
+                                                </p>
                                             </div>
                                         </div>
 
@@ -285,8 +340,82 @@ export default function Navbar() {
                             </div>
                         )}
                     </div>
-
                 </nav>
+
+                {/* MOBILE PANEL (BURGER TERBUKA) */}
+                {mobileOpen && (
+                    <div className="md:hidden pb-4 border-t border-gray-200">
+                        {/* MOBILE SEARCH */}
+                        <div className="mt-3">
+                            <form onSubmit={handleSearchSubmit}>
+                                <div className="flex items-center rounded-full bg-gray-100 px-3 py-1.5 w-full">
+                                    <svg
+                                        className="h-5 w-5 text-gray-500"
+                                        viewBox="0 0 24 24"
+                                        fill="none"
+                                        stroke="currentColor"
+                                        strokeWidth="2"
+                                    >
+                                        <circle cx="11" cy="11" r="8"></circle>
+                                        <path d="m21 21-4.35-4.35"></path>
+                                    </svg>
+
+                                    <input
+                                        type="text"
+                                        value={searchQuery}
+                                        onChange={(e) =>
+                                            setSearchQuery(e.target.value)
+                                        }
+                                        placeholder="Cari destinasi..."
+                                        className="ml-2 w-full bg-transparent text-sm text-gray-700 focus:outline-none"
+                                    />
+                                </div>
+                            </form>
+                        </div>
+
+                        {/* NAV LINK MOBILE */}
+                        <div className="mt-4 flex flex-col gap-2">
+                            {navItems.map(({ to, label }) => {
+                                const active = pathname === to;
+                                return (
+                                    <Link
+                                        key={to}
+                                        to={to}
+                                        onClick={() => setMobileOpen(false)}
+                                        className={[
+                                            "px-2 py-1.5 text-base font-medium",
+                                            active
+                                                ? "text-[#F1721D]"
+                                                : "text-gray-700 hover:text-gray-900",
+                                        ].join(" ")}
+                                    >
+                                        {label}
+                                    </Link>
+                                );
+                            })}
+                        </div>
+
+                        {/* BUTTON AUTH DI MOBILE (kalau belum login) */}
+                        {!user && (
+                            <div className="mt-4 flex gap-2">
+                                <Link
+                                    to="/signup"
+                                    onClick={() => setMobileOpen(false)}
+                                    className="flex-1 rounded-xl border border-gray-300 px-4 py-2 text-center font-medium text-gray-600 hover:bg-gray-50"
+                                >
+                                    Daftar
+                                </Link>
+                                <Link
+                                    to="/login"
+                                    onClick={() => setMobileOpen(false)}
+                                    className="flex-1 rounded-xl bg-[#F1721D] px-4 py-2 text-center font-semibold text-white hover:opacity-90"
+                                >
+                                    Login
+                                </Link>
+                            </div>
+                        )}
+                    </div>
+                )}
             </div>
         </div>
     );
