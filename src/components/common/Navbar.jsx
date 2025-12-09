@@ -3,7 +3,7 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "../../hooks/useAuth";
 import { places } from "../../data/places";
 
-const BACKEND_BASE_URL = "http://localhost:5000";
+import { BACKEND_BASE_URL } from "../../config/api";
 
 function resolveAvatar(path) {
     if (!path) return "/avatar-default.png";
