@@ -20,7 +20,7 @@ export default function InteractiveMap() {
         []
     );
 
-    const [tooltip, setTooltip] = useState(null); // { xAbs, yAbs, label }
+    const [tooltip, setTooltip] = useState(null);
 
     function showTip(evt, label) {
         const bounds = evt.currentTarget.ownerSVGElement.getBoundingClientRect();

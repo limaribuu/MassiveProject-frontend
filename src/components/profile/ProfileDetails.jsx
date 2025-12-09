@@ -25,7 +25,6 @@ function resolveAvatar(path) {
 const CATEGORY_LABELS = {
     sejarah: "Sejarah & Budaya",
     ikonik: "Ikonik",
-    alam: "Alam",
     kuliner: "Kuliner",
     religi: "Religi",
 };

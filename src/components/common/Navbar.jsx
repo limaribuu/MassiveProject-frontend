@@ -16,7 +16,7 @@ const navItems = [
     { to: "/home", label: "Home" },
     { to: "/destinasi", label: "Destinasi" },
     { to: "/itinerary", label: "Itinerary" },
-    { to: "/ulasan", label: "Ulasan" },
+    { to: "/ulasan", label: "Ulasan" }
 ];
 
 export default function Navbar() {
@@ -24,24 +24,19 @@ export default function Navbar() {
     const navigate = useNavigate();
     const { user, logout } = useAuth();
 
-    // dropdown profile
     const [openMenu, setOpenMenu] = useState(false);
     const menuRef = useRef(null);
 
-    // burger mobile
     const [mobileOpen, setMobileOpen] = useState(false);
 
-    // search
     const [searchQuery, setSearchQuery] = useState("");
 
     const filteredPlaces = React.useMemo(() => {
         const q = searchQuery.trim().toLowerCase();
         if (!q) return [];
-
         const result = places.filter((p) =>
             (p.title || "").toLowerCase().includes(q)
         );
-
         result.sort((a, b) => {
             const at = a.title.toLowerCase();
             const bt = b.title.toLowerCase();
@@ -50,7 +45,6 @@ export default function Navbar() {
             if (aStarts !== bStarts) return aStarts ? -1 : 1;
             return at.localeCompare(bt);
         });
-
         return result.slice(0, 8);
     }, [searchQuery]);
 
@@ -68,7 +62,6 @@ export default function Navbar() {
         setMobileOpen(false);
     };
 
-    // tutup dropdown profile kalau klik di luar
     useEffect(() => {
         const close = (e) => {
             if (menuRef.current && !menuRef.current.contains(e.target)) {
@@ -79,7 +72,6 @@ export default function Navbar() {
         return () => window.removeEventListener("click", close);
     }, []);
 
-    // kalau pindah halaman, tutup burger
     useEffect(() => {
         setMobileOpen(false);
     }, [pathname]);
@@ -87,23 +79,33 @@ export default function Navbar() {
     return (
         <div className="w-full border-b border-gray-200 bg-white">
             <div className="mx-auto max-w-[1250px] px-6">
-                {/* TOP BAR */}
                 <nav className="flex items-center justify-between py-4 gap-4 md:gap-6">
-                    {/* LEFT: LOGO + MENU / BURGER */}
                     <div className="flex items-center gap-3 md:gap-10">
-                        {/* LOGO */}
-                        <Link to="/home" className="flex items-center gap-3">
+                        <Link
+                            to="/home"
+                            className="flex items-center gap-3 shrink min-w-0"
+                        >
                             <img
                                 src="/logopelesir.png"
                                 alt="Logo"
-                                className="h-12 w-12 object-contain"
+                                className="h-12 w-12 object-contain shrink-0"
                             />
-                            <span className="hidden sm:inline text-xl sm:text-2xl font-extrabold tracking-wide text-[#1F2937]">
-                                PELISIR PALEMBANG
+                            <span
+                                className="
+                                text-lg
+                                sm:text-xl
+                                md:text-2xl
+                                font-extrabold 
+                                tracking-wide 
+                                text-[#1F2937]
+                                truncate
+                                max-w-[150px] sm:max-w-none
+                            "
+                            >
+                                PELESIR PALEMBANG
                             </span>
                         </Link>
 
-                        {/* DESKTOP MENU */}
                         <div className="hidden md:flex items-center gap-8">
                             {navItems.map(({ to, label }) => {
                                 const active = pathname === to;
@@ -115,7 +117,7 @@ export default function Navbar() {
                                             "text-[17px] font-medium transition",
                                             active
                                                 ? "text-[#F1721D]"
-                                                : "text-gray-600 hover:text-gray-900",
+                                                : "text-gray-600 hover:text-gray-900"
                                         ].join(" ")}
                                     >
                                         {label}
@@ -124,13 +126,11 @@ export default function Navbar() {
                             })}
                         </div>
 
-                        {/* BURGER MOBILE */}
                         <button
                             type="button"
                             className="md:hidden inline-flex items-center justify-center rounded-lg p-2 text-gray-600 hover:bg-gray-100 focus:outline-none"
                             onClick={() => setMobileOpen((prev) => !prev)}
                         >
-                            <span className="sr-only">Toggle navigation</span>
                             {mobileOpen ? (
                                 <svg
                                     className="h-6 w-6"
@@ -162,12 +162,9 @@ export default function Navbar() {
                         </button>
                     </div>
 
-                    {/* SPACER */}
                     <div className="flex-1" />
 
-                    {/* RIGHT: SEARCH + PROFILE */}
                     <div className="flex items-center gap-3 sm:gap-6">
-                        {/* DESKTOP SEARCH */}
                         <div className="relative hidden md:block">
                             <form onSubmit={handleSearchSubmit}>
                                 <div className="flex items-center rounded-full bg-gray-100 px-3 py-1.5 w-52 sm:w-64 lg:w-72">
@@ -194,7 +191,6 @@ export default function Navbar() {
                                 </div>
                             </form>
 
-                            {/* DESKTOP RESULTS */}
                             {searchQuery.trim() !== "" &&
                                 filteredPlaces.length > 0 && (
                                     <div className="absolute right-0 z-50 mt-2 w-64 sm:w-72 bg-white border border-gray-200 rounded-xl shadow-lg max-h-80 overflow-y-auto">
@@ -229,7 +225,6 @@ export default function Navbar() {
                                 )}
                         </div>
 
-                        {/* PROFILE / AUTH */}
                         {!user ? (
                             <>
                                 <Link
@@ -342,10 +337,8 @@ export default function Navbar() {
                     </div>
                 </nav>
 
-                {/* MOBILE PANEL (BURGER TERBUKA) */}
                 {mobileOpen && (
                     <div className="md:hidden pb-4 border-t border-gray-200">
-                        {/* MOBILE SEARCH */}
                         <div className="mt-3">
                             <form onSubmit={handleSearchSubmit}>
                                 <div className="flex items-center rounded-full bg-gray-100 px-3 py-1.5 w-full">
@@ -373,7 +366,6 @@ export default function Navbar() {
                             </form>
                         </div>
 
-                        {/* NAV LINK MOBILE */}
                         <div className="mt-4 flex flex-col gap-2">
                             {navItems.map(({ to, label }) => {
                                 const active = pathname === to;
@@ -386,7 +378,7 @@ export default function Navbar() {
                                             "px-2 py-1.5 text-base font-medium",
                                             active
                                                 ? "text-[#F1721D]"
-                                                : "text-gray-700 hover:text-gray-900",
+                                                : "text-gray-700 hover:text-gray-900"
                                         ].join(" ")}
                                     >
                                         {label}
@@ -395,7 +387,6 @@ export default function Navbar() {
                             })}
                         </div>
 
-                        {/* BUTTON AUTH DI MOBILE (kalau belum login) */}
                         {!user && (
                             <div className="mt-4 flex gap-2">
                                 <Link

@@ -11,7 +11,7 @@ export default function FooterContact() {
                 </li>
                 <li className="flex items-center gap-3">
                     <img src="/icon/email.png" alt="Email" className="h-6 w-6" />
-                    <span>pelisirpalembang@gmail.com</span>
+                    <span>pelesirpalembang@gmail.com</span>
                 </li>
                 <li className="flex items-center gap-3">
                     <img src="/icon/pin2.png" alt="Location" className="h-6 w-6" />

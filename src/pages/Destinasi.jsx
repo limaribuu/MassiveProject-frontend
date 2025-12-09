@@ -7,7 +7,7 @@ import RecommendationCard from "../components/home/recommendations/Recommendatio
 import { places } from "../data/places.js";
 import { API_BASE_URL } from "../config/api";
 
-const categories = ["all", "sejarah", "religi", "ikonik", "kuliner", "alam"];
+const categories = ["all", "sejarah", "religi", "ikonik", "kuliner"];
 
 const labelMap = {
     all: "Semua Kategori",
@@ -15,8 +15,8 @@ const labelMap = {
     religi: "Religi",
     ikonik: "Ikonik",
     kuliner: "Kuliner",
-    alam: "Alam",
 };
+
 
 const toNumberSafe = (value, fallback = 0) => {
     if (value === null || value === undefined) return fallback;

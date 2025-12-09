@@ -13,7 +13,7 @@ export const places = [
         title: "Bukit Siguntang",
         desc: "Situs bersejarah Kerajaan Sriwijaya.",
         img: "/reco/bukit-siguntang.png",
-        category: ["sejarah", "religi", "alam"]
+        category: ["sejarah", "religi"]
     },
     {
         id: "benteng-kuto-besak",
@@ -37,7 +37,7 @@ export const places = [
         title: "Pulau Kemaro",
         desc: "Pulau di Sungai Musi dengan pagoda, vihara, dan legenda Tan Bun An & Siti Fatimah.",
         img: "/reco/pulau-kemaro.png",
-        category: ["religi", "alam"]
+        category: ["religi"]
     },
     {
         id: "taman-purbakala",
@@ -45,7 +45,7 @@ export const places = [
         title: "Taman Purbakala",
         desc: "Destinasi bersejarah yang menyimpan peninggalan zaman Sriwijaya.",
         img: "/reco/taman-purbakala.png",
-        category: ["sejarah", "alam"]
+        category: ["sejarah"]
     },
     {
         id: "lorong-basah",

@@ -39,7 +39,7 @@ const DestinationFilterBar = ({ onSearch }) => {
                     label="Kategori"
                     value={cat}
                     onSelect={setCat}
-                    items={["Sejarah", "Religi", "Ikonik", "Kuliner", "Alam"]}
+                    items={["Sejarah", "Religi", "Ikonik", "Kuliner"]}
                 />
 
                 <button
