@@ -15,7 +15,7 @@ import { getPlaceDetailBySlug } from "../data/placeDetails.js";
 import InfoDescription from "../components/detail/InfoDescription.jsx";
 
 import DestinationPopup from "../components/popup/DestinasiPopup";
-import FailPopup from "../components/popup/failPopUp";
+import FailPopup from "../components/popup/failPopup";
 import { useAuth } from "../hooks/useAuth";
 
 import { API_BASE_URL, BACKEND_BASE_URL } from "../config/api";
