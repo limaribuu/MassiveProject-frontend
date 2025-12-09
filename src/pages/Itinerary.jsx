@@ -9,7 +9,7 @@ import Navbar from "../components/common/Navbar";
 import Footer from "../components/common/Footer";
 import { useAuth } from "../hooks/useAuth";
 import DestinationPopup from "../components/popup/DestinasiPopup";
-import FailPopup from "../components/popup/failPopUp";
+import FailPopup from "../components/popup/failPopup";
 import { API_BASE_URL } from "../config/api";
 
 const Itinerary = () => {
