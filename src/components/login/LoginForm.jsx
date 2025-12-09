@@ -2,8 +2,7 @@ import React, { useState } from "react";
 import GoogleButton from "./GoogleButton.jsx";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../../hooks/useAuth.js";
-
-const API_BASE_URL = "https://api-pelesirpalembang.infinitelearningstudent.id";
+import { API_BASE_URL } from "../../config/api";
 
 const emailRegex = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i;
 

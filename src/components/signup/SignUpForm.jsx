@@ -1,8 +1,7 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import SignUpPopup from "../popup/signUpPopup";
-
-const API_BASE_URL = "https://api-pelesirpalembang.infinitelearningstudent.id";
+import { API_BASE_URL } from "../../config/api";
 
 const emailRegex = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i;
 
