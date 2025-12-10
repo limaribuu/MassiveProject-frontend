@@ -1,11 +1,15 @@
 import React, { createContext, useContext, useEffect, useMemo, useState } from "react";
 
 const FavoritesContext = createContext(null);
-const FAVORITES_KEY = "favorites";
+// Samakan dengan yang dipakai ProfileDetails
+const FAVORITES_KEY = "favorites_ids";
 
 function readFavoritesFromStorage() {
     try {
-        const raw = localStorage.getItem(FAVORITES_KEY);
+        // Baca dari key baru dulu, kalau kosong coba key lama ("favorites")
+        const raw =
+            localStorage.getItem(FAVORITES_KEY) ||
+            localStorage.getItem("favorites"); // 👈 backward compatible
         if (!raw) return [];
         const parsed = JSON.parse(raw);
         if (Array.isArray(parsed)) return parsed;
@@ -27,9 +31,9 @@ function FavoritesProvider({ children }) {
     function toggle(id) {
         if (!id) return;
         const key = String(id);
-        setFavorites(prev => {
+        setFavorites((prev) => {
             if (prev.includes(key)) {
-                return prev.filter(item => item !== key);
+                return prev.filter((item) => item !== key);
             }
             return [...prev, key];
         });
@@ -37,13 +41,17 @@ function FavoritesProvider({ children }) {
 
     useEffect(() => {
         try {
+            // Simpan ke key baru
             localStorage.setItem(FAVORITES_KEY, JSON.stringify(favorites));
+            // Optional: juga simpan ke key lama untuk berjaga-jaga
+            localStorage.setItem("favorites", JSON.stringify(favorites));
         } catch {}
     }, [favorites]);
 
     const value = useMemo(
         () => ({
             favorites,
+            ids: favorites, // 👈 supaya Profile.jsx yang pakai { ids } tetap jalan
             has,
             toggle
         }),
